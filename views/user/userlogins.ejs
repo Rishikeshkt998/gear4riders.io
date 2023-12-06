@@ -1,0 +1,88 @@
+<%-include('userheader')-%>
+
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+          <div class="card border-0 shadow rounded-3 my-5">
+            <div class="card-body p-4 p-sm-5">
+              <h3 class="card-title ">Login</h3>
+              <small>Enter your details below</small>
+              
+                  <form action="/Login" method="post">
+
+
+                    <div class="form-floating mb-3 mt-5">
+                      <input type="text" name="email" class="form-control" id="floatingInput"
+                        placeholder="name@example.com" autocomplete="off">
+                      <label for="floatingInput">Email or Phone Number</label>
+                      <%if (errors&&errors.email){%>
+                        <span class="text-danger" id="errors-email">
+                          <%=errors.email.msg%>
+                        </span>
+                        <%}%>
+
+                    </div>
+                    <div class="form-floating mb-3">
+                      <input type="password" name="password" class="form-control" id="floatingPassword"
+                        placeholder="Password" autocomplete="off">
+                      <label for="floatingPassword">Password</label>
+                      <%if (errors&&errors.password){%>
+                        <span class="text-danger" id="errors-password">
+                          <%=errors.password.msg%>
+                        </span>
+                        <%}%>
+                        <%if (invalid){%>
+                          <span class="text-danger" id="error-invalid">
+                            <%=invalid%>
+                          </span>
+                          <%}%>
+
+                    </div>
+
+                    <div class="form-check ">
+                      <label class="form-check-label" for="rememberPasswordCheck">
+
+                      </label>
+                    </div>
+
+                    <div class="">
+                      <button style="width:100px;" class="btn btn-danger   fw-medium" type="submit">Login</button>
+                      <a href="#" class="text-danger ps-5 ms-5"><small></small></a>
+                    </div>
+
+                    <br>
+
+
+                  </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+  <script>
+
+
+document.addEventListener("DOMContentLoaded", function () {
+            const inputElements = document.querySelectorAll('input');
+            console.log(inputElements)
+            inputElements.forEach(function (input) {
+                input.addEventListener('focus', function () {
+                    const fieldName = input.name;
+                    const errorElement = document.querySelector(`#errors-${fieldName}`);
+                    const errorinvalid = document.querySelector(`#error-invalid`);
+                    console.log(errorElement)
+                    if (errorElement) {
+                        errorElement.innerText = '';
+                    }
+                    if (errorinvalid) {
+                      errorinvalid.innerText = '';
+                    }
+                });
+            });
+        });
+  </script>
+
+  <%-include('userfooter')-%>

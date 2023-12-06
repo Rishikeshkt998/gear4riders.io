@@ -1,0 +1,48 @@
+<%-include('admin-header')-%>
+<section>
+    <div class="container">
+
+
+        <form action="/adminauth/brands" method="post">
+            <h4 class="pt-5">Add Brands</h4>
+
+            <div class="mb-3 w-75 mt-5">
+              <label for="brandnamename" class="form-label">Brand Name</label>
+              <input type="text" class="form-control" id="brandname" name="name" >
+              <%if (errors&&errors.name){%>
+                <span class="text-danger" id="errors">
+                    <%=errors.name.msg%>
+                </span>
+                <%}%>
+                <%if (invalid){%>
+                  <span class="text-danger" id="error-invalid">
+                    <%=invalid%>
+                </span>
+                <%}%>
+            </div>
+           
+            <button type="submit" class="btn btn-success">Submit</button>
+      </form>
+    </div>
+</section>
+<script>
+           document.addEventListener("DOMContentLoaded", function () {
+            const inputElements = document.querySelectorAll('input');
+            console.log(inputElements)
+            inputElements.forEach(function (input) {
+                input.addEventListener('focus', function () {
+                    const errorElement = document.querySelector(`#errors`);
+                    const errorinvalid = document.querySelector(`#error-invalid`);
+                    console.log(errorElement)
+                    if (errorElement) {
+                        errorElement.innerText = '';
+                    }
+                    if (errorinvalid) {
+                      errorinvalid.innerText = '';
+                    }
+                });
+            });
+        });
+         
+    </script>
+<%-include('admin-footer')-%>

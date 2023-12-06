@@ -1,0 +1,83 @@
+
+
+
+<%- include('userheader') -%>
+
+<style>
+    .small-image {
+        max-width: 100px; /* Adjust as needed */
+        max-height: 100px; /* Adjust as needed */
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <h2 class="text-center mb-4">Wishlist</h2>
+
+            <% if (wishlist && wishlist !== null && wishlist.length) { %>
+                <div class="card mb-4">
+                    <div class="card-header py-3">
+                        <h5 class="mb-0">Wishlist - <%= wishlist.length %> items</h5>
+                    </div>
+                    <% wishlist.forEach((row, index) => { %>
+                        <div class="card-body mb-3 border-bottom">
+                            <!-- Single item -->
+                            <div class="row align-items-center">
+                                <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
+                                    <!-- Image -->
+                                    <div class="bg-image hover-overlay hover-zoom ripple rounded"
+                                        data-mdb-ripple-color="light">
+                                        <img src="http://localhost:3000/<%= row.productId.image[0] %>"
+                                            class="w-100 img-fluid small-image" alt="<%= row.productId.name %>" />
+                                        <a href="#!">
+                                            <div class="mask"
+                                                style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                                        </a>
+                                    </div>
+                                    <!-- Image -->
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12 col-12 mb-2 mb-lg-0">
+                                    <!-- Data -->
+                                    <p class="mb-0"><%= row.productId.name %></p>
+                                </div>
+                                <div class="col-lg-1 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
+                                    <p class="mb-0">
+                                        <i class="fa-solid "></i> <%= row.productId.categorieId.name %>
+                                    </p>
+                                </div>
+                                <div class="col-lg-1 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
+                                    <p class="mb-0">
+                                        <i class="fa-solid "></i> <%= row.productId.brandId.name %>
+                                    </p>
+                                </div>
+                                <div class="col-lg-2 col-md-2  col-sm-12 col-12 mb-2 mb-lg-0">
+                                    <p class="mb-0">
+                                        <i class="fa-solid "></i> <%=formatCurrency(row.productId.price)  %>
+                                    </p>
+                                </div>
+                                <div class="col-lg-3 col-md-5  col-sm-12 col-12 mb-2 mb-lg-0 text-lg-end">
+                                    <div class="d-flex justify-content-lg-end">
+                                        <a href="/productdetails/<%=generateSlug(row.productId.name)%>/<%=row.productId._id%>"
+                                            style="text-decoration: none; color: black;"><button class="btn btn-primary me-2"
+                                            >product details</button></a>
+                                            <a href="/userauth/removewhishlist/<%=row.productId._id%>"
+                                                style="text-decoration: none; color: black;" class="btn btn-danger me-2 text-white"
+                                                
+                                            >Remove</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Single item -->
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="alert alert-info" role="alert">
+                    Wishlist is empty!
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+<%- include('userfooter') -%>

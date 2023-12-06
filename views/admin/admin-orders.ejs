@@ -1,0 +1,85 @@
+
+
+
+        <%-include('admin-header')-%>
+            <div class="row mb-3">
+                <div class="col-lg-7 col-md-7 mt-5 ms-5 ps-4">
+                    <h4>View Orders</h4>
+                </div>
+            </div>
+
+
+            <div class="col py-3">
+                <div class="container">
+
+                    <% if (ordersData.length> 0) { %>
+                        <table class="table mt-5" id="myTable">
+                            <thead>
+                                <tr class="table">
+                                    <th scope="col">Sr No.</th>
+                                    <th scope="col">Order ID</th>
+                                    <th scope="col">Customer Id</th>
+                                    <th scope="col" >Ordered Date</th>
+                                    <th scope="col">Total Amount</th>
+                                    <th scope="col">Payment</th>
+                                    <th scope="col">Order Status</th>
+                                    <th scope="col">Actions</th>
+
+
+
+
+
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                <% for (let i=0; i < ordersData.length; i++) { %>
+                                    <tr>
+                                        <td>
+                                            <%= i+1 %>
+                                        </td>
+                                        <td>
+                                            <%= ordersData[i]._id %>
+                                        </td>
+                                        <td>
+                                            <%= ordersData[i].address.address_id %>
+                                        </td>
+                                        <td >
+                                            <%= ordersData[i].date.toDateString() %>
+                                        </td>
+                                        <td>$<%=ordersData[i].totalAmount %>
+                                        </td>
+                                        <td>
+                                            <%= ordersData[i].paymentMethod %>
+                                        </td>
+                                        <td>
+                                            <%= ordersData[i].status %>
+                                        </td>
+                                        <td >
+                                        <a href="/adminauth/adminorderdetails/<%= ordersData[i]._id %>" type="button" class="btn btn-outline-success ms-4">view</a>
+                                        </td>
+
+                                    </tr>
+                                    <% } %>
+                            </tbody>
+                        </table>
+                        <% } else { %>
+                            <h1 class="text-center text-secondary mt-5">No Brand found in the database</h1>
+
+
+                            <% } %>
+                </div>
+
+
+
+            </div>
+            <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+            <script>
+                // let table = new DataTable('#myTable');
+                $(document).ready(function () {
+                    $('#myTable').DataTable();
+                });
+            </script>
+            <%-include('admin-footer')-%>
+
+            

@@ -1,0 +1,157 @@
+<%-include('admin-header')-%>
+    <section>
+        <div class="container">
+
+            <h4 class="pt-5">Add Product</h4>
+
+            <form action="/adminauth/products" method="post" enctype="multipart/form-data">
+                <div class="mb-3 w-75 pt-5 mt-5">
+                    <label for="name" class="form-label">Productname</label>
+                    <input type="text" class="form-control" name="name" id="name" aria-describedby="emailHelp">
+                    <%if (errors&&errors.name){%>
+                        <span class="text-danger" id="errors-name">
+                            <%=errors.name.msg%>
+                        </span>
+                        <%}%>
+
+                </div>
+                <div class="mb-3 w-75">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="text" class="form-control" name="price" id="productprice">
+                    <%if (errors&&errors.price){%>
+                        <span class="text-danger" id="errors-price">
+                            <%=errors.price.msg%>
+                        </span>
+                        <%}%>
+
+                </div>
+                <div class="mb-3 w-75 ">
+                    <label for="productimage" class="form-label">Product image</label>
+                    <input class="form-control" type="file" multiple name="image" id="productimage">
+                    <%if (errors&&errors.image){%>
+                        <span class="text-danger" id="errors-image">
+                            <%=errors.image.msg%>
+                        </span>
+                        <%}%>
+
+
+                </div>
+                <div class="mb-3 w-75">
+                    <label for="">Select Categorie</label>
+                    <select name="categorieId" id="categorieId" class="form-control">
+                        <option value="">choose...</option>
+                        <% for( let categorie of categorylist) { %>
+                            <option value="<%= categorie._id %>">
+                                <%= categorie.name %>
+                            </option>
+                            <% } %>
+                    </select>
+                    <%if (errors&&errors.categorieId){%>
+                        <span class="text-danger"id="errors-categorieId">
+                            <%=errors.categorieId.msg%>
+                        </span>
+                        <%}%>
+                </div>
+                <div class="mb-3 w-75">
+                    <label for="">Select Brand</label>
+                    <select name="brandId" id="brandId" class="form-control">
+                        <option value="">choose...</option>
+                        <% for( let brand of brandlist ) { %>
+                            <option value="<%= brand._id %>">
+                                <%= brand.name %>
+                            </option>
+                            <% } %>
+                    </select>
+                    <%if (errors&&errors.brandId){%>
+                        <span class="text-danger"id="errors-brandId">
+                            <%=errors.brandId.msg%>
+                        </span>
+                        <%}%>
+                </div>
+                <div class="mb-3 w-75">
+                    <label for="stock" class="form-label">Stock</label>
+                    <input type="text" class="form-control" name="countInStock" id="stock">
+                    <%if (errors&&errors.countInStock){%>
+                        <span class="text-danger"id="errors-countInStock">
+                            <%=errors.countInStock.msg%>
+                        </span>
+                        <%}%>
+
+
+                </div>
+                <div class="mb-3 w-75">
+                    <label for="discount" class="form-label">Discount</label>
+                    <input type="text" class="form-control" name="discount" id="discount">
+
+
+                </div>
+                <div class="mb-3 w-75">
+                    <label for="Brand" class="form-label">Description</label>
+                    <textarea style="width:822px;height: 150px;" id="brand" name="description" rows="5"
+                        cols="108"></textarea>
+                    <%if (errors&&errors.description){%>
+                        <span class="text-danger" id="errors-description">
+                            <%=errors.description.msg%>
+                        </span>
+                        <%}%>
+
+
+
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </section>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputElements = document.querySelectorAll('input');
+            console.log(inputElements)
+            inputElements.forEach(function (input) {
+                input.addEventListener('focus', function () {
+                    const fieldName = input.name;
+                    const errorElement = document.querySelector(`#errors-${fieldName}`);
+                    console.log(errorElement)
+                    if (errorElement) {
+                        errorElement.innerText = '';
+                    }
+                });
+            });
+        });
+          document.addEventListener("DOMContentLoaded", function () {
+            const categorySelect = document.getElementById('categorieId');
+            const errorElement = document.getElementById('errors-categorieId');
+
+            categorySelect.addEventListener('change', function () {
+              if (errorElement) {
+                errorElement.innerText = '';
+              }
+            });
+          });
+          document.addEventListener("DOMContentLoaded", function () {
+            const categorySelect = document.getElementById('brandId');
+            const errorElement = document.getElementById('errors-brandId');
+
+            categorySelect.addEventListener('change', function () {
+              if (errorElement) {
+                errorElement.innerText = '';
+              }
+            });
+          });
+          
+
+
+          function validateStock() {
+            const stockInput = document.getElementById('stock');
+            const stockError = document.getElementById('stockError');
+            if (parseFloat(stockInput.value) < 0) {
+              stockError.innerText = 'Stock cannot be negative.';
+              stockInput.setCustomValidity('Stock cannot be negative.');
+
+            } else {
+              stockError.innerText = '';
+              stockInput.setCustomValidity('');
+            }
+          }
+    </script>
+    <%-include('admin-footer')-%>

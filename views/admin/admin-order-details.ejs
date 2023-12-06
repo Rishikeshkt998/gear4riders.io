@@ -1,0 +1,218 @@
+<%-include('admin-header')-%>
+
+    <style>
+        .small-image {
+            max-width: 100px;
+            /* Adjust as needed */
+            max-height: 100px;
+            /* Adjust as needed */
+        }
+
+        .wishlist-card {
+            border-radius: 10px;
+            box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .outer-container {
+            border: 2px solid #ccc;
+            /* Adjust border styles and color as needed */
+            border-radius: 9px;
+            /* Adjust border radius as needed */
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <h2 class="text-center mb-4">Order Details</h2>
+                <div class="outer-container">
+
+                    <div class="wishlist-card m-4">
+                        <!-- Single item -->
+                        <div class="row align-items-center">
+                            <div class="col-lg-3 col-md-3 col-sm-12 col-12 mb-2 mb-lg-0">
+                                <!-- Image -->
+                                <h2>Delivery Address</h2>
+                                <p>
+                                    <%=data.address.name%>
+                                </p>
+                                <p>
+                                    <%=data.address.fulladdress%>,<%= data.address.pincode %>
+                                </p>
+                                <p>
+                                    <%= data.address.district %>,<%=data.address.state %>
+                                </p>
+                                <p>Phone no:<%=data.address.phone %>
+                                </p>
+                                <!-- Image -->
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12 col-12 mb-2 mb-lg-0">
+                                <!-- Data -->
+                                <h2>Order Status</h2>
+                                <p id="orderStatus">Order : <%=data.status%>
+                                </p>
+                                <p>Order Date : <%=data.date.toLocaleString()%>
+                                </p>
+                                <p>Payment Method : <%= data. paymentMethod%>
+                                </p>
+                                <p id="paymentStatus">Payment status : <%= data.paymentstatus%>
+                                </p>
+
+                            </div>
+
+                            <div class="col-lg-3 col-md-3 col-sm-12 col-12 mb-2 mb-lg-0">
+                                <div class=" bg-light p-2 card">
+                                    <h4 class="mb-3 text-center">Order Status</h4>
+                                    <div class="d-flex text-center">
+                                        <select name="" id="status" class="ms-5">
+                                            <option value="">Choose</option>
+                                            <option value="PENDING">PENDING</option>
+                                            <option value="PLACED">PLACED</option>
+                                            <option value="REJECTED">REJECTED</option>
+                                            <option value="SHIPPED">SHIPPED</option>
+                                            <option value="DELIVERED">DELIVERED</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex ps-2">
+                                        <button onclick="updatestatus('<%= data._id%>')"
+                                            class="btn btn-outline-success ms-5  mt-4">Change</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12 col-12 mb-2 mb-lg-0">
+                                <div class=" bg-light p-2 card">
+                                    <h4 class="mb-3 text-center">Payment Status</h4>
+                                    <div class="d-flex text-center">
+                                        <select name="" id="paymentstatus" class="ms-5">
+                                            <option value="">Choose</option>
+                                            <option value="PENDING">PENDING</option>
+                                            <option value="COMPLETED">COMPLETED</option>
+                                            <option value="REFUND">REFUND</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="d-flex ps-2">
+                                        <button onclick="updatePaymentStatus('<%= data._id%>','<%= data.totalAmount %>','<%= data.userId %>')" type="button"
+                                            class="btn btn-outline-success ms-5  mt-4">Change</button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                        <!-- Single item -->
+                    </div>
+
+                    <% data.products.forEach(function(product) { %>
+                        <div class="wishlist-card m-4">
+                            <!-- Single item -->
+
+                            <div class="row align-items-center">
+                                <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
+                                    <!-- Image -->
+                                    <div class="bg-image hover-overlay hover-zoom ripple rounded"
+                                        data-mdb-ripple-color="light">
+                                        <img src="http://localhost:3000/<%=product.productimage%>"
+                                            class="w-100 img-fluid small-image" alt="" />
+                                        <a href="#!">
+                                            <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                                        </a>
+                                    </div>
+                                    <!-- Image -->
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-12 mb-2 mb-lg-0 ps-5">
+                                    <!-- Data -->
+                                    <p class="mb-0">
+                                        <%= product.productname %>
+                                    </p>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
+                                    <p class="mb-0">
+                                        <i class="fa-solid "></i>
+                                        <%= product.quantity %>
+                                    </p>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
+                                    <p class="mb-0">
+                                        <i class="fa-solid "></i>
+                                        <%= product.productprice %>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Single item -->
+                        </div>
+                        <% }); %>
+                            <div class="wishlist-card m-4">
+                                <!-- Single item -->
+
+                                <div class="row align-items-center">
+                                    <div
+                                        class="col-lg-12 col-md-12 col-sm-12 col-12 mb-2 mb-lg-0 d-flex justify-content-end">
+                                        <p class="mb-0">
+                                            <i class="fa-solid "></i> Discount applied : <%= data.discount %>
+                                    </div>
+
+                                    <div
+                                        class="col-lg-12 col-md-12 col-sm-12 col-12 mb-2 mb-lg-0 d-flex justify-content-end">
+                                        <p class="mb-0">
+                                            <i class="fa-solid "></i> Total Order Price(including delivery charges) :
+                                            <%= data.totalAmount %>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Single item -->
+                            </div>
+                </div>
+
+
+
+                <!-- <div class="alert alert-info" role="alert">
+                    Order is empty!
+                </div> -->
+
+            </div>
+        </div>
+    </div>
+    <script>
+            async function updatestatus(id) {
+
+                const status = document.getElementById('status').value
+                const response = await fetch(`/adminauth/changeStatus/${id}/${status}`, { method: 'get' })
+                const resBody = await response.json()
+                if (resBody.success) {
+                    console.log(resBody.status)
+                    const orderStatusElement = document.getElementById('orderStatus');
+                    if (orderStatusElement) {
+                        orderStatusElement.textContent = `Order : ${resBody.status}`;
+                    }
+                } else {
+                    console.log(resBody.message)
+                    alert(resBody.message)
+                }
+            }
+        
+            async function updatePaymentStatus(id,totalAmount,userId) {
+
+                const paymentstatus = document.getElementById('paymentstatus').value
+                const response = await fetch(`/adminauth/changePaymentStatus/${id}/${totalAmount}/${userId}/${paymentstatus}`, { method: 'get' })
+                const resBody = await response.json()
+                if (resBody.success) {
+                    console.log(resBody.updated.paymentstatus)
+                    const orderElement = document.getElementById('paymentStatus');
+                    if (orderElement) {
+                        orderElement.textContent = `Payment status : ${resBody.updated.paymentstatus}`;
+                    }
+                } else {
+                    console.log(resBody.message)
+                    alert(resBody.message)
+                }
+            }
+    </script>
+
+    <%-include('admin-footer')-%>

@@ -1,0 +1,23 @@
+<%-include('admin-header')-%>
+<section>
+    <div class="container">
+
+        
+      
+        <form action="/adminauth/updatebrand/<%= data._id %>" method="post">
+            <h4 class="pt-5">Edit Brand</h4>
+            <%if (errors){%>
+              <div class="alert alert-danger">
+                <%=errors %>
+              </div>
+              <%}%>
+            <div class="mb-3 w-75  mt-5">
+              <label for="brandname" class="form-label">Brand name</label>
+              <input type="text" class="form-control" id="brandname" name="name" aria-describedby="emailHelp" value="<%= data.name %>">
+            </div>
+           
+            <button type="submit" class="btn btn-success">Submit</button>
+          </form>
+    </div>
+</section>
+<%-include('admin-footer')-%>

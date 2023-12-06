@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Your Page Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Decrease the width of the dropdown menu (fontos) */
+        .dropdown-menu-start {
+            width: 10px; /* Adjust the width as needed */
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container-fluid">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <a class="navbar-brand" href="#" style="font-size:30px;font-weight:bold;"><span style="color:red;">Gear</span>4Riders</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <form class="form-inline my-2 my-lg-0 mx-auto">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                        <input class="form-control form-control-sm ml-3" style="width: 200px; background-color: rgb(235, 235, 235);"
+                            type="text" placeholder="Search the entire store here" aria-label="Search">
+                    </form>
+                    
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Categories
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                                <a class="dropdown-item" href="#">Helmet</a>
+                                <a class="dropdown-item" href="#">Jacket</a>
+                                <a class="dropdown-item" href="#">Gloves</a>
+                                <a class="dropdown-item" href="#">Boots</a>
+                                <a class="dropdown-item" href="#">Riding Pants</a>
+                                <a class="dropdown-item" href="#">Racing suits</a>
+                                <a class="dropdown-item" href="#">Rain Gear</a>
+                                <a class="dropdown-item" href="#">Touring Gear</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="brandDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Brand
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="brandDropdown">
+                                <a class="dropdown-item" href="#">Royal Enfield</a>
+                                <a class="dropdown-item" href="#">Axor</a>
+                                <a class="dropdown-item" href="#">SMK</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About</a>
+                        </li>
+                        <% if (!locals.NoUser) { %>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/signup">Signup</a>
+                        </li>
+                        <% } %>
+                          
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="/userauth/wishlist">
+                                <i class="far fa-heart"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/userauth/carts" style="color: black;">
+                                <i class="fas fa-shopping-cart"></i>
+                            </a>
+                            <span class="badge bg-success" id="cart-count"></span>
+                        </li>
+                        <% if (locals.NoUser) { %>
+                        <li class="nav-item dropdown"style="margin-left:;">
+                            <a class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-regular fa-user"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="/userauth/userprofilepage">Account</a></li>
+                                <% if (locals.NoUser) { %>
+                                    <li><a class="dropdown-item"
+                                            onclick="ShareLink()">Share</a></li>
+                                    <% } %>
+                                <li><a class="dropdown-item" href="/userauth/temp">Wallet</a></li>
+                                <li><a class="dropdown-item" href="#">Wish List</a></li>
+                                <li><a class="dropdown-item" href="#">contact</a></li>
+                                <li><a class="dropdown-item" href="/userauth/logout" onclick="return confirm('are you sure ?')">logout</a></li>
+                            </ul>
+                        </li>
+                        <% } %>
+                    
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+
+
+    

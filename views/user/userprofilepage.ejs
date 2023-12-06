@@ -1,0 +1,190 @@
+<%-include('userheader')-%>
+    <section style="background-color: #eee;">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                                alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                            <h5 class="my-3">
+                                <%= UserData.name%>
+                            </h5>
+                            <p class="text-muted mb-1">
+                                <%= UserData.email%>
+                            </p>
+
+                            <p class="text-muted mb-1">
+                                <%= UserData.phone%>
+                            </p>
+
+                        </div>
+                    </div>
+                    <div class="card mb-4 mb-lg-0">
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush rounded-3">
+                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                    <a href="/userauth/getaddressbook" style="color: black;">Address Book</a>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                    <a href="/user/orderDetails" style="color: black;">My order</a>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                    <a href="" style="color: black;">Change Password</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Full Name</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0">
+                                        <%= UserData.name%>
+                                    </p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row" id="emailData">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Email</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p class="text-muted mb-0">
+                                        <%= UserData.email %>
+                                    </p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <!-- <a class="float-end " style="text-decoration: none;" id="edit-email"
+                                        onclick="showEmail()">Edit</a> -->
+                                        <button class="border-0 bg-light"
+                                        onclick="editEmail('<%= JSON.stringify({email:UserData.email}) %>')">EDIT</button>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Mobile</p>
+                                </div>
+                                <div class="col-sm-9">
+
+                                    <p class="text-muted mb-0">
+                                        <%= UserData.phone%>
+                                    </p>
+
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Address</p>
+                                </div>
+                                <div class="col-sm-9">
+
+                                    <p class="text-muted mb-0">
+                                        <%= UserData.address%>
+                                    </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="float-end me-3" style="text-decoration: none;" id="edit-button"
+                        onclick="showbutton()">EDIT</button>
+                    <div class="row" id="form1">
+                        
+                       
+                    </div>
+
+                    <div class="row" id="form1">
+                        <form action="/userauth/updateuserprofile/<%=UserData._id%>" method="post" id="edit-form"
+                            style="display: none;">
+                            <div class="form-group ">
+                                <label for="recipient-name" class="col-form-label">Name:</label>
+                                <input type="text" name="name" class="form-control" id="recipient-name"
+                                    value="<%= UserData.name %>">
+                            </div>
+                            <div class="form-group ">
+                                <label for="recipient-name" class="col-form-label">Address:</label>
+                                <input type="text" name="address" class="form-control" id="recipient-name"
+                                    value="<%= UserData.address %>">
+                            </div>
+
+                            <div class="form-group ">
+                                <label for="recipient-name" class="col-form-label">Mobile Number:</label>
+                                <input type="number" name="phone" class="form-control" id="recipient-name"
+                                    value="<%= UserData.phone %>">
+                            </div>
+                            <button type="submit" class="btn btn-primary">save address</button>
+
+                    </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+        </div>
+    </section>
+    <script>
+        function showbutton() {
+            var form = document.getElementById("edit-form");
+            var button = document.getElementById("edit-button");
+
+            if (form.style.display === "none" || form.style.display === "") {
+                form.style.display = "block";
+            } else {
+                form.style.display = "none";
+            }
+        }
+
+
+        
+
+        async function editEmail(data) {
+            const emailData = JSON.parse(data)
+            console.log(`Your new Email is ${emailData.email}`)
+            document.getElementById('emailData').innerHTML = `
+                                        <div class="col-sm-9 mb-3 col-12" id="verify">
+                                            <p class="mb-0">Name</p>
+                                            <div class="form-outline">
+                                                <input type="text" id="email" value="${emailData.email}" placeholder="Type here"
+                                                    class="form-control p-3" />
+                                            </div>
+                                            <button onclick="updateEmail()" class="btn btn-primary px-3 float-end border-0"><i
+                                            class="fa fa-address-card mr-1"></i> save changes</button>
+                                        </div>`
+        }
+        async function updateEmail() {
+            try {
+                const email = document.getElementById('email').value
+                console.log(`Your new Email is ${email}`)
+                const response = await fetch(`/userauth/changeEmail/${email}`, { method: 'get' })
+                const resBody = await response.json()
+                if (resBody.success) {
+                    console.log(resBody.message)
+                    document.getElementById('emailData').innerHTML=`
+                    <a href="/userauth/verifyemailotp">
+                        <div class="col-md-12 btn btn-primary">
+                        <h5>Verify Otp</h5>
+                        </div>
+                    </a>`
+                } else {
+                    console.log(resBody.message)
+                    console.log('Iam here')
+                }
+            } catch (error) {
+                console.log(error)
+                console.log(resBody.message)
+            }
+        }
+
+    </script>
+    <%-include('userfooter')-%>

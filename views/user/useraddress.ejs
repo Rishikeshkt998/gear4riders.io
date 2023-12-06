@@ -1,0 +1,130 @@
+
+<%- include('userheader') -%>
+
+<div class="container mt-4">
+    <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
+        <h1 class="h2">Address Book</h1>
+    </header>
+    <% if (addressList && addressList.length) { %>
+        <% for (let i = 0; i < addressList.length; i++) { %>
+        <div class="col-md-12 col-lg-12 mb-4 " >
+            <div class="card form-group p-2"  id="address<%=addressList[i]._id %>" style="border-radius: 10px;box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);">
+                <div>
+                    <b>
+                        <%= addressList[i].name %> <%= addressList[i].phone %>
+                    </b>
+                    
+                </div>
+                <p class="mt-3">
+                    <%= addressList[i].fulladdress %>,<%= addressList[i].landmark%>,
+                    <%= addressList[i].pincode %>, <%= addressList[i].alternatephone %>,
+                    <%= addressList[i].district %>,
+                </p>
+                
+                <div class="d-flex justify-content-between mb-4">
+                    <a href="/userauth/removeaddressbook/<%=addressList[i]._id%>">
+                        <button class="btn btn-outline-danger">
+                            <i class="fa fa-trash mr-1"></i> Remove
+                        </button>
+                    </a>
+                    <button class="btn btn-outline-secondary" style="text-decoration: none;" onclick="showEditForm('<%= i %>')">EDIT</button>
+                </div>
+
+                <div class="row" id="edit-form<%= i %>" style="display: none;">
+                <form action="/userauth/updateaddressbook/<%=addressList[i]._id%>" method="post">
+                    <!-- <form action="/userauth/updateaddress/%=addressList[i]._id%>" method="post"
+                        id="edit-form" style="display: none;"> -->
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" name="name" id="name"
+                                value="<%=addressList[i].name%>">
+                        </div>
+                        <div class="form-group">
+                            <label for="fulladdress">Address</label>
+                            <input type="text" class="form-control" name="fulladdress" id="fulladdress"
+                                value="<%=addressList[i].fulladdress%>">
+                        </div>
+                        <div class="form-group">
+                            <label for="pincode">Pincode</label>
+                            <input type="text" class="form-control" name="pincode" id="pincode"
+                                value="<%=addressList[i].pincode%>">
+                        </div>
+                        <div class="form-group">
+                            <label for="landmark">Landmark</label>
+                            <input type="text" class="form-control" name="landmark" id="landmark"
+                                value="<%=addressList[i].landmark%>">
+                        </div>
+                        <div class="form-group">
+                            <label for="district">District</label>
+                            <input type="text" class="form-control" name="district" id="district"
+                                value="<%=addressList[i].district%>">
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" class="form-control" name="state" id="state"
+                                value="<%=addressList[i].state%>">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="text" class="form-control" name="phone" id="phone"
+                                value="<%=addressList[i].phone%>">
+                        </div>
+                        <div class="form-group">
+                            <label for="alternatephone">Alternate Phone Number</label>
+                            <input type="text" class="form-control" name="alternatephone" id="alternatephone"
+                                value="<%=addressList[i].alternatephone%>">
+                        </div>
+                        <button type="submit" class="btn btn-primary">save address</button>
+                    </form>
+                </div>
+        </div>
+        <% } %>
+        <% } else { %>
+        <div class="col-md-12 form-group p-5 alert-warning">
+            <b>Address list is empty</b>
+        </div>
+        <% } %>
+        
+        <div class="mb-4 " style="border-radius: 10px;box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);">
+            <a   style="text-decoration: none;color: #000;" href="/userauth/addaddress">
+                <div style="color:#000"class="card col-md-12 form-group d-flex p-2 btn btn-outline-primary" id="buttonclick"
+                    data-bs-toggle="modal"style="background-color: aliceblue;" data-bs-target="#editAddressModal">+ Add new Address</div>
+            </a>
+           
+        </div>
+    </div>
+        
+        
+
+                    
+    
+</div>
+
+<script>
+    function showform() {
+            var form = document.getElementById("checkout-form");
+            var button = document.getElementById("buttonclick");
+
+            if (form.style.display === "none" || form.style.display === "") {
+                form.style.display = "block";
+                button.innerHTML = "- Cancel";
+            } else {
+                form.style.display = "none";
+                button.innerHTML = "+ Add new Address";
+            }
+        }
+
+
+
+        
+        function showEditForm(index) {
+        const editForm = document.getElementById(`edit-form${index}`);
+        if (editForm.style.display === 'none') {
+            editForm.style.display = 'block';
+        } else {
+            editForm.style.display = 'none';
+        }
+}
+</script>
+
+<%- include('userfooter') -%>

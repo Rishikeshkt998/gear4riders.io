@@ -1,0 +1,169 @@
+<%-include('userheader')-%>
+<style>
+    .thumbnail-item {
+        border: 2px solid #ccc;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
+    .thumbnail-item.active {
+        border-color: #007bff;
+    }
+
+    .carousel-item {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .zoom_img {
+        width: 100%;
+        transition: transform 0.3s ease;
+    }
+</style>
+</head>
+<body>
+<div class="container pb-5">
+    
+    <div class="row">
+        <div class="col-md-6 ">
+            <div id="productCarousel" class="carousel slide mt-5 pt-2" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <center><img id="productimage" src="http://localhost:3000/<%= products.image[0] %>"
+                            class="d-block w-75 zoom_img" alt="Product Image 1"></center>
+                    </div>
+                    <% for( let i = 1; i < products.image.length; i++ ) { %>
+                        <div class="carousel-item">
+                            <center><img  src="http://localhost:3000/<%= products.image[i] %>"
+                                class="d-block w-75 zoom_img" alt="Product Image 1"></center>
+                        </div>
+                    <% } %>
+                    
+                    <!-- Add more carousel items for additional images -->
+                </div>
+                <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#productCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+            <div class="row mt-3 center mb-3">
+                <div class="col">
+                    <img style="height: 80px; width: 80px;"
+                        src="http://localhost:3000/<%= products.image[0] %>" class="thumbnail-item active"
+                        alt="Thumbnail 1">
+                    <% for( let i = 1; i < products.image.length; i++ ) { %>
+                        <img style="height: 80px; width: 80px;"
+                        src="http://localhost:3000/<%= products.image[i] %>" class="thumbnail-item"
+                        alt="Thumbnail 1">
+                    <% } %>
+                   
+                    
+                    <!-- Add more thumbnail items for additional images -->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mt-5">
+            <h2><%= products.name %></h2>
+            <p><%= products.description %></p>
+            <% if (products.discount!==0) { %>
+                <p ><strong>Discount: <%= products.discount +' %off' %></strong>
+                </p>
+                <p><strong>Price:</strong><del class="text-danger">
+                            <%= formatCurrency(products.price) %>
+                        </del>
+                        <p class="fs-4 text-success">
+                            <%= formatCurrency(Math.round(products.price - (products.price*products.discount/100))) %>
+                        </p>
+                    </p>
+                <% }else{ %>
+                    <p><strong>Price:</i>
+                            <%= formatCurrency(products.price) %>
+                        </strong></p>
+                    <% } %>
+            <p><strong>Availability: In Stock</strong></p>
+            <p><strong>Stock:</strong><b> <%= products.countInStock %> Nos</b></p>
+            <p><strong>Category:<%=categoryname%></strong></p>
+            <p><strong>Brand: <%=brandname%></strong></p>
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" class="form-control" id="quantity" value="1">
+            </div>
+            
+            <div class="d-flex mt-4">
+                <form  id="addToCartForm"  action="/userauth/add/<%=products._id%>/<%= products.image[0] %>/<%=products.name%>/<%= products.price %>/<%= products.discount %>/<%= productSlug %>" method="post">
+                    
+                    <input class="btn btn-warning p-3 fw-bold" type="submit" value="Add to Cart">
+                </form>
+                
+                <button class="btn btn-success p-3 fw-bold ms-3"onclick="buyProduct('<%= JSON.stringify({id:products._id,name:products.name,image:products.image[0],price:products.price,discount:products.discount,quantity:products.quantity}) %>')">Buy Now</button></a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.thumbnail-item').click(function () {
+            // Remove the "active" class from all thumbnail items
+            $('.thumbnail-item').removeClass('active');
+
+            // Add the "active" class to the clicked thumbnail
+            $(this).addClass('active');
+
+            // Get the index of the clicked thumbnail
+            let index = $(this).index();
+
+            // Activate the corresponding carousel item
+            $('#productCarousel').carousel(index);
+        });
+
+        $(".carousel-item").mousemove(function (e) {
+            var img = $(".zoom_img");
+            var offset = $(this).offset();
+            var x = e.pageX - offset.left;
+            var y = e.pageY - offset.top;
+            var mouseX = (x / $(this).width()) * 100;
+            var mouseY = (y / $(this).height()) * 100;
+
+            img.css({
+                "transform-origin": mouseX + "% " + mouseY + "%",
+                "transform": "scale(3)" // Adjust the scale as needed
+            });
+        });
+
+        $(".carousel-item").mouseleave(function () {
+            $(".zoom_img").css({
+                "transform-origin": "center",
+                "transform": "scale(1)"
+            });
+        });
+    });
+
+
+
+    async function buyProduct(value) {
+    const product = JSON.parse(value);
+    const response = await fetch(`/userauth/buynow/${product.id}/${product.image}/${product.name}/${product.price}/${product.discount}/${product.quantity}`, { method: 'get' })
+    const resBody = await response.json()
+    if (resBody.success) {
+        location.href = '/userauth/checkoutpage'
+    } else {
+        alert(`error in buynow`);
+    }
+}
+
+
+
+
+    
+</script>
+
+<%-include('userfooter')-%>
+
+
+  

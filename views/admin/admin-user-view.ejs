@@ -1,0 +1,84 @@
+<%-include('admin-header')-%>
+  <section>
+    <div class="row mb-3">
+      <div class="col-lg-7 col-md-7 mt-5 ms-5 ps-4">
+        <h4>View Users</h4>
+      </div>
+    </div>
+    <div class="col py-3">
+      <div class="mt-4 ms-4">
+      </div>
+      <div class="container">
+
+        <% if (data!='' ){ %>
+          <table class="table mt-5" id="myTable">
+            <thead>
+              <tr class="table">
+                <th scope="col">No</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Address</th>
+                <th scope="col">Phone</th>
+                <th scope="col">created_at</th>
+                <th scope="col">Action</th>
+
+
+
+
+              </tr>
+
+            </thead>
+            <tbody>
+              <% data.forEach((value,index)=>{ %>
+                <tr>
+                  <td>
+                    <%= index+1 %>
+                  </td>
+                  <td>
+                    <%= value.name %>
+                  </td>
+                  <td>
+                    <%= value.email%>
+                  </td>
+                  <td>
+                    <%= value.address%>
+                  </td>
+                  <td>
+                    <%= value.phone%>
+                  </td>
+                  <td>
+                    <%= value.created_at%>
+                  </td>
+                  <td>
+                    <% if (value.isDeleted){%>
+                      <a class="btn btn-success" onclick="return confirm('you want to unblock this user?')"
+                        href="/adminauth/unbanuser/<%= value._id %>">UnBlock</a>
+                      <%}else{%>
+                        <a class="btn btn-danger" onclick="return confirm('you want to block this user?')"
+                          href="/adminauth/banuser/<%= value._id %>">Block</a>
+                  </td>
+                  <%}%>
+
+                </tr>
+                <% }) %>
+            </tbody>
+          </table>
+          <% } else { %>
+            <h1 class="text-center text-secondary mt-5">No users found in the database</h1>
+
+
+            <% } %>
+      </div>
+
+
+
+    </div>
+  </section>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script>
+    // let table = new DataTable('#myTable');
+    $(document).ready(function () {
+      $('#myTable').DataTable();
+    });
+  </script>
+  <%-include('admin-footer')-%>

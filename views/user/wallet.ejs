@@ -1,0 +1,175 @@
+<%- include('userheader') -%>
+    <div class="container-fluid" style="background-color: #e1e0e0;">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-12 col-md-12 mb-5">
+                <div class="container pt-4">
+                    <h1 class="text-center mb-4">Your Wallet</h1>
+
+                    <div class="row">
+                        <div class="col-md-6 d-flex">
+                            <div class="bg-light pt-5 text-center flex-fill">
+                                <h5 class="mb-3">Current Balance</h5>
+                                <h1 class="balance ">Rs. <%= formatCurrency(balance) %></h1>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 d-flex">
+                            <div class="bg-light p-3 flex-fill">
+                                <h3 class="mb-4">Add Funds</h3>
+                                <div class="mb-3">
+                                    <input type="number" class="form-control" id="amount" name="amount"
+                                        placeholder="Enter amount">
+                                </div>
+                                <button type="button" class="btn btn-primary btn-lg btn-block"
+                                    onclick="addToWallet()">Add Funds</button>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-12 mt-3">
+                            <div class="bg-light p-3">
+                                <h5 class="mb-4">Transaction History</h5>
+                                <ul class="list-group transaction-history" id="transactions">
+                                    <% if (wallet.length) { %>
+                                            <% wallet[0].wallet.forEach((row,index)=> { %>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <% if (row.type==='credited' ) { %>
+                                                            <i
+                                                                class="fas fa-arrow-circle-down text-danger me-2"></i>
+                                                            <span class="text-danger">Payment received -<%=
+                                                                    formatCurrency(row.amount) %></span>
+                                                            <% }else{ %>
+                                                                <i
+                                                                    class="fas fa-arrow-circle-up text-success me-2"></i>
+                                                                <span class="text-success">Payment received -
+                                                                    <%= formatCurrency(row.amount) %></span>
+                                                                <% } %>
+
+                                                                    <p class="transaction-desc">
+                                                                        <%= row.description %>
+                                                                    </p>
+                                                    </div>
+                                                    <span class="transaction-time">
+                                                        <%= row.time.toLocaleDateString() %> - <%=
+                                                                row.time.toLocaleTimeString([], {
+                                                                hour: '2-digit' , minute: '2-digit' }); %>
+                                                    </span>
+                                                </li>
+                                                <% }) %>
+
+                                                    <% }else{ %>
+                                                        <h3>No transactions</h3>
+                                                        <% } %>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        async function addToWallet() {
+            const amount = document.getElementById('amount').value;
+
+            try {
+                const response = await fetch('/userauth/addtowallet', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ amount }),
+                });
+
+                const resBody = await response.json();
+
+                if (resBody.success) {
+                    
+                    const orders = resBody.order
+                    
+                    razorPayPayment(orders)
+                    
+
+                   
+                
+            } else {
+                alert(resBody.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+
+
+
+        function razorPayPayment(order) {
+
+            var options = {
+                "key": "rzp_test_ru8DhyGiqGowUh", // Enter the Key ID generated from the Dashboard
+                "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "currency": "INR",
+                "name": "Acme Corp",
+                "description": "Test Transaction",
+                "image": "https://example.com/your_logo",
+                "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                "handler": function (response) {
+                    // alert(response.razorpay_payment_id);
+                    // alert(response.razorpay_order_id);
+                    // alert(response.razorpay_signature)
+                    verifyPayment(response, order)
+                },
+                "error": function (error) {
+                    console.error("Razorpay Payment Error:", error);
+                    window.location.href = `/userauth/paymentfail`;
+                },
+                "prefill": {
+                    "name": "Gaurav Kumar",
+                    "email": "gaurav.kumar@example.com",
+                    "contact": "9000090000"
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            console.log(options)
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+
+
+        async function verifyPayment(payment, order) {
+            try {
+                const response = await fetch('/userauth/verifywalletpayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ payment, order }),
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    const orderId = result.orderId
+                    document.querySelector('.balance').innerHTML = `Rs. ${result.walletamount.balance}`;
+                    document.getElementById('amount').value = '';
+                } else {
+                    // Handle the case where the request was not successful (e.g., server error)
+                    console.error('Request failed:', response.status);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        
+
+}
+
+    </script>
+
+    <%- include('userfooter') -%>

@@ -1,0 +1,88 @@
+<%-include('admin-header')-%>
+  <section>
+    <div class="container">
+
+        
+      <form action="/adminauth/couponpost" method="post" id="couponForm">
+            <h4 class="pt-5">Add Coupon</h4>
+            <!-- %if (errors){%>
+              <div class="alert alert-danger">
+                %=errors %>
+              </div>
+              %}%>
+              %if (invalid){%>
+                <div class="alert alert-danger">
+                  %=invalid %>
+                </div>
+              %}%> -->
+            <div class="mb-3 w-75 ">
+              <label for="couponCode" class="form-label">Coupon name</label>
+              <input type="text" class="form-control" id="couponCode" name="couponCode" placeholder="Enter coupon code">
+              <%if (errors&&errors.couponCode){%>
+                <span class="text-danger"id="errors-couponCode">
+                    <%=errors.couponCode.msg%>
+                </span>
+                <%}%>
+            </div>
+            <div class="mb-3 w-75">
+                <label for="amount" class="form-label">Amount</label>
+                <input type="text" class="form-control" id="amount" name="amount" placeholder="Enter coupon code">
+                <%if (errors&&errors.amount){%>
+                  <span class="text-danger"id="errors-amount">
+                      <%=errors.amount.msg%>
+                  </span>
+                  <%}%>
+              </div>
+            <div class="mb-3 w-25 ">
+                <label for="couponDate" class="form-label">Date</label>
+                <input type="text" id="couponDate" class="form-control" name="couponDate" placeholder="date">
+              
+              </div>
+              <div class="mb-3 w-75 ">
+                <label for="maximumusage" class="form-label">Maximum usage</label>
+                <input type="text" class="form-control" id="maximumusage" name="maximumusage" placeholder="Enter coupon code">
+                <%if (errors&&errors.maximumusage){%>
+                  <span class="text-danger"id="errors-maximumusage">
+                      <%=errors.maximumusage.msg%>
+                  </span>
+                  <%}%>
+              </div>
+            <div class="mb-3 w-75">
+                <label for="description" class="form-label">Description</label>
+                <textarea style="width:822px;height: 150px;" id="description" name="description" rows="5" cols="108"></textarea>
+                <%if (errors&&errors.description){%>
+                  <span class="text-danger"id="errors-description">
+                      <%=errors.description.msg%>
+                  </span>
+                  <%}%>
+            </div>
+
+            <button type="submit" class="btn btn-success">Add Coupon</button>
+      </form>
+    </div>
+  </section>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+     flatpickr("#couponDate", {
+        dateFormat: "Y-m-d", // Customize the date format as needed
+        });
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputElements = document.querySelectorAll('input');
+            console.log(inputElements)
+            inputElements.forEach(function (input) {
+                input.addEventListener('focus', function () {
+                    const fieldName = input.name;
+                    const errorElement = document.querySelector(`#errors-${fieldName}`);
+                    console.log(errorElement)
+                    if (errorElement) {
+                        errorElement.innerText = '';
+                    }
+                });
+            });
+        });
+
+  </script>
+  <%-include('admin-footer')-%>

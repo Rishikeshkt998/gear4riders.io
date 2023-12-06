@@ -1,0 +1,224 @@
+<%-include('userheader')-%>
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+          <div class="card border-0 shadow rounded-3 my-5">
+            <div class="card-body p-4 p-sm-5">
+              <h3 class="card-title ">Create an Account</h3>
+              <small>Enter your details below</small>
+              <%if (invalid){%>
+                <div class="alert alert-danger">
+                  <%=invalid %>
+                </div>
+                <%}%>
+                <% if (refferalcode) { %>
+                  <form action="/signup/?refferalcode=<%= refferalcode %> " method="post">
+                    <div class="form-floating mb-3 mt-5">
+                      <input type="text" name="name" class="form-control" id="name" placeholder="name@example.com">
+                      <label>Name</label>
+                      <%if (errors&&errors.name){%>
+                        <span class="error-msg text-danger" id="errors-name">
+                          <%=errors.name.msg%>
+                        </span>
+                        <%}%>
+
+
+
+                    </div>
+                    <div class="form-floating mb-3 ">
+                      <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com">
+                      <label>Email</label>
+
+                      <%if (errors&&errors.email){%>
+                        <span class=" error-msg text-danger" id="errors-email">
+                          <%=errors.email.msg%>
+                        </span>
+                        <%}%>
+
+                    </div>
+                    <div class="form-floating mb-3 ">
+                      <input type="text" name="address" class="form-control" id="address" placeholder="name@example.com"
+                        autocomplete="off">
+                      <label for="address">Address</label>
+
+                      <%if (errors&&errors.address){%>
+                        <span  class=" error-msg text-danger" id="errors-address">
+                          <%=errors.address.msg%>
+                        </span>
+                        <%}%>
+
+                    </div>
+                    <div class="form-floating mb-3 ">
+                      <input type="text" name="phone" class="form-control" id="phone" placeholder="name@example.com"
+                        autocomplete="off">
+                      <label for="phone">phone</label>
+
+                      <%if (errors&&errors.phone){%>
+                        <span  class=" error-msg text-danger" id="errors-phone">
+                          <%=errors.phone.msg%>
+                        </span>
+                        <%}%>
+
+                    </div>
+                    <div class="form-floating mb-3">
+                      <input type="password" name="password" class="form-control" id="Password" placeholder="Password"
+                        autocomplete="off">
+                      <label>Password</label>
+
+                      <%if (errors&&errors.password){%>
+                        <span  class="error-msg text-danger" id="errors-password">
+                          <%=errors.password.msg%>
+                        </span>
+                        <%}%>
+
+                    </div>
+                    <div class="form-floating mb-3">
+                      <input type="password" name="cpassword" class="form-control" id="cpassword" placeholder="Password"
+                        autocomplete="off">
+                      <label>confirm Password</label>
+
+                      <%if (errors&&errors.cpassword){%>
+                        <span  class="error-msg text-danger" id="errors-cpassword">
+                          <%=errors.cpassword.msg%>
+                        </span>
+                        <%}%>
+
+                    </div>
+
+
+                    <div class="form-check mb-3">
+                      <label class="form-check-label" for="rememberPasswordCheck" autocomplete="off">
+
+                      </label>
+                    </div>
+                    <div class="d-grid">
+                      <button class="btn btn-danger btn-login  fw-medium" type="submit">Create an Account</button>
+                    </div>
+                    <br>
+                    <!-- <div class="d-grid">
+                        <button class="btn border-1 btn-login  fw-medium" style="border:1px solid black"type="submit"><img class="me-2" height="22px" width="22px"src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-suite-everything-you-need-know-about-google-newest-0.png">Signup with Google</button>
+                      </div> -->
+                    <!-- <br> -->
+                    <small>Already have an account? <a href="/login">Login</a></small>
+
+
+                  </form>
+                  <% }else{ %>
+                    <form action="/signup" method="post">
+                      <div class="form-floating mb-3 mt-5">
+                        <input type="text" name="name" class="form-control" id="name" placeholder="name@example.com">
+                        <label>Name</label>
+                        <%if (errors&&errors.name){%>
+                          <span class="error-msg text-danger" id="errors-name">
+                            <%=errors.name.msg%>
+                          </span>
+                          <%}%>
+  
+  
+  
+                      </div>
+                      <div class="form-floating mb-3 ">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com">
+                        <label>Email</label>
+  
+                        <%if (errors&&errors.email){%>
+                          <span class=" error-msg text-danger" id="errors-email">
+                            <%=errors.email.msg%>
+                          </span>
+                          <%}%>
+  
+                      </div>
+                      <div class="form-floating mb-3 ">
+                        <input type="text" name="address" class="form-control" id="address" placeholder="name@example.com"
+                          autocomplete="off">
+                        <label for="address">Address</label>
+  
+                        <%if (errors&&errors.address){%>
+                          <span  class=" error-msg text-danger" id="errors-address">
+                            <%=errors.address.msg%>
+                          </span>
+                          <%}%>
+  
+                      </div>
+                      <div class="form-floating mb-3 ">
+                        <input type="text" name="phone" class="form-control" id="phone" placeholder="name@example.com"
+                          autocomplete="off">
+                        <label for="phone">phone</label>
+  
+                        <%if (errors&&errors.phone){%>
+                          <span  class=" error-msg text-danger" id="errors-phone">
+                            <%=errors.phone.msg%>
+                          </span>
+                          <%}%>
+  
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input type="password" name="password" class="form-control" id="Password" placeholder="Password"
+                          autocomplete="off">
+                        <label>Password</label>
+  
+                        <%if (errors&&errors.password){%>
+                          <span  class="error-msg text-danger"id="errors-password">
+                            <%=errors.password.msg%>
+                          </span>
+                          <%}%>
+  
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input type="password" name="cpassword" class="form-control" id="cpassword" placeholder="Password"
+                          autocomplete="off">
+                        <label>confirm Password</label>
+  
+                        <%if (errors&&errors.cpassword){%>
+                          <span  class="error-msg text-danger" id="errors-cpassword">
+                            <%=errors.cpassword.msg%>
+                          </span>
+                          <%}%>
+  
+                      </div>
+  
+  
+                      <div class="form-check mb-3">
+                        <label class="form-check-label" for="rememberPasswordCheck" autocomplete="off">
+  
+                        </label>
+                      </div>
+                      <div class="d-grid">
+                        <button class="btn btn-danger btn-login  fw-medium" type="submit">Create an Account</button>
+                      </div>
+                      <br>
+                      <!-- <div class="d-grid">
+                          <button class="btn border-1 btn-login  fw-medium" style="border:1px solid black"type="submit"><img class="me-2" height="22px" width="22px"src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-suite-everything-you-need-know-about-google-newest-0.png">Signup with Google</button>
+                        </div> -->
+                      <!-- <br> -->
+                      <small>Already have an account? <a href="/login">Login</a></small>
+  
+  
+                    </form>
+                    <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+            const inputElements = document.querySelectorAll('input');
+            console.log(inputElements)
+            inputElements.forEach(function (input) {
+                input.addEventListener('focus', function () {
+                    const fieldName = input.name;
+                    const errorElement = document.querySelector(`#errors-${fieldName}`);
+                    console.log(errorElement)
+                    if (errorElement) {
+                        errorElement.innerText = '';
+                    }
+                });
+            });
+        });
+  </script>
+
+  <%-include('userfooter')-%>

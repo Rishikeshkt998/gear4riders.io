@@ -1,0 +1,132 @@
+
+
+
+<%- include('userheader') -%>
+<p class="btn border-0 fw-bold py-3 float-end" onclick="downloadInvoice()">Download Invoice </i></p>
+<div class="container  mt-5 mb-5 p-4" id="invoice-container" style="max-width: 700px; margin: 0 auto; padding: 5px; border: 1px solid #000; overflow: hidden;">
+    <div class="m-4 p-3"style="border: 1px solid #000">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="invoice-title">
+                <h2>Invoice</h2>
+                <h3 class="pull-right"><%=order.invoicenumber%></h3>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <address>
+                        <strong>Billed To:</strong><br>
+                        <%=order.address.name%><br>
+                        <%=order.address.phone%><br>
+                        <%=Userdetails.email%><br>
+                    </address>
+                </div>
+                <div class="col-md-6">
+                    <address class="text-right">
+                        <strong>Shipped To:</strong><br>
+                        <%=Userdetails.name%><br>
+                        Mobile:<%=Userdetails.phone%><br>
+                    </address>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <address>
+                        <strong>Payment Method:</strong><br>
+                        <%=order.paymentMethod%><br>
+                        <%=Userdetails.email%>
+                    </address>
+                </div>
+                <div class="col-md-6 text-right">
+                    <address>
+                        <strong>Order Date:</strong><br>
+                        <%= order.date.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %><br><br>
+                    </address>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 5px;"> <!-- Adjust the margin-top for additional space -->
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><strong>Order Summary</strong></h3>
+                </div>
+                <div class="panel-body" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table table-condensed" style="margin: 0;">
+                            <thead>
+                                <tr>
+                                    <td class="text-left"><strong>Item</strong></td>
+                                    <td class="text-center"><strong>Quantity</strong></td>
+                                    <td class="text-center"><strong>Price</strong></td>
+                                    <td class="text-right"><strong>Total</strong></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <td class="text-left"><strong> <%=order.products[0].productname%></strong></td>
+                                <td class="text-center"><strong> <%=order.products[0].quantity%></strong></td>
+                                <td class="text-center"><strong> <%= formatCurrency(order.products[0].productprice)%></strong></td>
+                                <td class="text-right"><strong><%=order.totalAmount%></strong></td>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td class="text-center"><strong>Subtotal</strong></td>
+                                    <td class="text-right"><%= formatCurrency(order.totalAmount)%></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td class="text-center"><strong>Discount</strong></td>
+                                    <td class="text-right"><%= formatCurrency(order.discount)%></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td class="text-center"><strong>Shipping</strong></td>
+                                    <td class="text-right">Rs.00</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td class="text-center"><strong>Total</strong></td>
+                                    <td class="text-right"><%= formatCurrency(order.totalAmount)%></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+<script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+<script>
+    async function downloadInvoice() {
+    // Assume you have a function to convert HTML to a Blob
+    const containerHtml = await document.getElementById('invoice-container').innerHTML;
+
+    htmlToBlob(containerHtml, function (blob) {
+        // Create a download link and trigger the download
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'invoice.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    });
+}
+
+function htmlToBlob(html, callback) {
+    html2pdf(html, {
+        margin: 10,
+        filename: 'invoice.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).then(function (pdf) {
+        callback(pdf.output('blob'));
+    });
+}
+</script>
+<%- include('userfooter') -%>

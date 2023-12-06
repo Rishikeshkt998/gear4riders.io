@@ -1,0 +1,110 @@
+
+
+
+
+
+
+
+
+<%- include('userheader') -%>
+
+<style>
+    .small-image {
+        max-width: 100px; /* Adjust as needed */
+        max-height: 100px; /* Adjust as needed */
+    }
+
+    .wishlist-card {
+        border-radius: 10px;
+        box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        padding: 20px;
+    }
+    .outer-container {
+        border: 2px solid #ccc; /* Adjust border styles and color as needed */
+        border-radius: 9px; /* Adjust border radius as needed */
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <h2 class="text-center mb-4">Orders</h2>
+            <% if (data && data.length > 0) { %>
+                <% data.forEach((row, index) => { %>
+                
+                <div class="outer-container">
+                    <a href="/userauth/vieworderdetails/<%= row._id %>" class="" style="text-decoration: none;color: black;">
+                    <div class="row">
+                        <div class="col-lg-8 col-md-8 ">
+                            <p class="ps-4"><%= row.invoicenumber %></p>
+                        </div>
+                        <div class="col-lg-3 col-md-3 ms-5 ps-5 d-flex justify-content-end" >
+                            <p class=" d-flex justify-content-end">
+                                <i class="fa-solid "></i> Order <%=row.status%> on <%= row.date.toLocaleDateString()%>
+                            </p>
+                        </div>
+                      </div>
+                    
+                      
+                    <div class="wishlist-card m-3">
+                        
+                        <% row.products.forEach((product, productIndex) => { %>
+                        <!-- Single item -->
+
+                        <div class="row align-items-center p-2">
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
+                                <!-- Image -->
+                                <div class="bg-image hover-overlay hover-zoom ripple rounded"
+                                    data-mdb-ripple-color="light">
+                                    <img src="http://localhost:3000/<%= product.productimage[0]%>"
+                                        class="w-100 img-fluid small-image" alt="" />
+                                    <a href="#!">
+                                        <div class="mask"
+                                            style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                                    </a>
+                                </div>
+                                <!-- Image -->
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-12 mb-2 mb-lg-0">
+                                <!-- Data -->
+                                <p class="mb-0"><%= product.productname %></p>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
+                                <p class="mb-0">
+                                    brands<%= product.product_id.brandId%>
+                                </p>
+                            </div>
+                            <div class="col-lg-1 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
+                                <p class="mb-0">
+                                    <i class="fa-solid "></i> <%= product.quantity %>
+                                </p>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
+                                <p class="mb-0">
+                                    <i class="fa-solid "></i> <%= formatCurrency(product.productprice)   %>
+                                </p>
+                            </div>
+                            
+                        </div>
+                        <% }) %>
+                    
+                        <!-- Single item -->
+                    </div>
+                </a>
+                </div>
+                
+            
+                
+                <% }) %>
+            <% } else { %>
+                <div class="alert alert-info" role="alert">
+                    Order is empty!
+                </div>
+            <% } %>
+    </div>
+    </div>
+</div>
+
+<%- include('userfooter') -%>

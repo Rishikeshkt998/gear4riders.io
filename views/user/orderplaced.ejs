@@ -1,0 +1,32 @@
+<%-include('userheader')-%>
+
+
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white text-center">
+                    <h2 class="mb-0">Order Placed <i class="fas fa-check-circle"></i></h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead text-success text-center"><i class="fas fa-thumbs-up"></i> Your order has been successfully placed.</p>
+                    <!-- <div class="text-center">
+                        <p class="font-weight-bold">Order ID: <span class="text-success">#12345</span></p>
+                        <p class="font-weight-bold">Order Total: <span class="text-success">$100.00</span></p>
+                        <p class="font-weight-bold">Expected Delivery: <span class="text-success">November 10, 2023</span></p>
+                    </div> -->
+                </div>
+                <div class="card-footer text-center">
+                    <a href="/userauth/orderlist" class="btn btn-primary"><i class="fas fa-clipboard-list"></i> Manage Orders</a>
+                    <div class="text-center">
+                        <a href="/userauth/invoice/<%=orderId%>" class="text-danger">Download invoice</a>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+<%-include('userfooter')-%>

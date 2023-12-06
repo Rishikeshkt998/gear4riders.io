@@ -1,0 +1,278 @@
+<%-include('userheader')-%>
+    <section>
+        <div class="container mt-5 mb-5">
+            <h1 class="text-center">Checkout</h1>
+
+
+
+            <div class="row">
+
+                <div class="col-md-8">
+
+                    <div class="row" id="inner">
+                        <% if (addressList && addressList.length) { %>
+                            <% for (let i=0; i < addressList.length; i++) { %>
+                                <div class="col-md-12 mb-2">
+                                    <div class="card form-group p-2 " id="address<%=addressList[i]._id %>">
+                                        <div class="ms-3 mt-3">
+                                            <b>
+                                                <%= addressList[i].name %>
+                                                    <%= addressList[i].phone %>
+                                            </b>
+                                            <button class="float-end me-3 " style="text-decoration: none;"
+                                                onclick="showEditForm('<%= i %>')">EDIT</button>
+                                        </div>
+                                        <p class="mt-3 ms-3">
+                                            <%= addressList[i].fulladdress %>, <%= addressList[i].landmark %>,
+                                                    <%= addressList[i].pincode %>, <%= addressList[i].alternatephone %>,
+                                                            <%= addressList[i].district %>,<%= addressList[i].state %>
+                                        </p>
+                                        <div class="d-flex col-md-8 mb-4">
+                                            <a
+                                                href="/userauth/payment/<%= addressList[i]._id %>/<%= addressList[i].name %>/<%= addressList[i].fulladdress %>/<%= addressList[i].pincode %>/<%= addressList[i].landmark %>/<%= addressList[i].district %>/<%= addressList[i].state %>/<%= addressList[i].phone %>/<%= addressList[i].alternatephone%>"><button
+                                                    class="btn  p-2 me-2 mt-2 fw-bold" onclick=""
+                                                    style="background-color: rgb(91, 154, 249);">Deliver
+                                                    Here</button></a>
+                                            <a href="/userauth/addressremove/<%=addressList[i]._id%>"><button
+                                                    class="btn  p-2 me-5 fw-bold mt-2  "
+                                                    style="background-color: rgb(249, 91, 91);">
+                                                    Remove</button></a>
+                                        </div>
+                                        <div class="row" id="form1">
+                                            <form action="/userauth/updateaddress/<%=addressList[i]._id%>" method="post"
+                                                id="edit-form<%= i %>" style="display: none;">
+                                                <div class="form-group">
+                                                    <label for="name">Name</label>
+                                                    <input type="text" class="form-control" name="name" id="name"
+                                                        value="<%=addressList[i].name%>">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="fulladdress">Address</label>
+                                                    <input type="text" class="form-control" name="fulladdress"
+                                                        id="fulladdress" value="<%=addressList[i].fulladdress%>">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="pincode">Pincode</label>
+                                                    <input type="text" class="form-control" name="pincode" id="pincode"
+                                                        value="<%=addressList[i].pincode%>">
+                                                        <span class="text-danger" id="error-pincode"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="landmark">Landmark</label>
+                                                    <input type="text" class="form-control" name="landmark"
+                                                        id="landmark" value="<%=addressList[i].landmark%>">
+                                                        <span class="text-danger" id="error-landmark"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="district">District</label>
+                                                    <input type="text" class="form-control" name="district"
+                                                        id="district" value="<%=addressList[i].district%>">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="state">State</label>
+                                                    <input type="text" class="form-control" name="state" id="state"
+                                                        value="<%=addressList[i].state%>">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="phone">Phone</label>
+                                                    <input type="text" class="form-control" name="phone" id="phone"
+                                                        value="<%=addressList[i].phone%>">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="alternatephone">Alternate Phone Number</label>
+                                                    <input type="text" class="form-control" name="alternatephone" onchange="Alternatephonenumbervalidate()"
+                                                        id="alternatephone" value="<%=addressList[i].alternatephone%>">
+
+                                                        <span class="text-danger" id="error-alternatephone"></span>
+                                                           
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">save address</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <% } %>
+                                    <% } else { %>
+                                        <div class="col-md-12 form-group p-5 alert-warning">
+                                            <b>Address list is empty</b>
+                                        </div>
+                                        <% } %>
+
+                    </div>
+                    <div class="card mb-4">
+                        <a style="text-decoration: none;color:black"href="/userauth/displayaddress">
+                            <div class="card col-md-12 form-group d-flex p-2 btn btn-outline-primary" id="buttonclick"
+                                data-bs-toggle="modal" data-bs-target="#editAddressModal">+ Add new Address</div>
+                        </a>
+
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            Order Summary
+                        </div>
+                        <div class="card-body">
+                            Display order summary here
+                            <ul class="list-group list-group-flush">
+                                <li
+                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                    Price(<%= totalProducts %> items)
+                                        <span id="actualamount">
+                                            <%= formatCurrency(totalAmount)%>
+                                        </span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    Discount<span>0</span></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    Shipping<span>Free</span></li>
+                                <li
+                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                                    <div>
+                                        <strong>Total amount</strong>
+                                        <strong>
+                                            <p class="mb-0">(including VAT)</p>
+                                        </strong>
+                                    </div>
+                                    <span><strong id="totalAmount">
+                                            <%= formatCurrency(totalAmount)%>
+                                        </strong></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+
+        function showform() {
+            var form = document.getElementById("checkout-form");
+            var button = document.getElementById("buttonclick");
+
+            if (form.style.display === "none" || form.style.display === "") {
+                form.style.display = "block";
+                button.innerHTML = "- Cancel";
+            } else {
+                form.style.display = "none";
+                button.innerHTML = "+ Add new Address";
+            }
+        }
+
+
+        function showEditForm(index) {
+            const editForm = document.getElementById(`edit-form${index}`);
+            if (editForm.style.display === 'none') {
+                editForm.style.display = 'block';
+            } else {
+                editForm.style.display = 'none';
+            }
+        }
+
+
+   
+function Alternatephonenumbervalidate() {
+    const alterphone= document.getElementById('alternatephone').value
+    const alternateerror = document.getElementById('error-alternatephone')
+    if (!alterphone.length) {
+        alternateerror.style.color = 'red'
+        alternateerror.innerHTML = 'alternate phone number is required*'
+        return false;
+    } else if (alterphone.length !== 10) {
+        alternateerror.style.color = 'red'
+        alternateerror.innerHTML = 'mobile number should be 10 numbers'
+        return false;
+    }
+    alternateerror.innerHTML = ''
+    return true;
+}
+function landmarkvalidate() {
+    const landmark = document.getElementById('landmark').value
+    const landmarkerror = document.getElementById('error-landmark')
+    if (!landmark.length) {
+        landmarkerror.style.color = 'red'
+        landmarkerror.innerHTML = 'landmark is Required*'
+        return false;
+    } else if (landmark .length < 10) {
+        landmarkerror.style.color = 'red'
+        landmarkerror.innerHTML = 'write altest 10 characters *'
+        return false;
+    }
+    landmarkerror.innerHTML = ''
+    return true;
+}
+function validatePin() {
+    const pin = document.getElementById('pincode').value
+    const pinError = document.getElementById('error-pincode')
+    if (!pin.length) {
+        pinError.style.color = 'red'
+        pinError.innerHTML = 'This field is Required*'
+        return false;
+    } else if (pin.length !== 6) {
+        pinError.style.color = 'red'
+        pinError.innerHTML = 'pin must be 6 numbers'
+        return false;
+    }
+    // pinError.style.color = 'green'
+    pinError.innerHTML = ''
+    return true;
+}
+function validateAddress() {
+    const address = document.getElementById('address').value
+    const addressError = document.getElementById('address-error')
+    if (!address.length) {
+        addressError.style.color = 'red'
+        addressError.innerHTML = 'This field is required*'
+        return false;
+    } else if (address.length < 10) {
+        addressError.style.color = 'red'
+        addressError.innerHTML = 'must have to write atlest 10 charachers*'
+        return false;
+    }
+    // addressError.style.color = 'green'
+    addressError.innerHTML = ''
+    return true;
+}
+function validatePhone() {
+    const phone = document.getElementById('phone').value
+    const phoneError = document.getElementById('phone-error')
+    if (!phone.length) {
+        phoneError.style.color = 'red'
+        phoneError.innerHTML = 'This field is required*'
+        return false;
+    } else if (phone.length !== 10) {
+        phoneError.style.color = 'red'
+        phoneError.innerHTML = 'Phone number should be 10 numbers'
+        return false;
+    }
+    // phoneError.style.color = 'green'
+    phoneError.innerHTML = ''
+}
+function validateName() {
+    const name = document.getElementById('name').value
+    const nameError = document.getElementById('name-error')
+    if (!name.length) {
+        nameError.style.color = 'red'
+        nameError.innerHTML = 'This field is required*'
+        return false
+    } else if (name.length < 4 || name.length > 20) {
+        nameError.style.color = 'red'
+        nameError.innerHTML = 'name must has 4-20 charachers*'
+        return false
+    }
+    // nameError.style.color = 'green'
+    nameError.innerHTML = ' '
+    return true;
+}
+
+
+
+
+
+
+    </script>
+    <%-include('userfooter')-%>

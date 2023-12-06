@@ -1,0 +1,476 @@
+<%-include('admin-header')-%>
+<style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa; /* Bootstrap's bg-light */
+    }
+
+    .jumbotron {
+      background-color: #bac3cb; /* Bootstrap's bg-dark */
+      color: #151313; /* Bootstrap's text-white */
+    }
+
+    .card {
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+    <p class="btn border-0 fw-bold py-3 float-end" onclick="downloadInvoice()">Download Invoice </i></p>
+  <div class="container mt-5" id="invoice-container">
+    <div class="jumbotron">
+      <h1 class="display-4">Sales Report</h1>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title">Total Revenue: <%= formatCurrency(totalPrice)%></h2>
+        <h2 class="card-title">Average order value: <%= formatCurrency(averageorder)%></h2>
+        <h2 class="card-title">total orders: <%= formatCurrency(totalorders)%></h2>
+        
+
+      </div>
+    </div>
+    <button onclick="showMonthlyChart()">Monthly</button>
+    <button onclick="showWeeklyChart()">Weekly</button>
+    <button onclick="showYearlyChart()">Yearly</button>
+
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title">Sales Report</h2>
+        <canvas id="monthlyTotalChart" width="300" height="90"></canvas>
+        <canvas id="weeklyTotalChart" width="300" height="90" style="display: none;"></canvas>
+        <canvas id="yearlyTotalChart" width="300" height="90" style="display: none;"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title">Top Customers</h2>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">customer Name</th>
+              <th scope="col">customer id</th>
+              <th scope="col">phone number</th>
+              <th scope="col">email</th>
+            </tr>
+          </thead>
+          <tbody>
+                <% topCustomer.forEach(customer => { %>
+                    <tr>
+                      <td><%= customer.name %></td>
+                      <td><%= customer._id %></td>
+                      <td><%= customer.phone %></td>
+                      <td><%= customer.email %></td>
+                    </tr>
+                  <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">Trending Products</h2>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Product Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Sold Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Replace the static data with dynamic data -->
+              <!-- % trendingProducts.forEach(product => { %> -->
+                  <% trendingProducts.forEach(product => { %>
+                      <tr>
+                        <td><%= product.productName %></td>
+                        <td><%= formatCurrency(product.productPrice)%></td>
+                        <td><%= product.soldCount %></td>
+                      </tr>
+                    <% }); %>
+              <!-- % }); %> -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+  </div>
+
+  <script src="/js/yourScript.js"></script>
+  <script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+</body>
+<script>
+  const monthlyTotals = JSON.parse('<%- JSON.stringify(monthwiseTotal) %>');
+  console.log(monthlyTotals)
+
+  const monthNames = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
+  ];
+
+  const allMonths = Array.from({ length: 12 }, (_, i) => i + 1);
+
+  const availableMonths = monthlyTotals.map(entry => entry.month);
+
+  const filteredData = monthlyTotals.filter(entry => availableMonths.includes(entry.month));
+
+  const labels = allMonths.map(month => `${monthNames[month - 1]}`);
+  const data = Array.from({ length: 12 }, (_, i) => {
+    const matchingEntry = filteredData.find(entry => entry.month === i + 1);
+    return matchingEntry ? matchingEntry.totalAmount : 0; // Adjusted to use totalAmount
+  });
+  console.log(labels);
+ 
+
+
+
+const yearlyTotals = JSON.parse('<%- JSON.stringify(yearwiseTotal) %>');
+
+// Generate an array of years from 2015 to 2030
+const allYears = Array.from({ length: 16 }, (_, index) => 2015 + index);
+
+// Extract available years from the data
+const availableYears = yearlyTotals.map(entry => entry.year);
+
+// Filter data for years, ensuring entries for all years
+const filteredDataYearly = allYears.map(year => {
+    const matchingEntry = yearlyTotals.find(entry => entry.year === year);
+    return matchingEntry ? matchingEntry.totalAmount : 0;
+});
+
+// Prepare labels for the chart
+const labelsYearly = allYears.map(year => `${year}`);
+
+// Use filtered data for the chart
+const dataYearly = filteredDataYearly;
+console.log(data);
+const weeklyTotals = JSON.parse('<%- JSON.stringify(weeklyTotal) %>');
+console.log(weeklyTotals);
+
+const weekNumbers = Array.from({ length: 52 }, (_, i) => i + 1); // Assuming 52 weeks in a year
+
+const availableWeeks = weeklyTotals.map(entry => entry.week);
+
+const filteredDataWeekly = weeklyTotals.filter(entry => availableWeeks.includes(entry.week));
+
+const labelsWeekly = weekNumbers.map(week => `Week ${week}`);
+const dataWeekly = weekNumbers.map(week => {
+    const matchingEntry = filteredDataWeekly.find(entry => entry.week === week);
+    return matchingEntry ? matchingEntry.totalAmount : 0;
+});
+
+  const ctx = document.getElementById('monthlyTotalChart').getContext('2d');
+  const ctxWeekly = document.getElementById('weeklyTotalChart').getContext('2d');
+  const ctxYearly = document.getElementById('yearlyTotalChart').getContext('2d'); 
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Total Sales',
+        data: data,
+        backgroundColor: 'rgba(94, 162, 252, 0.8)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      scales: {
+        x: {
+          type: 'category',
+          title: {
+            display: true,
+            text: 'Month',
+            font: {
+              size: 16,
+              weight: 'bold'
+            }
+          },
+          ticks: {
+            font: {
+              size: 14
+            }
+          },
+          grid: {
+            display: false
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Total Sales',
+            font: {
+              size: 16,
+              weight: 'bold'
+            }
+          },
+          ticks: {
+            font: {
+              size: 14
+            },
+            beginAtZero: true
+          },
+          grid: {
+            display: false
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            font: {
+              size: 14
+            }
+          }
+        },
+        title: {
+          display: true,
+          text: `Year: ${filteredData[0]?.year}`,
+          align: 'end',
+          position: 'top',
+          font: {
+            size: 18,
+            weight: 'bold'
+          }
+        },
+      },
+      layout: {
+        padding: {
+          right: 30,
+        }
+      },
+      scales: {
+        x: {
+          maxTicksLimit: 12,
+        }
+      }
+    }
+  });
+
+
+  new Chart(ctxYearly, {
+    type: 'bar',
+    data: {
+        labels: labelsYearly,
+        datasets: [{
+            label: 'Total Sales',
+            data: dataYearly,
+            backgroundColor: 'rgba(94, 162, 252, 0.8)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                type: 'category',
+                title: {
+                    display: true,
+                    text: 'Year',
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    }
+                },
+                ticks: {
+                    font: {
+                        size: 14
+                    }
+                },
+                grid: {
+                    display: false
+                }
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Total Sales',
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    }
+                },
+                ticks: {
+                    font: {
+                        size: 14
+                    },
+                    beginAtZero: true
+                },
+                grid: {
+                    display: false
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: true,
+                labels: {
+                    font: {
+                        size: 14
+                    }
+                }
+            },
+            title: {
+                display: true,
+                text: 'Yearly Sales',
+                align: 'end',
+                position: 'top',
+                font: {
+                    size: 18,
+                    weight: 'bold'
+                }
+            },
+        },
+        layout: {
+            padding: {
+                right: 30,
+            }
+        },
+        scales: {
+            x: {
+                maxTicksLimit: labelsYearly.length,
+            }
+        }
+    }
+});
+new Chart(ctxWeekly, {
+  type: 'bar',
+  data: {
+    labels: labelsWeekly, 
+    datasets: [{
+      label: 'Total Sales',
+      data: dataWeekly, 
+      backgroundColor: 'rgba(94, 162, 252, 0.8)',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    scales: {
+      x: {
+        type: 'category',
+        title: {
+          display: true,
+          text: 'Week',
+          font: {
+            size: 16,
+            weight: 'bold'
+          }
+        },
+        ticks: {
+          font: {
+            size: 14
+          }
+        },
+        grid: {
+          display: false
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Total Sales',
+          font: {
+            size: 16,
+            weight: 'bold'
+          }
+        },
+        ticks: {
+          font: {
+            size: 14
+          },
+          beginAtZero: true
+        },
+        grid: {
+          display: false
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: true,
+        labels: {
+          font: {
+            size: 14
+          }
+        }
+      },
+      title: {
+        display: true,
+        text: `Year: ${filteredDataWeekly[0]?.year}`, // Assuming you have the year information in weekly data
+        align: 'end',
+        position: 'top',
+        font: {
+          size: 18,
+          weight: 'bold'
+        }
+      },
+    },
+    layout: {
+      padding: {
+        right: 30,
+      }
+    },
+    scales: {
+      x: {
+        maxTicksLimit: 52, // Assuming 52 weeks in a year
+      }
+    }
+  }
+});
+function showMonthlyChart() {
+  const monthlyChart = document.getElementById('monthlyTotalChart');
+  const weeklyChart = document.getElementById('weeklyTotalChart');
+  const yearlyChart = document.getElementById('yearlyTotalChart');
+
+  monthlyChart.style.display = 'block';
+  weeklyChart.style.display = 'none';
+  yearlyChart.style.display = 'none';
+}
+
+// Function to show the weekly chart
+function showWeeklyChart() {
+  const monthlyChart = document.getElementById('monthlyTotalChart');
+  const weeklyChart = document.getElementById('weeklyTotalChart');
+  const yearlyChart = document.getElementById('yearlyTotalChart');
+
+  monthlyChart.style.display = 'none';
+  weeklyChart.style.display = 'block';
+  yearlyChart.style.display = 'none';
+}
+
+// Function to show the yearly chart
+function showYearlyChart() {
+  const monthlyChart = document.getElementById('monthlyTotalChart');
+  const weeklyChart = document.getElementById('weeklyTotalChart');
+  const yearlyChart = document.getElementById('yearlyTotalChart');
+
+  monthlyChart.style.display = 'none';
+  weeklyChart.style.display = 'none';
+  yearlyChart.style.display = 'block';
+}
+
+
+function downloadInvoice() {
+        const orderContainer = document.getElementById('invoice-container');
+        html2pdf(orderContainer, {
+            margin: 10,
+            filename: 'sales_report.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        })
+    }
+
+</script>
+  <%-include('admin-footer')-%>

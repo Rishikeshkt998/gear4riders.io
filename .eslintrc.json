@@ -1,0 +1,34 @@
+// {
+//     "env": {
+//         "browser": true,
+//         "es2021": true,
+//         "node": true
+//     },
+//     "extends": "eslint:recommended",
+//     "parserOptions": {
+//         "ecmaVersion": "latest",
+//         "plugin":"node/recommended"
+//     },
+//     "rules": {
+//         "no-console":"off",
+//         "consistent-return":"off",
+//         "indent": [
+//             "warn",
+//             4
+//         ],
+//         "linebreak-style": [
+//             "error",
+//             "unix"
+//         ],
+//         "quotes": [
+//             "error",
+//             "single"
+//         ],
+//         "semi": [
+//             "error",
+//             "always"
+//         ],
+//         "no-unused-vars": "off",
+//         "no-undef":"off"
+//     }
+// }

@@ -1,0 +1,77 @@
+<%-include('admin-header')-%>
+  <div class="row mb-3">
+    <div class="col-lg-7 col-md-7 mt-5 ms-5 ps-4">
+      <h4 class="ps-4">View Coupon</h4>
+    </div>
+    <div class="col-lg-4 col-md-4 mt-5 me-5 pe-5 d-flex justify-content-end">
+      <a href="/adminauth/addcoupon" class="btn btn-success"
+        style="background-color: rgb(57, 135, 244);color: white;">Add coupon</a>
+    </div>
+  </div>
+  <div class="col py-3">
+    <div class="container">
+
+      <% if (data!='' ){ %>
+        <table class="table mt-5" id="myTable">
+          <thead>
+            <tr class="table">
+              <th scope="col">No</th>
+              <th scope="col">Coupon name</th>
+              <th scope="col">Amount</th>
+              <th scope="col">maximum usage</th>
+              <th scope="col">Expiry</th>
+              <th scope="col">Description</th>
+
+
+
+
+
+            </tr>
+
+          </thead>
+          <tbody>
+            <% data.forEach((value,index)=>{ %>
+              <tr>
+                <td>
+                  <%= index+1 %>
+                </td>
+                <td>
+                  <%=value.name %>
+                </td>
+                <td>
+                  <%= value.amount%>
+                </td>
+                <td>
+                  <%= value.maximum_usage%>
+                </td>
+                <td>
+                  <%= value.expired_at%>
+                </td>
+                <td>
+                  <%= value.description%>
+                </td>
+                <!-- <td><a href="/adminauth/editproduct/%= value._id %>"><i class="fa-solid fa-pen-to-square text-success"></i></a><a href="/adminauth/deleteproduct/%= value._id %>"><i
+                                    class="fa-solid fa-trash text-danger ms-3"></i></a></td> -->
+
+              </tr>
+              <% }) %>
+          </tbody>
+        </table>
+        <% } else { %>
+          <h1 class="text-center text-secondary mt-5">No users found in the database</h1>
+
+
+          <% } %>
+    </div>
+
+
+
+  </div>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script>
+    // let table = new DataTable('#myTable');
+    $(document).ready(function () {
+      $('#myTable').DataTable();
+    });
+  </script>
+  <%-include('admin-footer')-%>

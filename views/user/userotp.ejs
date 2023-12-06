@@ -1,0 +1,53 @@
+<%-include('userheader')-%>
+
+    <section>
+        <div class="container">
+            <div class="row">
+              <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card border-0 shadow rounded-3 my-5">
+                  <div class="card-body p-4 p-sm-5">
+                    <h3 class="card-title "></h3>
+                    <small >Enter your otp</small>
+                    <% if (refferalcode && refferalcode!==null && refferalcode.length!==0) { %>
+                    <form action="/verifyOTP/?refferalcode=<%= refferalcode %>" method="post">
+                        
+                        
+                      <div class="form-floating mb-3 mt-5">
+                        <input type="text" class="form-control" name="otp" id="otp" placeholder="name@example.com">
+                        <label for="otp">enter user otp</label>
+                      </div>
+                      <div class="d-grid">
+                        <button class="btn btn-danger btn-login  fw-medium" type="submit">submit</button>
+                      </div>
+                      <br>
+                     
+                      
+                    </form>
+                    <% }else{ %>
+                      <form action="/verifyOTP" method="post">
+                        
+                        
+                        <div class="form-floating mb-3 mt-5">
+                          <input type="text" class="form-control" name="otp" id="otp" placeholder="name@example.com">
+                          <label for="otp">enter user otp</label>
+                        </div>
+                        <div class="d-grid">
+                          <button class="btn btn-danger btn-login  fw-medium" type="submit">submit</button>
+                        </div>
+                        <br>
+                       
+                        
+                      </form>
+                      <% } %>
+                    <!-- <form class="mt-3" action="/usersignup/resendotpVerficationCode" method="post">
+                      <input class="btn btn-danger" type="submit" value="resend otp?">
+                  </form> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+      </section>
+
+<%-include('userfooter')-%>
