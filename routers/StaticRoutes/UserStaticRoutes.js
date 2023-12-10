@@ -13,7 +13,6 @@ router.post('/verifyOtp', staticController.verifyOtp);
 router.post('/resendotpVerficationCode', staticController.resendVerification);
 router.get('/sharelink/:email',staticController.shareLink);
 router.get('/categoryproduct/:categoryname',staticController.categoryFilter);
-router.get('/brandproduct/:brandname',staticController.brandFilter);
 
 
 
@@ -22,6 +21,10 @@ router.get('/brandproduct/:brandname',staticController.brandFilter);
 
 router.get('/',staticController.dashBoard);
 router.get('/productdetails/:slug/:id',staticController.ProductDetails);
+router.get('/ProductList',staticController.ProductList);
+
+
+
 
 router.get('/forgotPassword', staticController.userForgotPasswordPage);
 router.get('/forgotPassword/:email',staticController.userForgotPassword);

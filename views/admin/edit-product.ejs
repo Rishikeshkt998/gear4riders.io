@@ -8,20 +8,12 @@
                     <label for="name" class="form-label">Productname</label>
                     <input type="text" class="form-control" name="name" id="name" aria-describedby="emailHelp"
                         value="<%=product.name%>">
-                    <%if (errors&&errors.name){%>
-                        <span class="text-danger">
-                            <%=errors.name.msg%>
-                        </span>
-                        <%}%>
+                   
                 </div>
                 <div class="mb-3 w-75">
                     <label for="price" class="form-label">Price</label>
                     <input type="text" class="form-control" name="price" id="productprice" value="<%=product.price%>">
-                    <%if (errors&&errors.price){%>
-                        <span class="text-danger">
-                            <%=errors.price.msg%>
-                        </span>
-                        <%}%>
+                    
                 </div>
                 <div class="mb-3 w-75 ">
 
@@ -38,11 +30,7 @@
                         </div>
                     </div>
 
-                    <%if (errors&&errors.image){%>
-                        <span class="text-danger">
-                            <%=errors.image.msg%>
-                        </span>
-                        <%}%>
+                   
                 </div>
 
                 <div style="margin-left: 17%;margin-top: 5%;margin-bottom: 5%;" class=" d-flex">
@@ -58,19 +46,19 @@
                 </div>
                 <div class="mb-3 w-75">
                     <label for="">Select Categorie</label>
-                    <select name="categorieId" id="" class="form-control">
-                        <option value="">choose...</option>
+                    <select name="categorieId" id="categorieId" class="form-control">
+                        <option value="<%= product.categorieId._id %>"><%= product.categorieId.name %></option>
                         <% for( let categorie of categorylist) { %>
                             <option value="<%= categorie._id %>">
                                 <%= categorie.name %>
-                            </option>
+                            </option> 
                             <% } %>
                     </select>
                 </div>
                 <div class="mb-3 w-75">
                     <label for="">Select Brand</label>
-                    <select name="brandId" id="" class="form-control">
-                        <option value="">choose...</option>
+                    <select name="brandId" id="brandId" class="form-control">
+                        <option value="<%= product.brandId._id %>"><%= product.brandId.name %></option>
                         <% for( let brand of brandlist ) { %>
                             <option value="<%= brand._id %>">
                                 <%= brand.name %>
@@ -82,21 +70,13 @@
                     <label for="stock" class="form-label">Stock</label>
                     <input type="text" class="form-control" name="countInStock" id="stock"
                         value="<%=product.countInStock%>">
-                    <%if (errors&&errors.countInStock){%>
-                        <span class="text-danger">
-                            <%=errors.countInStock.msg%>
-                        </span>
-                        <%}%>
+                   
                 </div>
                 <div class="mb-3 w-75">
                     <label for="Brand" class="form-label">Description</label>
                     <textarea style="width:822px;height: 150px;" id="brand" name="description" rows="5"
                         cols="108"><%=product.description%></textarea>
-                    <%if (errors&&errors.description){%>
-                        <span class="text-danger">
-                            <%=errors.description.msg%>
-                        </span>
-                        <%}%>
+                    
                 </div>
 
                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -192,6 +172,7 @@
 
             const form = document.getElementById('myForm');
             const productID = form.getAttribute('product-id');
+            console.log(productID)
 
             form.addEventListener('submit', function (event) {
                 event.preventDefault();
@@ -216,7 +197,7 @@
                 // const currentURL = window.location.origin;
                 console.log(formData)
 
-                fetch('/adminauth/updateproduct/' + productID, {
+                fetch('/adminauth/updateproduct/'+productID, {
                     method: 'POST',
                     body: formData,
                 })

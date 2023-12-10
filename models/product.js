@@ -55,7 +55,27 @@ const productSchema= new mongoose.Schema({
     cart:{
         type:Boolean,
         default:false
-    }
+    },
+    reviews:[
+        {
+            title:{
+                type:String,
+            },
+            description:{
+                type:String
+            },
+            reviewer:{
+                type:String,
+            },
+            scores:{
+                type:Number
+            },
+            time:{
+                type:Date,
+                default:Date.now()
+            }
+        }
+    ]
     
    
 

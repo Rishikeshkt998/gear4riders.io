@@ -94,17 +94,57 @@
             </div>
             
             <div class="d-flex mt-4">
-                <form  id="addToCartForm"  action="/userauth/add/<%=products._id%>/<%= products.image[0] %>/<%=products.name%>/<%= products.price %>/<%= products.discount %>/<%= productSlug %>" method="post">
+                <form  id="addToCartForm"  action="/cart/add/<%=products._id%>/<%= products.image[0] %>/<%=products.name%>/<%= products.price %>/<%= products.discount %>/<%= products.brandId%>/<%= products.categorieId%>/<%= productSlug %>" method="post">
                     
                     <input class="btn btn-warning p-3 fw-bold" type="submit" value="Add to Cart">
                 </form>
                 
-                <button class="btn btn-success p-3 fw-bold ms-3"onclick="buyProduct('<%= JSON.stringify({id:products._id,name:products.name,image:products.image[0],price:products.price,discount:products.discount,quantity:products.quantity}) %>')">Buy Now</button></a>
+                <button class="btn btn-success p-3 fw-bold ms-3"onclick="buyProduct('<%= JSON.stringify({id:products._id,name:products.name,image:products.image[0],price:products.price,discount:products.discount,brandId:products.brandId,categorieId:products.categorieId}) %>')">Buy Now</button></a>
             </div>
 
         </div>
     </div>
 </div>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Rating Section -->
+        </div>
+
+        <div class="col-md-6">
+            <h4 class="mb-4">Ratings & Reviews</h4>
+
+            <% if (reviews.length) { %>
+                <div class="d-flex border">
+                    <div class="p-4">
+                        <h1><%= averageScore.toFixed(1) %><i class="fa-regular fa-star ms-1 text-danger"></i></h1>
+                    </div>
+                    <div class="p-4 m-3">
+                        <h6><%= reviews.length %> Ratings & Reviews</h6>
+                    </div>
+                </div>
+
+                <% for (let i = 0; i < reviews.length; i++) { %>
+                    <div class="col-12 border p-2 mb-3">
+                        <h5 class="d-flex">
+                            <span class="badge bg-success">
+                                <%= reviews[i].scores %><i class="fa-regular fa-star ms-1"></i>
+                            </span>
+                            <p class="ms-4"><%= reviews[i].title %></p>
+                        </h5>
+                        <p><%= reviews[i].description %></p>
+                        <small><%= reviews[i].reviewer %></small>
+                    </div>
+                <% } %>
+            <% } else { %>
+                <div class="alert alert-info" role="alert">
+                    No reviews yet. Be the first to leave a review!
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -148,10 +188,10 @@
 
     async function buyProduct(value) {
     const product = JSON.parse(value);
-    const response = await fetch(`/userauth/buynow/${product.id}/${product.image}/${product.name}/${product.price}/${product.discount}/${product.quantity}`, { method: 'get' })
+    const response = await fetch(`/checkout/buynow/${product.id}/${product.image}/${product.name}/${product.price}/${product.discount}/${product.brandId}/${product.categorieId}`, { method: 'get' })
     const resBody = await response.json()
     if (resBody.success) {
-        location.href = '/userauth/checkoutpage'
+        location.href = '/checkout'
     } else {
         alert(`error in buynow`);
     }

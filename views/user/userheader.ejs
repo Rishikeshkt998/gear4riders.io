@@ -28,43 +28,13 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <form class="form-inline my-2 my-lg-0 mx-auto">
-                        <i class="fas fa-search" aria-hidden="true"></i>
-                        <input class="form-control form-control-sm ml-3" style="width: 200px; background-color: rgb(235, 235, 235);"
-                            type="text" placeholder="Search the entire store here" aria-label="Search">
-                    </form>
+                    
                     
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item active">
                             <a class="nav-link" href="/">Home</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Categories
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="categoriesDropdown">
-                                <a class="dropdown-item" href="#">Helmet</a>
-                                <a class="dropdown-item" href="#">Jacket</a>
-                                <a class="dropdown-item" href="#">Gloves</a>
-                                <a class="dropdown-item" href="#">Boots</a>
-                                <a class="dropdown-item" href="#">Riding Pants</a>
-                                <a class="dropdown-item" href="#">Racing suits</a>
-                                <a class="dropdown-item" href="#">Rain Gear</a>
-                                <a class="dropdown-item" href="#">Touring Gear</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="brandDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Brand
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="brandDropdown">
-                                <a class="dropdown-item" href="#">Royal Enfield</a>
-                                <a class="dropdown-item" href="#">Axor</a>
-                                <a class="dropdown-item" href="#">SMK</a>
-                            </div>
-                        </li>
+                  
                         <li class="nav-item">
                             <a class="nav-link" href="#">Contact</a>
                         </li>
@@ -96,13 +66,14 @@
                                 <i class="fa-regular fa-user"></i>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="/userauth/userprofilepage">Account</a></li>
+                                <li><a class="dropdown-item" href="/profile/userprofilepage">Account</a></li>
                                 <% if (locals.NoUser) { %>
                                     <li><a class="dropdown-item"
                                             onclick="ShareLink()">Share</a></li>
                                     <% } %>
-                                <li><a class="dropdown-item" href="/userauth/temp">Wallet</a></li>
-                                <li><a class="dropdown-item" href="#">Wish List</a></li>
+                                <li><a class="dropdown-item" href="/order/orderlist">Orders</a></li>
+                                <li><a class="dropdown-item" href="/wallet">Wallet</a></li>
+                                <li><a class="dropdown-item" href="/wishlist">Wish List</a></li>
                                 <li><a class="dropdown-item" href="#">contact</a></li>
                                 <li><a class="dropdown-item" href="/userauth/logout" onclick="return confirm('are you sure ?')">logout</a></li>
                             </ul>

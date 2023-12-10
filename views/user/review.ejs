@@ -1,0 +1,93 @@
+<%-include('userheader')-%>
+    <div class="container-fluid bg-light mt-4">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-12">
+                    <div class="bg-light p-4 mt-3 mb-3 p-5">
+                        <div
+                            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                            <h3 class="h3">Rate Your Products</h3>
+                        </div>
+                        <div class="rates">
+                            <button class="star"
+                                style=" border: none;background-color: unset;color: rgb(211, 181, 104);font-size: 3rem;">&#9734;</button>
+                            <button class="star"
+                                style=" border: none;background-color: unset;color: rgb(211, 181, 104);font-size: 3rem;">&#9734;</button>
+                            <button class="star"
+                                style=" border: none;background-color: unset;color: rgb(211, 181, 104);font-size: 3rem;">&#9734;</button>
+                            <button class="star"
+                                style=" border: none;background-color: unset;color: rgb(211, 181, 104);font-size: 3rem;">&#9734;</button>
+                            <button class="star"
+                                style=" border: none;background-color: unset;color: rgb(211, 181, 104);font-size: 3rem;">&#9734;</button>
+                            <p class="rating ps-2">0 of 5</p>
+                        </div>
+                        <div>
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Title:</label>
+                                <input type="text" class="form-control" id="title">
+                                <input class="d-none" type="text" id="productid" value="<%= productid %>">
+                                <input class="d-none" type="text" id="username" value="<%= username %>">
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Description:</label>
+                                <textarea class="form-control" id="description" rows="4"></textarea>
+                            </div>
+                           
+                            <span class="text-danger" id="errormsg"></span><br>
+                            <button onclick="sendReview()" class="btn btn-primary">Send Reviw</button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    <script>
+        const ratingContainer = document.querySelector('.rates');
+        const currentRating = document.querySelector('.rating');
+        let clickedStarIndex;
+
+        ratingContainer.addEventListener('click', (event) => {
+            if (event.target.classList.contains('star')) {
+                clickedStarIndex = Array.from(event.target.parentNode.children).indexOf(event.target) + 1;
+
+                currentRating.innerText = `${clickedStarIndex} of 5`;
+
+                ratingContainer.querySelectorAll('.star').forEach((star, index) => {
+                    star.innerHTML = index + 1 <= clickedStarIndex ? '&#9733;' : '&#9734;';
+                    
+                });
+            }
+        });
+        async function sendReview() {
+            try {
+                const scores=  clickedStarIndex;
+                const title = document.getElementById('title').value
+                const description = document.getElementById('description').value
+                const productid = document.getElementById('productid').value
+                const username = document.getElementById('username').value
+                console.log(scores+""+username)
+                let value = JSON.stringify({
+                    title: title,
+                    description: description,
+                    scores: scores,
+                    productid: productid,
+                    username: username
+                })
+                const response = await fetch('/review/reviewpost', {
+                    method: 'post',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: value,
+                })
+                const resBody = await response.json()
+                if (resBody.success) {
+                    console.log(resBody.message);
+                    window.location.href = `/order/orderlist`;
+                } else {
+                    console.log(resBody.message);
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    </script>
+    <%-include('userfooter')-%>

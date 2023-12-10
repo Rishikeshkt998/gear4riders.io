@@ -168,9 +168,15 @@ const dataWeekly = weekNumbers.map(week => {
     return matchingEntry ? matchingEntry.totalAmount : 0;
 });
 
+
+
+
+
+
   const ctx = document.getElementById('monthlyTotalChart').getContext('2d');
   const ctxWeekly = document.getElementById('weeklyTotalChart').getContext('2d');
   const ctxYearly = document.getElementById('yearlyTotalChart').getContext('2d'); 
+  const ctxcategory = document.getElementById('categoryTotalChart').getContext('2d'); 
   new Chart(ctx, {
     type: 'bar',
     data: {
@@ -428,6 +434,8 @@ new Chart(ctxWeekly, {
     }
   }
 });
+
+
 function showMonthlyChart() {
   const monthlyChart = document.getElementById('monthlyTotalChart');
   const weeklyChart = document.getElementById('weeklyTotalChart');

@@ -15,7 +15,21 @@ app.use(nocache());
 const userstaticroutes = require('./routers/StaticRoutes/UserStaticRoutes');
 const adminAuthroutes = require('./routers/AuthRoutes/AdminAuthRoutes');
 const adminStaticRoutes = require('./routers/StaticRoutes/AdminStaticRoutes');
-const userAuthRoutes = require('./routers/AuthRoutes/UserAuthRoutes');
+const PaymentRoutes = require('./routers/AuthRoutes/PaymentRoutes');
+const CartRoutes = require('./routers/AuthRoutes/CartRoutes');
+const wishListRoutes = require('./routers/AuthRoutes/WishListRoutes');
+const checkOutRoutes = require('./routers/AuthRoutes/checkOutRoutes');
+const walletRoutes = require('./routers/AuthRoutes/WalletRoutes');
+const userProfileRoutes = require('./routers/AuthRoutes/userProfileRoutes');
+const orderRoutes = require('./routers/AuthRoutes/OrderRoutes');
+const reviewRoutes = require('./routers/AuthRoutes/reviewRoutes');
+
+
+
+
+
+
+
 
 const adminAuth = require('./middleware/adminAuth');
 const userAuth = require('./middleware/userAuth');
@@ -61,7 +75,22 @@ app.use('/admin', adminStaticRoutes);
 
 app.use('/', userstaticroutes);
 app.use('/adminauth', adminAuth, adminAuthroutes);
-app.use('/userauth', userAuth, userAuthRoutes);
+app.use('/cart', userAuth, CartRoutes);
+app.use('/wishlist', userAuth, wishListRoutes);
+app.use('/checkout', userAuth, checkOutRoutes);
+app.use('/wallet', userAuth, walletRoutes);
+app.use('/profile', userAuth, userProfileRoutes);
+app.use('/order', userAuth, orderRoutes);
+app.use('/review', userAuth, reviewRoutes);
+app.use('/payment', userAuth, PaymentRoutes);
+
+
+
+
+
+
+
+
 // app.get('*', (req, res) => {
 //     res.status(404).render('404');
 //   });

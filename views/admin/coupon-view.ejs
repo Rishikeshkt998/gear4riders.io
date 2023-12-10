@@ -21,6 +21,9 @@
               <th scope="col">maximum usage</th>
               <th scope="col">Expiry</th>
               <th scope="col">Description</th>
+              <th scope="col">Action</th>
+
+              
 
 
 
@@ -50,8 +53,8 @@
                 <td>
                   <%= value.description%>
                 </td>
-                <!-- <td><a href="/adminauth/editproduct/%= value._id %>"><i class="fa-solid fa-pen-to-square text-success"></i></a><a href="/adminauth/deleteproduct/%= value._id %>"><i
-                                    class="fa-solid fa-trash text-danger ms-3"></i></a></td> -->
+                <td><a href="/adminauth/edit-coupon/<%= value._id %>"><i class="fa-solid fa-pen-to-square text-success"></i></a><a href="/adminauth/deleteproduct/%= value._id %>"><i
+                                    class="fa-solid fa-trash text-danger ms-3"></i></a></td>
 
               </tr>
               <% }) %>

@@ -24,10 +24,10 @@
                         <div class="card-body p-0">
                             <ul class="list-group list-group-flush rounded-3">
                                 <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                    <a href="/userauth/getaddressbook" style="color: black;">Address Book</a>
+                                    <a href="/profile/getaddressbook" style="color: black;">Address Book</a>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                                    <a href="/user/orderDetails" style="color: black;">My order</a>
+                                    <a href="/profile/orderDetails" style="color: black;">My order</a>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                                     <a href="" style="color: black;">Change Password</a>
@@ -103,7 +103,7 @@
                     </div>
 
                     <div class="row" id="form1">
-                        <form action="/userauth/updateuserprofile/<%=UserData._id%>" method="post" id="edit-form"
+                        <form action="/profile/updateuserprofile/<%=UserData._id%>" method="post" id="edit-form"
                             style="display: none;">
                             <div class="form-group ">
                                 <label for="recipient-name" class="col-form-label">Name:</label>
@@ -166,12 +166,12 @@
             try {
                 const email = document.getElementById('email').value
                 console.log(`Your new Email is ${email}`)
-                const response = await fetch(`/userauth/changeEmail/${email}`, { method: 'get' })
+                const response = await fetch(`/profile/changeEmail/${email}`, { method: 'get' })
                 const resBody = await response.json()
                 if (resBody.success) {
                     console.log(resBody.message)
                     document.getElementById('emailData').innerHTML=`
-                    <a href="/userauth/verifyemailotp">
+                    <a href="/profile/verifyemailotp">
                         <div class="col-md-12 btn btn-primary">
                         <h5>Verify Otp</h5>
                         </div>

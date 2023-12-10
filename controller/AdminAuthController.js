@@ -58,7 +58,7 @@ async function ProductPost(req, res) {
             brandId: req.body.brandId,
             categorieId: req.body.categorieId,
             description: req.body.description,
-            discount:req.body.discount,
+            discount: req.body.discount,
             countInStock: req.body.countInStock,
         });
         product.save().then((createdproduct => {
@@ -96,7 +96,14 @@ async function editProduct(req, res) {
 
 
     const id = req.params.id;
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).populate({
+        path: 'categorieId',
+        select: 'name'
+    })
+        .populate({
+            path: 'brandId',
+            select: 'name'
+        });
     const categorylist = await Category.find({ isDeleted: false });
 
     const brandlist = await Brand.find({ isDeleted: false });
@@ -107,16 +114,6 @@ async function editProduct(req, res) {
 
 
 async function updateProduct(req, res) {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        const id = req.params.id;
-        const product = await Product.findById(id);
-        const categorylist = await Category.find({ isDeleted: false });
-        const brandlist = await Brand.find({ isDeleted: false });
-
-        return res.render('admin/edit-product', { product, brandlist, categorylist, errors: errors.mapped() });
-    }
 
     const data = req.body;
     console.log(data);
@@ -126,12 +123,6 @@ async function updateProduct(req, res) {
             const id = req.params.id;
             const product = await Product.findById(id);
             console.log(product);
-
-            // let croppedImages = []
-            // for (let i = 0; i < req.files.length; i++) {
-            //     croppedImages[i] = req.files[i].filename
-            // }
-            // const croppedImages = req.file|| [];
             const croppedImages = req.files.map(file => file.filename);
             console.log(croppedImages);
             const name = req.body.name;
@@ -263,7 +254,7 @@ async function adminDashboard(req, res) {
                 }
             }
         ]);
-    
+
         // Trending Products
         const trendingProducts = await Order.aggregate([
             {
@@ -288,8 +279,38 @@ async function adminDashboard(req, res) {
         ]);
         console.log(trendingProducts);
         console.log(monthwiseTotal);
+        const dailyTotalAmount = await Order.aggregate([
+            {
+                $group: {
+                    _id: {
+                        year: { $year: '$date' },
+                        month: { $month: '$date' },
+                        day: { $dayOfMonth: '$date' }
+                    },
+                    totalAmount: { $sum: '$totalAmount' }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    year: '$_id.year',
+                    month: '$_id.month',
+                    day: '$_id.day',
+                    totalAmount: 1
+                }
+            },
+            {
+                $sort: {
+                    year: 1,
+                    month: 1,
+                    day: 1
+                }
+            }
+        ]);
 
-        res.render('admin/admin-dashboard', { monthwiseTotal,yearwiseTotal,weeklyTotal,totalPrice , trendingProducts ,formatCurrency});
+        console.log(dailyTotalAmount);
+
+        res.render('admin/admin-dashboard', { monthwiseTotal, yearwiseTotal, weeklyTotal, totalPrice, trendingProducts, formatCurrency, dailyTotalAmount });
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
@@ -318,9 +339,9 @@ async function SalesReport(req, res) {
             }
         ]);
         const totalPrice = orderStats[0] ? orderStats[0].totalAmount : 0;
-        const totalorders= orderStats[0] ? orderStats[0].totalOrders : 0;
-        const averageorder= orderStats[0] ? orderStats[0].averageOrderValue : 0;
-       
+        const totalorders = orderStats[0] ? orderStats[0].totalOrders : 0;
+        const averageorder = orderStats[0] ? orderStats[0].averageOrderValue : 0;
+
         // Monthwise Total
         const monthwiseTotal = await Order.aggregate([
             {
@@ -394,7 +415,7 @@ async function SalesReport(req, res) {
                 }
             }
         ]);
-    
+
         // Trending Products
         const trendingProducts = await Order.aggregate([
             {
@@ -450,18 +471,17 @@ async function SalesReport(req, res) {
                     _id: 1,
                     name: 1,
                     email: 1,
-                    phone:1,
-                    address:1
+                    phone: 1,
+                    address: 1
                     // Include other fields if needed
                 }
             }
         ]);
-        
 
         console.log(trendingProducts);
         console.log(monthwiseTotal);
 
-        res.render('admin/salesreport', { monthwiseTotal,yearwiseTotal,weeklyTotal, totalPrice,totalorders,averageorder, trendingProducts ,topCustomer,formatCurrency});
+        res.render('admin/salesreport', { monthwiseTotal, yearwiseTotal, weeklyTotal, totalPrice, totalorders, averageorder, trendingProducts, topCustomer, formatCurrency, CategorySalesReport });
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
@@ -527,7 +547,7 @@ async function categoriePost(req, res) {
     }
     const category = new Category({
         name: req.body.name,
-        discount:req.body.discount
+        discount: req.body.discount
     });
     category.save().then((createdcategory => {
         // res.status(201).json(createdcategory)
@@ -651,7 +671,7 @@ async function updateBrand(req, res) {
     if (!errors.isEmpty()) {
         let id = req.params.id;
         const data = await Brand.findById(id);
-        return res.render('admin/edit-brand', { data, errors: errors.mapped()});
+        return res.render('admin/edit-brand', { data, errors: errors.mapped() });
     }
     const id = req.params.id;
     Brand.findByIdAndUpdate(id, {
@@ -713,7 +733,7 @@ async function orderView(req, res) {
     try {
         const ordersData = await Order.find();
         ordersData.sort((a, b) => new Date(b.date) - new Date(a.date));
-       
+
         res.render('admin/admin-orders', {
             ordersData
         });
@@ -722,7 +742,7 @@ async function orderView(req, res) {
     }
 }
 async function AdminOrderDetails(req, res) {
-    
+
     try {
         console.log(req.params.id);
         const orderId = req.params.id;
@@ -741,13 +761,21 @@ async function changeStatus(req, res) {
     try {
         const orderId = req.params.id;
         const status = req.params.status;
+        const currentDate = Date.now();
+        const futureDate = currentDate + (7 * 24 * 60 * 60 * 1000);
+        console.log(futureDate)
+
         console.log(`order id is ${orderId} and Status is ${status}`);
         const updated = await Order.findOneAndUpdate({ '_id': orderId }, { $set: { 'status': status } });
+        if (status === 'DELIVERED') {
+            const updatedate = await Order.findOneAndUpdate({ '_id': orderId }, { $set: { 'return_date': futureDate } });
+            console.log(updatedate)
+        }
         console.log(updated);
         if (updated) {
             console.log('status updated');
-            const status=updated.status
-            return res.json({ success: true, message: 'Status updated' ,status});
+            const status = updated.status
+            return res.json({ success: true, message: 'Status updated', status });
         } else {
             console.log('Status failed to update');
             return res.json({ success: false, message: 'Status failed to update' });
@@ -762,12 +790,14 @@ async function changePaymentStatus(req, res) {
         const orderId = req.params.id;
         const totalAmount = req.params.totalAmount;
         const paymentstatus = req.params.paymentstatus;
-        const userId= req.params.userId;
+        const userId = req.params.userId;
+
 
         console.log(paymentstatus)
         const updated = await Order.findOneAndUpdate({ '_id': orderId }, { $set: { 'paymentstatus': paymentstatus } });
         console.log(updated);
-        if(paymentstatus==='REFUND'){
+
+        if (paymentstatus === 'REFUND') {
             const walletAmount = await User.findByIdAndUpdate(
                 userId,
                 {
@@ -785,11 +815,11 @@ async function changePaymentStatus(req, res) {
             )
         }
         if (updated) {
-            
+
             console.log('status updated');
             // const status=updated.paymentstatus
 
-            return res.json({ success: true, message: 'Status updated' ,updated});
+            return res.json({ success: true, message: 'Status updated', updated });
         } else {
             console.log('Status failed to update');
             return res.json({ success: false, message: 'Status failed to update' });
@@ -800,7 +830,7 @@ async function changePaymentStatus(req, res) {
     }
 }
 async function addCoupon(req, res) {
-    res.render('admin/add-coupon',{ errors: '', invalid: '' });
+    res.render('admin/add-coupon', { errors: '', invalid: '' });
 }
 
 async function couponPost(req, res) {
@@ -847,6 +877,69 @@ async function couponView(req, res) {
 
 }
 
+async function editCoupon(req, res) {
+
+    const id = req.params.id;
+    console.log(id)
+    const coupon = await Coupon.findById({ '_id': id });
+
+
+    res.render('admin/edit-coupon', { coupon, errors: '' });
+}
+
+
+async function updateCoupon(req, res) {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const id = req.params.id;
+        console.log(id)
+        const coupon = await Coupon.findById({ '_id': id });
+        return res.render('admin/edit-coupon', { coupon, errors: errors.mapped() });
+    }
+    try {
+        id = req.params.id
+        const couponName = req.body.couponCode;
+        const couponDate = req.body.couponDate;
+        console.log(couponDate);
+        const couponAmount = req.body.amount;
+        const couponMaximumcount = req.body.maximumusage;
+        const coupondescription = req.body.description;
+        const coupon = {
+            name: couponName,
+            amount: couponAmount,
+            maximum_usage: couponMaximumcount,
+            expired_at: couponDate,
+            description: coupondescription
+
+
+        };
+        const couponupdated = await Coupon.findByIdAndUpdate(id, coupon);
+        console.log(couponupdated);
+
+        res.redirect('/adminauth/couponview')
+    } catch (err) {
+        console.error(err);
+
+    }
+
+}
+
+async function deleteCoupon(req, res) {
+    try {
+        const id = req.params.id;
+        const coupon = await Coupon.findById({ '_id': id });
+        coupon.isDeleted = true;
+        await coupon.save()
+        res.redirect('/adminauth/couponview');
+    } catch (err) {
+        console.error(err);
+
+    }
+
+}
+
+
 
 
 function adminLogout(req, res) {
@@ -892,7 +985,10 @@ module.exports = {
     adminDashboard,
     SalesReport,
     AdminOrderDetails,
-    changePaymentStatus
+    changePaymentStatus,
+    editCoupon,
+    updateCoupon,
+    deleteCoupon
 
 
 };

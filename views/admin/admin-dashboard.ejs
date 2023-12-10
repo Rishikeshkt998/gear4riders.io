@@ -48,6 +48,11 @@
         <canvas id="yearlyTotalChart" width="400" height="200" style="display: none;"></canvas>
       </div>
     </div>
+    <div class="card">
+      <div class="card-body">
+        <canvas id="categoryTotalChart" width="300" height="90" ></canvas>
+      </div>
+    </div>
     <a href="/adminauth/salesreport"><button>Sales report</button></a>
 
     <div class="card">
@@ -141,9 +146,30 @@ const dataWeekly = weekNumbers.map(week => {
     return matchingEntry ? matchingEntry.totalAmount : 0;
 });
 
+const dailyTotals = JSON.parse('<%- JSON.stringify(dailyTotalAmount) %>');
+
+const dayNames = Array.from({ length: 31 }, (_, i) => i + 1);
+
+const availableDays = dailyTotals.map(entry => entry.day);
+
+const filteredDataDaily = dailyTotals.filter(entry => availableDays.includes(entry.day));
+
+const labelsDaily = dayNames.map(day => `${day}`);
+const datadaily = Array.from({ length: 31 }, (_, i) => {
+  const matchingEntry = filteredDataDaily.find(entry => entry.day === i + 1);
+  return matchingEntry ? matchingEntry.totalAmount : 0;
+});
+
+console.log(labels);
+
+
+
+
   const ctx = document.getElementById('monthlyTotalChart').getContext('2d');
   const ctxWeekly = document.getElementById('weeklyTotalChart').getContext('2d');
   const ctxYearly = document.getElementById('yearlyTotalChart').getContext('2d'); 
+  const ctxdaily = document.getElementById('categoryTotalChart').getContext('2d');
+
   new Chart(ctx, {
     type: 'bar',
     data: {
@@ -397,6 +423,92 @@ new Chart(ctxWeekly, {
     scales: {
       x: {
         maxTicksLimit: 52, // Assuming 52 weeks in a year
+      }
+    }
+  }
+});
+
+new Chart(ctxdaily , {
+  type: 'bar',
+  data: {
+    labels: labelsDaily,
+    datasets: [{
+      label: 'Total Sales',
+      data: datadaily,
+      backgroundColor: 'rgba(94, 162, 252, 0.8)',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    scales: {
+      x: {
+        type: 'category',
+        title: {
+          display: true,
+          text: 'Day',
+          font: {
+            size: 16,
+            weight: 'bold'
+          }
+        },
+        ticks: {
+          font: {
+            size: 14
+          }
+        },
+        grid: {
+          display: false
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Total Sales',
+          font: {
+            size: 16,
+            weight: 'bold'
+          }
+        },
+        ticks: {
+          font: {
+            size: 14
+          },
+          beginAtZero: true
+        },
+        grid: {
+          display: false
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: true,
+        labels: {
+          font: {
+            size: 14
+          }
+        }
+      },
+      title: {
+        display: true,
+        text: `Month: ${filteredDataDaily[0]?.month} ${filteredDataDaily[0]?.year}`,
+        align: 'end',
+        position: 'top',
+        font: {
+          size: 18,
+          weight: 'bold'
+        }
+      },
+    },
+    layout: {
+      padding: {
+        right: 30,
+      }
+    },
+    scales: {
+      x: {
+        maxTicksLimit: 31,
       }
     }
   }

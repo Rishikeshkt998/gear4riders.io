@@ -27,7 +27,17 @@ const cartSchema = new mongoose.Schema({
             },
             quantity: {
                 type: Number,
-            }
+            },
+            brandId:
+            {
+                type: mongoose.Types.ObjectId,
+                ref: "brand",
+            },
+            categorieId:
+            {
+                type: mongoose.Types.ObjectId,
+                ref: "category",
+            },
         }
     ],
     isDeleted: {

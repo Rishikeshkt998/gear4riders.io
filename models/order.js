@@ -20,7 +20,7 @@ const ordersSchema = new mongoose.Schema({
     },
     couponname: {
         type: String,
-    // required: true
+        // required: true
     },
     discount: {
         type: Number,
@@ -37,13 +37,17 @@ const ordersSchema = new mongoose.Schema({
     paymentstatus: {
         type: String,
     },
-    invoicenumber:{
-        type:String,
-        required:true
+    invoicenumber: {
+        type: String,
+        required: true
     },
     refund: {
-      type: Boolean,
-      default: false
+        type: Boolean,
+        default: false
+    },
+    return_date: {
+        type: Date
+
     },
     products: [
         {
@@ -68,7 +72,17 @@ const ordersSchema = new mongoose.Schema({
                 type: Number,
                 required: true,
             },
-      
+            brandId:
+            {
+                type: mongoose.Types.ObjectId,
+                ref: "brand",
+            },
+            categorieId:
+            {
+                type: mongoose.Types.ObjectId,
+                ref: "category",
+            },
+
 
             delivery_date: {
                 type: String,

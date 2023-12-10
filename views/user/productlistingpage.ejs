@@ -1,66 +1,59 @@
 <%-include('userheader')-%>
-  <section>
-    <div class="container-fluid">
-      <div class="row ps-3">
-        <div class="col-md-2 col-6 pt-3">
-          <img src="https://www.store4riders.com/media/wysiwyg/Helmets.jpg" class="img-fluid" alt="Helmet">
-        </div>
-        <div class="col-md-2 col-6 pt-3">
-          <img src="https://www.store4riders.com/media/wysiwyg/jackets_1.jpg" class="img-fluid" alt="Jackets">
-        </div>
-        <div class="col-md-2 col-6 pt-3">
-          <img src="https://www.store4riders.com/media/wysiwyg/gloves_1.jpg" class="img-fluid" alt="Gloves">
-        </div>
-        <div class="col-md-2 col-6 pt-3">
-          <img src="https://www.store4riders.com/media/wysiwyg/boots_2.jpg" class="img-fluid" alt="Boots">
-        </div>
-        <div class="col-md-2 col-6 pt-3">
-          <img src="https://www.store4riders.com/media/home/riding-pants.jpg" class="img-fluid" alt="Riding Pants">
-        </div>
-        <div class="col-md-2 col-6 pt-3">
-          <img src="https://www.store4riders.com/media/home/racing-suits.jpg" class="img-fluid" alt="Racing Suits">
+<section>
+  <div class="container-fluid bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container d-flex justify-content-end align-items-center">
+        <div class="col-lg-8 col-md-8">
+          <div class="input-group">
+            
+            <div class="input-group-append">
+              <form class="form-inline my-2 my-lg-0 mx-auto">
+                <input class="form-control form-control-sm ml-3" id="searchInput" type="text" placeholder="Search..." aria-label="Search">
+                <!-- <button class="btn btn-success" style="height: 31px;" id="searchbutton" type="button">Search</button>
+                 -->
+                 <button class="btn  bg-light position-relative" style="height: 31px;" id="searchbutton" type="button">
+                  <i class="fas fa-search position-absolute top-50 start-50 translate-middle" style="font-size: 16px;"></i>
+                </button>
+              </form>
+            </div>
+           
+            <div class="navbar-nav ml-auto">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-dark" href="#" id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Categories
+                </a>
+                <div class="dropdown-menu" aria-labelledby="categoryDropdown">
+                  <% if (categoryNames && categoryNames !== null) { %>
+                    <% for (let i = 0; i < categoryNames.length; i++) { %>
+                      <a class="dropdown-item" href="/ProductList/?category=<%=categoryNames[i]%>">
+                        <%= categoryNames[i] %>
+                      </a>
+                    <% } %>
+                  <% } %>
+                </div>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-dark" href="#" id="brandDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Brands
+                </a>
+                <div class="dropdown-menu" aria-labelledby="brandDropdown">
+                  <% if (brandNames && brandNames !== null) { %>
+                    <% for (let i = 0; i < brandNames.length; i++) { %>
+                      <a class="dropdown-item" href="/ProductList/?brand=<%= brandNames[i] %>">
+                        <%= brandNames[i] %>
+                      </a>
+                    <% } %>
+                  <% } %>
+                </div>
+              </li>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="row ps-3 mt-4">
-        <div class="col-md-6 col-12 pt-3">
-          <img src="https://www.store4riders.com/media/wysiwyg/Rain%20riding%20gear%20for%20bikers.jpg"
-            class="img-fluid" alt="Rain Riding Gear">
-        </div>
-        <div class="col-md-6 col-12 pt-3">
-          <img src="https://www.store4riders.com/media/wysiwyg/Motorcycle_touring_gear_1.jpg" class="img-fluid"
-            alt="Motorcycle Touring Gear">
-        </div>
-      </div>
-    </div>
-  </section>
-  <h2 class="text-center pt-5">CATEGORIES</h2>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light ">
-    <div class="container d-flex justify-content-center">
-      <div class="navbar-nav">
-        <% if (categoryNames && categoryNames !==null) { %>
-          <% for (let i=0; i < categoryNames.length; i++) { %>
-            <a class="nav-item nav-link mx-2 text-dark" href="/categoryproduct/<%= categoryNames[i] %>">
-              <%= categoryNames[i] %>
-            </a>
-            <% } %>
-              <% } %>
-      </div>
-    </div>
-  </nav>
-  <h2 class="text-center pt-5">BRANDS</h2>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
-    <div class="container d-flex justify-content-center">
-      <div class="navbar-nav">
-        <% if (brandNames && brandNames !==null) { %>
-          <% for (let i=0; i < brandNames.length; i++) { %>
-            <a class="nav-item nav-link mx-2 text-dark" href="/brandproduct/<%= brandNames[i] %>">
-              <%= brandNames[i] %>
-            </a>
-            <% } %>
-              <% } %>
-      </div>
-    </div>
-  </nav>
+    </nav>
+  </div>
+</section>
+  
   <div class="row ">
     <div class="col-lg-7 col-md-7 mt-5 ms-5 ps-4">
       <div class="sort-options">
@@ -72,26 +65,17 @@
         </select>
         </div>
     </div>
-    <div class="col-lg-4 col-md-4 mt-5 me-5 pe-4 d-flex justify-content-end">
-      <div>
-      <div class="container" style="width:300px;">
-        <div class="input-group justify-content-end">
-          <input type="text" class="form-control"  id="searchInput" placeholder="Search..." aria-label="Search" aria-describedby="basic-addon2">
-          <div class="input-group-append">
-            <button class="btn btn-success" id="searchbutton"type="button">Search</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    </div>
+    
   </div>
   
    
       
    
   <section>
+    
     <div class="container pb-5">
-      <a href="/ProductList" style="color: black;text-decoration: none;"><h1 class="text-center pt-5">POPULAR PRODUCTS</h1></a>
+
+      <h1 class="text-center pt-5">POPULAR PRODUCTS</h1>
       <div class="row d-flex justify-content-center align-items-stretch">
         <% data.forEach(function(product, i) { %>
           <div class="col-md-3 col-sm-6 mt-5">
@@ -152,7 +136,7 @@
         <nav aria-label="Page navigation example">
           <ul class="pagination">
             <% if (prevPage) { %>
-              <li class="page-item"><a class="page-link" href="/?page=<%= prevPage %>">Previous</a></li>
+              <li class="page-item"><a class="page-link" href="/ProductList/?page=<%= prevPage %>">Previous</a></li>
               <% } %>
                 <% for (let i=1; i <=pages; i++) { %>
                   <% if (i===currentPage) { %>
@@ -160,13 +144,13 @@
                         <%= i %>
                       </span></li>
                     <% } else { %>
-                      <li class="page-item"><a class="page-link" href="/?page=<%= i %>">
+                      <li class="page-item"><a class="page-link" href="/ProductList/?page=<%= i %>">
                           <%= i %>
                         </a></li>
                       <% } %>
                         <% } %>
                           <% if (nextPage) { %>
-                            <li class="page-item"><a class="page-link" href="/?page=<%= nextPage %>">Next</a></li>
+                            <li class="page-item"><a class="page-link" href="/ProductList/?page=<%= nextPage %>">Next</a></li>
                             <% } %>
           </ul>
         </nav>
@@ -175,7 +159,7 @@
   </section>
   <script>
     function postWishlist(id) {
-      fetch(`/wishlist/addtowhishlist/${id}`, {
+      fetch(`/userauth/addtowhishlist/${id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -224,9 +208,9 @@
 
           // Redirect to the root URL with the sorting parameter as a query parameter
           if (sortingParameter == null) {
-            window.location.href = `/`;
+            window.location.href = `/ProductList`;
           } else {
-            window.location.href = `/?sort=${sortingParameter}`;
+            window.location.href = `/ProductList/?sort=${sortingParameter}`;
           }
 
         });
@@ -247,9 +231,9 @@
   searchButton.addEventListener("click", function () {
     const searchValue = searchInput.value.trim();
     if (searchValue === "") {
-      window.location.href = `/`;
+      window.location.href = `/ProductList`;
     } else {
-      window.location.href = `/?search=${encodeURIComponent(searchValue)}`;
+      window.location.href = `/ProductList/?search=${encodeURIComponent(searchValue)}`;
     }
   });
 });

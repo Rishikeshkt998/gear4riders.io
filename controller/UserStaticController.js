@@ -6,6 +6,8 @@ const Cart = require('../models/cart');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const userOtpVerification = require('../models/otp');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 require('dotenv/config');
 const notifier = require('node-notifier');
 const path = require('path');
@@ -373,6 +375,7 @@ async function brandName() {
 }
 
 
+
 async function dashBoard(req, res) {
     try {
         const userId = req.session.currentUserId;
@@ -487,86 +490,16 @@ async function categoryName() {
         throw error; // Propagate the error to the caller
     }
 }
-// async function categoryFilter(req, res) {
-//     try {
-//         const categorie = req.params.categoryname;
-//         var categoryNames = await categoryName();
-//         const products = await Product.find({ isDeleted: false }).populate('categorieId', { _id: 0, name: 1 })
-//         console.log(`products is ${products[2].categorieId.name}`);
-//         let filterResult = [];
-//         console.log('the length is ', products.length)
-//         for (let i = 0; i < products.length; i++) {
-//             if (products[i].categorieId && products[i].categorieId.name === categorie) {
-//                 filterResult.push(products[i]);
-//             }
-//         }
-//         console.log('result is herre boss')
-//         console.log(filterResult);
-
-
-//         res.render('user/categoryresult', { filterResult, categoryNames, categorie, formatCurrency, generateSlug })
-//     } catch (error) {
-//         console.log(error)
-//         res.redirect('/error-page');
-//     }
-
-
-// }
-
-
 async function categoryFilter(req, res) {
     try {
-        const ITEMS_PER_PAGE = 10; 
         const categorie = req.params.categoryname;
-        const page = parseInt(req.query.page) || 1;
-
         var categoryNames = await categoryName();
-
-        const totalProducts = await Product.countDocuments({ isDeleted: false }).populate('categorieId', { _id: 0, name: 1 });
-        const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
-
-        const products = await Product.find({ isDeleted: false})
-            .populate('categorieId', { _id: 0, name: 1 })
-            .skip((page - 1) * ITEMS_PER_PAGE)
-            .limit(ITEMS_PER_PAGE);
-
+        const products = await Product.find({ isDeleted: false }).populate('categorieId', { _id: 0, name: 1 })
         console.log(`products is ${products[2].categorieId.name}`);
-
-        let filterResult = [];
-        for (let i = 0; i < products.length; i++) {
-            if (products[i].categorieId && products[i].categorieId.name === categorie) {
-                                filterResult.push(products[i]);
-                            }
-        }
-
-        console.log('result is here boss');
-        console.log(filterResult);
-
-        res.render('user/categoryresult', {
-            filterResult,
-            categoryNames,
-            categorie,
-            formatCurrency,
-            generateSlug,
-            currentPage: page,
-            totalPages
-        });
-    } catch (error) {
-        console.log(error);
-        res.redirect('/error-page');
-    }
-}
-
-async function brandFilter(req, res) {
-    try {
-        const brand = req.params.brandname;
-        var brandNames = await brandName();
-        const products = await Product.find({ isDeleted: false }).populate('brandId', { _id: 0, name: 1 })
-        console.log(`products is ${products[2].brandId.name}`);
         let filterResult = [];
         console.log('the length is ', products.length)
         for (let i = 0; i < products.length; i++) {
-            if (products[i].brandId && products[i].brandId.name === brand) {
+            if (products[i].categorieId && products[i].categorieId.name === categorie) {
                 filterResult.push(products[i]);
             }
         }
@@ -574,12 +507,113 @@ async function brandFilter(req, res) {
         console.log(filterResult);
 
 
-        res.render('user/brandresult', { filterResult, brandNames, brand, formatCurrency, generateSlug })
+        res.render('user/categoryresult', { filterResult, categoryNames, categorie, formatCurrency, generateSlug })
     } catch (error) {
         console.log(error)
         res.redirect('/error-page');
     }
+
+
 }
+
+
+
+
+async function ProductList(req, res) {
+    try {
+        const userId = req.session.currentUserId;
+        let count = null;
+        const cart = await Cart.findOne({ userId: userId });
+
+        if (req.session.userId) {
+            count = cart.products.length;
+        }
+
+        const pageNum = parseInt(req.query.page) || 1;
+        const nextPage = pageNum + 1;
+        const prevPage = pageNum - 1;
+        const perPage = 8;
+
+        let docCount;
+
+        const categoryNames = await categoryName();
+        const brandNames = await brandName();
+
+        if (req.session.uesrid) {
+            delete req.session.uesrid;
+        }
+
+        const totalDocuments = await Product.countDocuments({ isDeleted: false });
+        let data = await Product.find({ isDeleted: false })
+            .skip((pageNum - 1) * perPage)
+            .limit(perPage);
+        const sortOrder = req.query.sort
+        if (sortOrder) {
+
+            sortedData = [...data].sort((a, b) => sortOrder * (a.price - b.price))
+            data = sortedData.slice((pageNum - 1) * perPage, pageNum * perPage);
+            console.log('the length is ', sortedData);
+
+        }
+
+        const search = req.query.search;
+
+        if (search) {
+            const searchnospecialchar = search.replace(/[^a-zA-Z0-9]/g, "");
+
+            data = await Product.find({
+                'name': { $regex: new RegExp(searchnospecialchar, 'i') }
+            });
+
+            console.log(data);
+        }
+
+        const products = await Product.find({ isDeleted: false }).populate('brandId', { _id: 0, name: 1 })
+        const brand = req.query.brand;
+        if (brand) {
+            data = [];
+            console.log('the length is ', products.length)
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].brandId && products[i].brandId.name === brand) {
+                    data.push(products[i]);
+                }
+            }
+
+
+        }
+        const categorie = req.query.category;
+        const product = await Product.find({ isDeleted: false }).populate('categorieId', { _id: 0, name: 1 })
+        if (categorie) {
+            data = [];
+            for (let i = 0; i < product.length; i++) {
+                if (product[i].categorieId && product[i].categorieId.name === categorie) {
+                    data.push(product[i]);
+                }
+            }
+        }
+
+        res.render('user/productlistingpage', {
+            data,
+            page: '/ProductList',
+            currentPage: pageNum,
+            totalDocuments,
+            pages: Math.ceil(totalDocuments / perPage),
+            nextPage: nextPage <= Math.ceil(totalDocuments / perPage) ? nextPage : null,
+            prevPage: prevPage >= 1 ? prevPage : null,
+            count,
+            categoryNames,
+            brandNames,
+            formatCurrency,
+            generateSlug
+        });
+    } catch (error) {
+        console.error(error);
+        res.redirect('/error-page');
+    }
+}
+
+
+
 
 
 function generateSlug(str) {
@@ -633,10 +667,53 @@ async function sendReferalCode(email, req) {
         }
     })
 }
+const aggregateReviews = async (criteria) => {
+    console.log(criteria);
+    try {
+        const products = await Product.find(criteria);
+
+        if (products.length === 0) {
+            console.log('No products found for the given criteria.');
+            return null; // or handle this case according to your application logic
+        }
+
+        const result = await Product.aggregate([
+            {
+                $match: criteria,
+            },
+            {
+                $unwind: "$reviews",
+            },
+            {
+                $group: {
+                    _id: null,
+                    averageScore: { $avg: "$reviews.scores" },
+                    reviews: { $push: "$reviews" },
+                },
+            },
+        ]);
+
+        if (result.length > 0) {
+            const averageScore = result[0].averageScore;
+            const reviews = result[0].reviews;
+            console.log('Average Score:', averageScore);
+            console.log('Reviews:', reviews);
+            return { averageScore, reviews };
+        } else {
+            console.log('No reviews found for the given criteria.');
+            return { averageScore: 0, reviews: 0 }; // or handle this case according to your application logic
+        }
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+};
 async function ProductDetails(req, res) {
     try {
         const id = req.params.id;
+        const productid = new ObjectId(id)
         const slug = req.params.slug; console.log(slug);
+        let { averageScore, reviews } = await aggregateReviews({ _id: productid });
+        console.log(averageScore, reviews)
 
         const categoryid = await Product.findById({ _id: id }, { _id: 0, categorieId: 1 });
         const brandid = await Product.findById({ _id: id }, { _id: 0, brandId: 1 });
@@ -647,7 +724,7 @@ async function ProductDetails(req, res) {
         Product.findById({ _id: id }).then((products) => {
             const productSlug = generateSlug(products.name);
             res.render('user/productdetails', {
-                categoryname, brandname, products, productSlug, formatCurrency
+                categoryname, brandname, products, productSlug, formatCurrency, averageScore, reviews
             });
 
 
@@ -797,7 +874,7 @@ module.exports = {
     newPassword,
     shareLink,
     categoryFilter,
-    brandFilter,
+    ProductList
 
 
 };

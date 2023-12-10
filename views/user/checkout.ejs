@@ -2,6 +2,7 @@
     <section>
         <div class="container mt-5 mb-5">
             <h1 class="text-center">Checkout</h1>
+            <div id="alertmessage"></div>
 
 
 
@@ -29,64 +30,73 @@
                                         </p>
                                         <div class="d-flex col-md-8 mb-4">
                                             <a
-                                                href="/userauth/payment/<%= addressList[i]._id %>/<%= addressList[i].name %>/<%= addressList[i].fulladdress %>/<%= addressList[i].pincode %>/<%= addressList[i].landmark %>/<%= addressList[i].district %>/<%= addressList[i].state %>/<%= addressList[i].phone %>/<%= addressList[i].alternatephone%>"><button
+                                                href="/payment/<%= addressList[i]._id %>/<%= addressList[i].name %>/<%= addressList[i].fulladdress %>/<%= addressList[i].pincode %>/<%= addressList[i].landmark %>/<%= addressList[i].district %>/<%= addressList[i].state %>/<%= addressList[i].phone %>/<%= addressList[i].alternatephone%>"><button
                                                     class="btn  p-2 me-2 mt-2 fw-bold" onclick=""
                                                     style="background-color: rgb(91, 154, 249);">Deliver
                                                     Here</button></a>
-                                            <a href="/userauth/addressremove/<%=addressList[i]._id%>"><button
+                                            <a href="/checkout/addressremove/<%=addressList[i]._id%>"><button
                                                     class="btn  p-2 me-5 fw-bold mt-2  "
                                                     style="background-color: rgb(249, 91, 91);">
                                                     Remove</button></a>
                                         </div>
                                         <div class="row" id="form1">
-                                            <form action="/userauth/updateaddress/<%=addressList[i]._id%>" method="post"
+                                            <form action="/checkout/updateaddress/<%=addressList[i]._id%>" method="post"
                                                 id="edit-form<%= i %>" style="display: none;">
                                                 <div class="form-group">
                                                     <label for="name">Name</label>
                                                     <input type="text" class="form-control" name="name" id="name"
-                                                        value="<%=addressList[i].name%>">
+                                                        value="<%=addressList[i].name%>" onchange="NameValidate()">
+                                                    <span class="text-danger" id="error-name"></span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="fulladdress">Address</label>
                                                     <input type="text" class="form-control" name="fulladdress"
-                                                        id="fulladdress" value="<%=addressList[i].fulladdress%>">
+                                                        id="fulladdress" value="<%=addressList[i].fulladdress%>"
+                                                        onchange="AddressValidate()">
+                                                    <span class="text-danger" id="error-fulladdress"></span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="pincode">Pincode</label>
                                                     <input type="text" class="form-control" name="pincode" id="pincode"
-                                                        value="<%=addressList[i].pincode%>">
-                                                        <span class="text-danger" id="error-pincode"></span>
+                                                        value="<%=addressList[i].pincode%>" onchange="PinValidate()">
+                                                    <span class="text-danger" id="error-pincode"></span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="landmark">Landmark</label>
                                                     <input type="text" class="form-control" name="landmark"
-                                                        id="landmark" value="<%=addressList[i].landmark%>">
-                                                        <span class="text-danger" id="error-landmark"></span>
+                                                        id="landmark" value="<%=addressList[i].landmark%>"
+                                                        onchange="landmarkvalidate()">
+                                                    <span class="text-danger" id="error-landmark"></span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="district">District</label>
                                                     <input type="text" class="form-control" name="district"
-                                                        id="district" value="<%=addressList[i].district%>">
+                                                        id="district" value="<%=addressList[i].district%>"
+                                                        onchange="districtValidate() ">
+                                                    <span class="text-danger" id="error-district"></span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="state">State</label>
                                                     <input type="text" class="form-control" name="state" id="state"
-                                                        value="<%=addressList[i].state%>">
+                                                        value="<%=addressList[i].state%>" onchange="stateValidate()">
+                                                    <span class="text-danger" id="error-state"></span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="phone">Phone</label>
                                                     <input type="text" class="form-control" name="phone" id="phone"
-                                                        value="<%=addressList[i].phone%>">
+                                                        value="<%=addressList[i].phone%>" onchange="Phonevalidate()">
+                                                    <span class="text-danger" id="error-phone"></span>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="alternatephone">Alternate Phone Number</label>
-                                                    <input type="text" class="form-control" name="alternatephone" onchange="Alternatephonenumbervalidate()"
-                                                        id="alternatephone" value="<%=addressList[i].alternatephone%>">
+                                                    <input type="text" class="form-control" name="alternatephone"
+                                                        onchange="Alternatephonenumbervalidate()" id="alternatephone"
+                                                        value="<%=addressList[i].alternatephone%>">
 
-                                                        <span class="text-danger" id="error-alternatephone"></span>
-                                                           
+                                                    <span class="text-danger" id="error-alternatephone"></span>
+
                                                 </div>
-                                                <button type="submit" class="btn btn-primary">save address</button>
+                                                <button type="submit" onclick="formValidate()"class="btn btn-primary">save address</button>
                                             </form>
                                         </div>
                                     </div>
@@ -101,7 +111,7 @@
 
                     </div>
                     <div class="card mb-4">
-                        <a style="text-decoration: none;color:black"href="/userauth/displayaddress">
+                        <a style="text-decoration: none;color:black" href="/checkout/displayaddress">
                             <div class="card col-md-12 form-group d-flex p-2 btn btn-outline-primary" id="buttonclick"
                                 data-bs-toggle="modal" data-bs-target="#editAddressModal">+ Add new Address</div>
                         </a>
@@ -121,11 +131,13 @@
                                     class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
                                     Price(<%= totalProducts %> items)
                                         <span id="actualamount">
-                                            <%= formatCurrency(totalAmount)%>
+                                            <%= formatCurrency(totalProductAmount)%>
                                         </span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                    Discount<span>0</span></li>
+                                    Discount<span>
+                                        <%= formatCurrency(totalProductAmount-totalAmount)%>
+                                    </span></li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                                     Shipping<span>Free</span></li>
                                 <li
@@ -149,6 +161,28 @@
     </section>
 
     <script>
+
+
+
+        function formValidate() {
+            const name = document.getElementById('name').value
+            const phone = document.getElementById('phone').value
+            const alterPhone = document.getElementById('alternatenumber').value
+            const Landmark = document.getElementById('Landmark').value
+            const pin = document.getElementById('pincode').value
+            const district = document.getElementById('district').value
+            const state = document.getElementById('state').value
+            const address = document.getElementById('fulladdress').value
+            if (!name.length || !phone.length || !alterPhone.length || !Landmark.length || !pin.length || !address.length || !district.length || !state.length) {
+                document.getElementById('alertmessage').innerHTML = `
+        <div class="alert alert-dismissible fade show alert-danger" role="alert">
+         <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+             <strong>Input fields must be filled!</strong>
+      </div>`
+                return false;
+            }
+            return true;
+        }
 
         function showform() {
             var form = document.getElementById("checkout-form");
@@ -174,100 +208,130 @@
         }
 
 
-   
-function Alternatephonenumbervalidate() {
-    const alterphone= document.getElementById('alternatephone').value
-    const alternateerror = document.getElementById('error-alternatephone')
-    if (!alterphone.length) {
-        alternateerror.style.color = 'red'
-        alternateerror.innerHTML = 'alternate phone number is required*'
-        return false;
-    } else if (alterphone.length !== 10) {
-        alternateerror.style.color = 'red'
-        alternateerror.innerHTML = 'mobile number should be 10 numbers'
-        return false;
-    }
-    alternateerror.innerHTML = ''
-    return true;
-}
-function landmarkvalidate() {
-    const landmark = document.getElementById('landmark').value
-    const landmarkerror = document.getElementById('error-landmark')
-    if (!landmark.length) {
-        landmarkerror.style.color = 'red'
-        landmarkerror.innerHTML = 'landmark is Required*'
-        return false;
-    } else if (landmark .length < 10) {
-        landmarkerror.style.color = 'red'
-        landmarkerror.innerHTML = 'write altest 10 characters *'
-        return false;
-    }
-    landmarkerror.innerHTML = ''
-    return true;
-}
-function validatePin() {
-    const pin = document.getElementById('pincode').value
-    const pinError = document.getElementById('error-pincode')
-    if (!pin.length) {
-        pinError.style.color = 'red'
-        pinError.innerHTML = 'This field is Required*'
-        return false;
-    } else if (pin.length !== 6) {
-        pinError.style.color = 'red'
-        pinError.innerHTML = 'pin must be 6 numbers'
-        return false;
-    }
-    // pinError.style.color = 'green'
-    pinError.innerHTML = ''
-    return true;
-}
-function validateAddress() {
-    const address = document.getElementById('address').value
-    const addressError = document.getElementById('address-error')
-    if (!address.length) {
-        addressError.style.color = 'red'
-        addressError.innerHTML = 'This field is required*'
-        return false;
-    } else if (address.length < 10) {
-        addressError.style.color = 'red'
-        addressError.innerHTML = 'must have to write atlest 10 charachers*'
-        return false;
-    }
-    // addressError.style.color = 'green'
-    addressError.innerHTML = ''
-    return true;
-}
-function validatePhone() {
-    const phone = document.getElementById('phone').value
-    const phoneError = document.getElementById('phone-error')
-    if (!phone.length) {
-        phoneError.style.color = 'red'
-        phoneError.innerHTML = 'This field is required*'
-        return false;
-    } else if (phone.length !== 10) {
-        phoneError.style.color = 'red'
-        phoneError.innerHTML = 'Phone number should be 10 numbers'
-        return false;
-    }
-    // phoneError.style.color = 'green'
-    phoneError.innerHTML = ''
-}
-function validateName() {
-    const name = document.getElementById('name').value
-    const nameError = document.getElementById('name-error')
-    if (!name.length) {
-        nameError.style.color = 'red'
-        nameError.innerHTML = 'This field is required*'
-        return false
-    } else if (name.length < 4 || name.length > 20) {
-        nameError.style.color = 'red'
-        nameError.innerHTML = 'name must has 4-20 charachers*'
-        return false
-    }
-    // nameError.style.color = 'green'
-    nameError.innerHTML = ' '
-    return true;
-}
+
+        function Alternatephonenumbervalidate() {
+            const alterphone = document.getElementById('alternatephone').value
+            const alternateerror = document.getElementById('error-alternatephone')
+            if (!alterphone.length) {
+                alternateerror.style.color = 'red'
+                alternateerror.innerHTML = 'alternate phone number is required*'
+                return false;
+            } else if (alterphone.length !== 10) {
+                alternateerror.style.color = 'red'
+                alternateerror.innerHTML = 'mobile number should be 10 numbers'
+                return false;
+            }
+            alternateerror.innerHTML = ''
+            return true;
+        }
+        function landmarkvalidate() {
+            const landmark = document.getElementById('landmark').value
+            const landmarkerror = document.getElementById('error-landmark')
+            if (!landmark.length) {
+                landmarkerror.style.color = 'red'
+                landmarkerror.innerHTML = 'landmark is Required*'
+                return false;
+            } else if (landmark.length < 10) {
+                landmarkerror.style.color = 'red'
+                landmarkerror.innerHTML = 'write altest 10 characters *'
+                return false;
+            }
+            landmarkerror.innerHTML = ''
+            return true;
+        }
+        function districtValidate() {
+            const district = document.getElementById('disctrict').value
+            const districterror = document.getElementById('error-district')
+            if (!district.length) {
+                districterror.style.color = 'red'
+                districterror.innerHTML = 'district is Required*'
+                return false;
+            } else if (district.length < 4 || district.length > 10) {
+                districterror.style.color = 'red'
+                districterror.innerHTML = 'name must has 4-10 charachers *'
+                return false;
+            }
+            districterror.innerHTML = ''
+            return true;
+        }
+        function stateValidate() {
+            const state = document.getElementById('state').value
+            const stateerror = document.getElementById('error-state')
+            if (!state.length) {
+                stateerror.style.color = 'red'
+                stateerror.innerHTML = 'state is Required*'
+                return false;
+            } else if (state.length < 4 || state.length > 10) {
+                stateerror.style.color = 'red'
+                stateerror.innerHTML = 'write altest 10 characters *'
+                return false;
+            }
+            stateerror.innerHTML = ''
+            return true;
+        }
+        function PinValidate() {
+            const pin = document.getElementById('pincode').value
+            const pinError = document.getElementById('error-pincode')
+            if (!pin.length) {
+                pinError.style.color = 'red'
+                pinError.innerHTML = 'This field is Required*'
+                return false;
+            } else if (pin.length !== 6) {
+                pinError.style.color = 'red'
+                pinError.innerHTML = 'pin must be 6 numbers'
+                return false;
+            }
+            // pinError.style.color = 'green'
+            pinError.innerHTML = ''
+            return true;
+        }
+        function AddressValidate() {
+            const address = document.getElementById('fulladdress').value
+            const addressError = document.getElementById('error-fulladdress')
+            if (!address.length) {
+                addressError.style.color = 'red'
+                addressError.innerHTML = 'This field is required*'
+                return false;
+            } else if (address.length < 10) {
+                addressError.style.color = 'red'
+                addressError.innerHTML = 'must have to write atlest 10 charachers*'
+                return false;
+            }
+            // addressError.style.color = 'green'
+            addressError.innerHTML = ''
+            return true;
+        }
+        function Phonevalidate() {
+            const phone = document.getElementById('phone').value
+            const phoneError = document.getElementById('error-phone')
+            if (!phone.length) {
+                phoneError.style.color = 'red'
+                phoneError.innerHTML = 'This field is required*'
+                return false;
+            } else if (phone.length !== 10) {
+                phoneError.style.color = 'red'
+                phoneError.innerHTML = 'Phone number should be 10 numbers'
+                return false;
+            }
+            // phoneError.style.color = 'green'
+            phoneError.innerHTML = ''
+        }
+        function NameValidate() {
+            const name = document.getElementById('name').value
+            const nameError = document.getElementById('error-name')
+            if (!name.length) {
+                nameError.style.color = 'red'
+                nameError.innerHTML = 'This field is required*'
+                return false
+            } else if (name.length < 4 || name.length > 20) {
+                nameError.style.color = 'red'
+                nameError.innerHTML = 'name must has 4-20 charachers*'
+                return false
+            }
+            // nameError.style.color = 'green'
+            nameError.innerHTML = ' '
+            return true;
+        }
 
 
 

@@ -28,6 +28,10 @@ const couponSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    isDeleted:{
+        type:Boolean,
+        default:false
+    },
 })
 
 const Coupon = mongoose.model('coupon', couponSchema)
