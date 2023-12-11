@@ -232,14 +232,9 @@
                     const result = await response.json();
                     const orderId = result.orderId
                     console.log(result)
-                    // if (result.success) {
                     window.location.href = `/order/orderdisplay/${orderId}`;
-                    // } else {
-                    //    alert('payment failed')
-
-                    // }
+                    
                 } else {
-                    // Handle the case where the request was not successful (e.g., server error)
                     console.error('Request failed:', response.status);
                 }
             } catch (error) {

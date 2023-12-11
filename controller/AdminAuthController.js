@@ -11,6 +11,22 @@ const multer = require('multer');
 const { validationResult } = require('express-validator');
 
 
+function formatCurrency(amount, currencyCode = 'INR') {
+    const numericAmount = Number(amount);
+
+    if (isNaN(numericAmount)) {
+        throw new Error('Invalid amount. Must be a number.');
+    }
+
+    // Round the amount to avoid formatting issues with floating-point numbers
+    const roundedAmount = Math.round(numericAmount * 100) / 100;
+
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: currencyCode,
+    }).format(roundedAmount);
+}
+
 
 //products
 async function ProductView(req, res) {
@@ -24,7 +40,7 @@ async function ProductView(req, res) {
             select: 'name'
         });
         res.render('admin/admin-product-view', {
-            products
+            products,formatCurrency
         });
     }
     catch (error) {
@@ -708,6 +724,7 @@ async function userView(req, res) {
 async function userBan(req, res) {
     const id = req.params.id;
     const user = await User.findById(id);
+    console.log(user)
     user.isDeleted = true;
     await user.save().then((user) => {
         res.redirect('/adminauth/users');
@@ -735,7 +752,7 @@ async function orderView(req, res) {
         ordersData.sort((a, b) => new Date(b.date) - new Date(a.date));
 
         res.render('admin/admin-orders', {
-            ordersData
+            ordersData,formatCurrency
         });
     } catch (err) {
         console.log(err);
@@ -750,7 +767,7 @@ async function AdminOrderDetails(req, res) {
 
 
         console.log(order);
-        return res.render('admin/admin-order-details', { data: order });
+        return res.render('admin/admin-order-details', { data: order ,formatCurrency});
 
 
     } catch (error) {
@@ -872,7 +889,7 @@ async function couponPost(req, res) {
 async function couponView(req, res) {
     const couponlist = await Coupon.find();
     res.render('admin/coupon-view', {
-        data: couponlist
+        data: couponlist,formatCurrency
     });
 
 }

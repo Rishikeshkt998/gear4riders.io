@@ -215,9 +215,47 @@ async function userProfileAddressSave(req, res) {
     }
 
 }
-async function updateAddressBook(req, res) {
+
+async function editAddressBook(req, res) {
     try {
-        const id = req.params.id;
+        const id=req.params.id
+        const addressid=new ObjectId(id)
+        console.log(addressid)
+        
+
+        const userAddress = await Address.findOne({'address._id':addressid},{ 'address.$': 1 })
+         console.log('User Address:', userAddress);
+        
+
+        if (userAddress && userAddress.address.length > 0) {
+            var addressList = userAddress.address[0];
+        }
+        res.render('user/editaddressbook', { addressList, errors: '' });
+
+    } catch (error) {
+        console.log('Error while updating the address At /users/updateAddress');
+    }
+
+}
+async function updateAddressBook(req, res) {
+    const id = req.params.id;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const addressid=new ObjectId(id)
+        console.log(addressid)
+        
+
+        const userAddress = await Address.findOne({'address._id':addressid},{ 'address.$': 1 })
+         console.log('User Address:', userAddress);
+        
+
+        if (userAddress && userAddress.address.length > 0) {
+            var addressList = userAddress.address[0];
+        }
+
+        return res.render('user/editaddressbook', { addressList,errors: errors.mapped() });
+    }
+    try {
         const data = req.body;
         console.log(data);
         console.log(`id is ${id}  and the data is ${data}`);
@@ -347,6 +385,7 @@ module.exports = {
     updateUserEmail,
     getAddressBook,
     addAddressBook,
+    editAddressBook
 }
 
 

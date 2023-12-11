@@ -38,7 +38,7 @@ router.post('/brands', brandDatavalidate, adminAuthController.brandPost);
 router.get('/addbrand', adminAuthController.addBrand);
 router.get('/editbrand/:id', adminAuthController.editBrand);
 router.post('/updatebrand/:id', brandeditDatavalidate, adminAuthController.updateBrand);
-router.get('/deletebrand/:id', adminAuthController.deleteBrand);
+router.delete('/deletebrand/:id', adminAuthController.deleteBrand);
 
 //user
 

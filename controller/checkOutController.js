@@ -265,12 +265,19 @@ async function saveAddress(req, res) {
 }
 async function editAddress(req, res) {
     try {
+        const id=req.params.id
+        const addressid=new ObjectId(id)
+        console.log(addressid)
+        
 
-        const userId = req.session.currentUserId;
-        const userAddress = await Address.findOne({ userId: userId });
-        const { totalAmount, totalProducts } = await calculateTotalAmount({ userId: userId })
-        var addressList = userAddress.address;
-        res.render('user/checkout', { addressList, totalAmount, totalProducts, formatCurrency, errors: '', invalid: '' });
+        const userAddress = await Address.findOne({'address._id':addressid},{ 'address.$': 1 })
+         console.log('User Address:', userAddress);
+        
+
+        if (userAddress && userAddress.address.length > 0) {
+            var addressList = userAddress.address[0];
+        }
+        res.render('user/editaddress', { addressList, errors: '' });
 
     } catch (error) {
         console.log('Error while updating the address At /users/updateAddress');
@@ -278,8 +285,25 @@ async function editAddress(req, res) {
 
 }
 async function updateAddress(req, res) {
+    const id = req.params.id;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const addressid=new ObjectId(id)
+        console.log(addressid)
+        
+
+        const userAddress = await Address.findOne({'address._id':addressid},{ 'address.$': 1 })
+         console.log('User Address:', userAddress);
+        
+
+        if (userAddress && userAddress.address.length > 0) {
+            var addressList = userAddress.address[0];
+        }
+
+        return res.render('user/editaddress', { addressList,errors: errors.mapped() });
+    }
     try {
-        const id = req.params.id;
+        
         const data = req.body;
         console.log(data);
         console.log(`id is ${id}  and the data is ${data}`);

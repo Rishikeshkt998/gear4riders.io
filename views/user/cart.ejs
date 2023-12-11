@@ -124,6 +124,7 @@
             </div>
     </section>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         function formatCurrency(amount, currencyCode = 'INR') {
@@ -156,6 +157,7 @@
                 return response.json();
             })
                 .then((data) => {
+                    if(data.success){
                     let total = data.Quantity * productPrice
                     let quantity = data.Quantity
                     let totalAmount = data.totalAmount
@@ -182,6 +184,13 @@
                     if (taem) {
                         taem.innerHTML = formatCurrency(totalProductAmount)  
                     }
+                } else {
+                Swal.fire({
+                    title: "Sorry!",
+                    text: data.message
+                  });
+                }
+                console.log(data.message)
                 })
                 .catch(error => {
                     console.error('Error increasing product quantity:', error);
@@ -200,6 +209,7 @@
                 return response.json();
             })
                 .then((data) => {
+                    if(data.success){
                     let total = data.Quantity * productPrice
                     let quantity = data.Quantity
                     let totalAmount = data.totalAmount
@@ -226,6 +236,13 @@
                     if (taem) {
                         taem.innerHTML = formatCurrency(totalProductAmount)
                     }
+                } else {
+                Swal.fire({
+                    title: "Sorry!",
+                    text: data.message
+                  });
+                console.log(data.message)
+            }
                 })
                 .catch(error => {
                     console.error('Error increasing product quantity:', error);

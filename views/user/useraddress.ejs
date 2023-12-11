@@ -28,64 +28,14 @@
                             <i class="fa fa-trash mr-1"></i> Remove
                         </button>
                     </a>
-                    <button class="btn btn-outline-secondary" style="text-decoration: none;" onclick="showEditForm('<%= i %>')">EDIT</button>
+                    <!-- <button class="btn btn-outline-secondary" style="text-decoration: none;" onclick="showEditForm('%= i %>')">EDIT</button>
+                     -->
+                    <a href="/profile/editaddressbook/<%=addressList[i]._id%>"><button class="btn btn-outline-secondary" style="text-decoration: none;" >EDIT</button></a>
                 </div>
 
-                <div class="row" id="edit-form<%= i %>" style="display: none;">
-                <form action="/profile/updateaddressbook/<%=addressList[i]._id%>" method="post">
-                    <!-- <form action="/userauth/updateaddress/%=addressList[i]._id%>" method="post"
-                        id="edit-form" style="display: none;"> -->
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control" name="name" id="name"
-                                value="<%=addressList[i].name%>"onchange="NameValidate()">
-                                <span class="text-danger" id="error-name"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="fulladdress">Address</label>
-                            <input type="text" class="form-control" name="fulladdress" id="fulladdress"
-                                value="<%=addressList[i].fulladdress%>"onchange="AddressValidate()">
-                                <span class="text-danger" id="error-fulladdress"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="pincode">Pincode</label>
-                            <input type="text" class="form-control" name="pincode" id="pincode"
-                                value="<%=addressList[i].pincode%>"onchange="PinValidate()">
-                                <span class="text-danger" id="error-pincode"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="landmark">Landmark</label>
-                            <input type="text" class="form-control" name="landmark" id="landmark"
-                                value="<%=addressList[i].landmark%>" onchange="landmarkvalidate()">
-                                <span class="text-danger" id="error-landmark"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="district">District</label>
-                            <input type="text" class="form-control" name="district" id="district"
-                                value="<%=addressList[i].district%>"onchange="districtValidate() ">
-                                <span class="text-danger" id="error-district"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="state">State</label>
-                            <input type="text" class="form-control" name="state" id="state"
-                                value="<%=addressList[i].state%>" onchange="stateValidate()">
-                                <span class="text-danger" id="error-state"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone</label>
-                            <input type="text" class="form-control" name="phone" id="phone"
-                                value="<%=addressList[i].phone%>" onchange="Phonevalidate()">
-                                <span class="text-danger" id="error-phone"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="alternatephone">Alternate Phone Number</label>
-                            <input type="text" class="form-control" name="alternatephone" id="alternatephone"
-                                value="<%=addressList[i].alternatephone%>" onchange="Alternatephonenumbervalidate()">
-                                <span class="text-danger" id="error-alternatephone"></span>
-                        </div>
-                        <button type="submit" class="btn btn-primary" onclick="formValidate()">save address</button>
-                    </form>
-                </div>
+                
+            </div>
+         
         </div>
         <% } %>
         <% } else { %>
@@ -93,7 +43,6 @@
             <b>Address list is empty</b>
         </div>
         <% } %>
-        
         <div class="mb-4 " style="border-radius: 10px;box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);">
             <a   style="text-decoration: none;color: #000;" href="/profile/addaddress">
                 <div style="color:#000"class="card col-md-12 form-group d-flex p-2 btn btn-outline-primary" id="buttonclick"
@@ -101,6 +50,8 @@
             </a>
            
         </div>
+        
+        
     </div>
         
         

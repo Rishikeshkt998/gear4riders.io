@@ -1,0 +1,130 @@
+<%-include('userheader')-%>
+    <div class="container">
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8">
+                <h3 class="mb-5 text-center">Edit Address</h3>
+            <div class="card mb-4" style="border-radius: 10px;box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);margin-bottom: 20px;padding: 20px;">
+                <div class="card-body" id="form">
+                    <form action="/checkout/updateaddress/<%=addressList._id%>" method="post" id="checkout-form">
+                        <!-- Your existing form fields go here -->
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" name="name" id="name" placeholder="Enter your Name" value="<%=addressList.name%>" >
+                            <%if (errors&&errors.name){%>
+                                <span class="text-danger" id="errors-name">
+                                    <%=errors.name.msg%>
+                                </span>
+                                <%}%>
+                        </div>
+                        <div class="form-group">
+                            <label for="fulladdress">Address</label>
+                            <input type="text" class="form-control" name="fulladdress" id="fulladdress"
+                                placeholder="Enter your address" value="<%=addressList.fulladdress%>">
+                            <%if (errors&&errors.fulladdress){%>
+                                <span class="text-danger" id="errors-fulladdress">
+                                    <%=errors.fulladdress.msg%>
+                                </span>
+                                <%}%>
+                        </div>
+                        <div class="form-group">
+                            <label for="pincode">Pincode</label>
+                            <input type="text" class="form-control" name="pincode" id="pincode" placeholder="pincode" value="<%=addressList.pincode%>">
+                            <%if (errors&&errors.pincode){%>
+                                <span class="text-danger" id="errors-pincode">
+                                    <%=errors.pincode.msg%>
+                                </span>
+                                <%}%>
+                        </div>
+                        <div class="form-group">
+                            <label for="landmark">Landmark</label>
+                            <input type="text" class="form-control" name="landmark" id="landmark"
+                                placeholder="landmark"  value="<%=addressList.landmark%>">
+                            <%if (errors&&errors.landmark){%>
+                                <span class="text-danger" id="errors-landmark">
+                                    <%=errors.landmark.msg%>
+                                </span>
+                                <%}%>
+                        </div>
+                        <div class="form-group">
+                            <label for="district">District</label>
+                            <!-- <input type="text" class="form-control"  id="district" placeholder="district"> -->
+                            <select class="form-select p-3" id="district" name="district">
+                                <option value="<%=addressList.district%>"><%=addressList.district%></option>
+                                <option value="Malappuram">Malappuram</option>
+                                <option value="Kozhikode">Kozhikode</option>
+                                <option value="Thrissur">Thrissur</option>
+                                <option value="Trivandrum">Trivandrum</option>
+                                <option value="Pathanamthitta">Pathanamthitta</option>
+                                <option value="Kasarkode">Kasarkode</option>
+                                <option value="Eranakulam">Eranakulam</option>
+                                <option value="Alappuzha">Alappuzha</option>
+                                <option value="Idukki">Idukki</option>
+                                <option value="Kannur">Kannur</option>
+                                <option value="Kollam">Kollam</option>
+                                <option value="Kottayam">Kottayam</option>
+                                <option value="Palakkad">Palakkad</option>
+                                <option value="Palakkad">Palakkad</option>
+                            </select>
+                            <%if (errors&&errors.district){%>
+                                <span class="text-danger" id="errors-district">
+                                    <%=errors.district.msg%>
+                                </span>
+                                <%}%>
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" class="form-control" name="state" id="state" placeholder="state"  value="<%=addressList.state%>">
+                            <%if (errors&&errors.state){%>
+                                <span class="text-danger" id="errors-state">
+                                    <%=errors.state.msg%>
+                                </span>
+                                <%}%>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="text" class="form-control" name="phone" id="phone"
+                                placeholder="Enter your mobile number" value="<%=addressList.phone%>">
+                            <%if (errors&&errors.phone){%>
+                                <span class="text-danger" id="errors-phone">
+                                    <%=errors.phone.msg%>
+                                </span>
+                                <%}%>
+                        </div>
+                        <div class="form-group">
+                            <label for="alternatephone">Alternate Phone Number</label>
+                            <input type="text" class="form-control" name="alternatephone" id="alternatephone"
+                                placeholder="Enter your alternate mobile number" value="<%=addressList.alternatephone%>">
+                            <%if (errors&&errors.alternatephone){%>
+                                <span class="text-danger" id="errors-alternatephone">
+                                    <%=errors.alternatephone.msg%>
+                                </span>
+                                <%}%>
+                        </div>
+                        <!-- Add the rest of your form fields here -->
+
+                        <button type="submit" class="btn btn-primary">Save Address</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputElements = document.querySelectorAll('input');
+            console.log(inputElements);
+
+            inputElements.forEach(function (input) {
+                input.addEventListener('focus', function () {
+                    const fieldName = input.name;
+                    const errorElement = document.querySelector(`#errors-${fieldName}`);
+                    console.log(errorElement);
+                    if (errorElement) {
+                        errorElement.innerText = '';
+                    }
+                });
+            });
+        });
+    </script>
+    <%-include('userfooter')-%>

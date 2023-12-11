@@ -10,8 +10,8 @@ router.get('/', checkoutController.checkOut);
 router.get('/displayaddress', checkoutController.displayAddress);
 router.post('/saveaddress',addressDataValidate, checkoutController.saveAddress);
 router.get('/addressremove/:id', checkoutController.removeAddress);
-router.post('/updateaddress/:id', checkoutController.updateAddress);
-router.get('/editaddress', checkoutController.editAddress);
+router.post('/updateaddress/:id',addressDataValidate, checkoutController.updateAddress);
+router.get('/editaddress/:id', checkoutController.editAddress);
 
 
 module.exports = router;

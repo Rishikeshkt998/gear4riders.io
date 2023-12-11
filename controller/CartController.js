@@ -8,9 +8,9 @@ const localStorage = require('localStorage')
 
 function generateSlug(str) {
     return str
-        .toLowerCase()            
-        .replace(/\s+/g, '-')      
-        .replace(/[^\w-]+/g, '');  
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]+/g, '');
 }
 
 
@@ -59,7 +59,7 @@ async function getCart(req, res) {
 
 async function postCart(req, res) {
     const { productId, image, name, price, discount, brandId, categorieId } = req.params;
-    console.log(brandId,categorieId)
+    console.log(brandId, categorieId)
     const userId = req.session.currentUserId;
     const quantity = 1;
 
@@ -165,6 +165,7 @@ async function incrementQuantity(req, res) {
     try {
         const productid = new ObjectId(req.params.id);
         const userId = new ObjectId(req.session.currentUserId);
+        
 
         if (userId) {
             await Cart.updateOne({ userId, 'products.productId': productid }, { $inc: { 'products.$.quantity': 1 } });
@@ -176,13 +177,21 @@ async function incrementQuantity(req, res) {
                     { $match: { 'products.productId': productid } },
                     { $unwind: '$products' },
                     { $match: { 'products.productId': productid } },
-                    { $project: { _id: 0, quantity: '$products.quantity' } }
+                    { $project: { _id: 0, quantity: '$products.quantity', countInStock: '$products.countInStock' } }
                 ]);
 
             const Quantity = productcount[0].quantity;
-            console.log(`Quantity: ${Quantity}`);
+            const stock=productcount[0].countInStock
+            console.log(`Quantity: ${Quantity}  ${stock}`);
+            if(Quantity>stock){
+                return res.json({ success: false, message: 'out of stock' });
 
-            res.json({ success: true, Quantity, totalAmount, totalProducts, totalProductAmount });
+            }else{
+                res.json({ success: true, Quantity, totalAmount, totalProducts, totalProductAmount });
+
+            }
+
+            
         }
     } catch (error) {
         console.log(`An error occurred while increasing the Quantity: ${error}`);
@@ -198,6 +207,14 @@ async function decrementQuantity(req, res) {
         const userId = new ObjectId(req.session.currentUserId);
 
         if (userId) {
+            // let Products = await Product.findById(productid);
+            // console.log(productid);
+            // const quantity = await Cart.findOne({ userId: userId, 'products.productId': productid }, { _id: 0, 'products.quantity': 1 })
+            // if (quantity) {
+            //     let quantity = quantity.products[0].quantity
+            //     if (quantity ===1) 
+            //     return res.json({ success: false, message: 'quanity will be greater than 1' });
+            // }
             await Cart.updateOne({ userId, 'products.productId': productid }, { $inc: { 'products.$.quantity': -1 } });
             let { totalAmount, totalProducts } = await calculateTotalAmount({ userId: userId });
             let { totalProductAmount } = await calculateProductAmount({ userId: userId });
@@ -211,9 +228,16 @@ async function decrementQuantity(req, res) {
                 ]);
 
             const Quantity = productcount[0].quantity;
-            console.log(`Quantity: ${Quantity}`);
+            if(Quantity===0){
+                return res.json({ success: false, message: 'quanity will be greater than 1' });
 
-            res.json({ success: true, Quantity, totalAmount, totalProducts, totalProductAmount, formatCurrency });
+            }else{
+                console.log(`Quantity: ${Quantity}`);
+
+                res.json({ success: true, Quantity, totalAmount, totalProducts, totalProductAmount, formatCurrency });
+
+            }
+           
         }
 
     } catch (error) {
@@ -256,7 +280,7 @@ const calculateTotalAmount = async (matchCriteria) => {
         return { totalAmount, totalProducts };
     } else {
         console.log('No results found.');
-        return { totalAmount:0, totalProducts:0 }; // Return 0 if no results
+        return { totalAmount: 0, totalProducts: 0 }; // Return 0 if no results
     }
 };
 

@@ -44,7 +44,7 @@
                   </td>
                   <td><img width="100px" height="100px" src="http://localhost:3000/<%= value.image[0]%>"></td>
                   <td>
-                    <%= value.price%>
+                    <%= formatCurrency(value.price)%>
                   </td>
                   <td>
                     <%= value.categorieId.name%>

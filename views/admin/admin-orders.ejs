@@ -47,7 +47,7 @@
                                         <td >
                                             <%= ordersData[i].date.toDateString() %>
                                         </td>
-                                        <td>$<%=ordersData[i].totalAmount %>
+                                        <td><%=formatCurrency(ordersData[i].totalAmount) %>
                                         </td>
                                         <td>
                                             <%= ordersData[i].paymentMethod %>
