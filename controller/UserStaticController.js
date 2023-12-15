@@ -424,6 +424,30 @@ async function dashBoard(req, res) {
 
             console.log(data);
         }
+        const products = await Product.find({ isDeleted: false }).populate('brandId', { _id: 0, name: 1 })
+        const brand = req.query.brand;
+        if (brand) {
+            data = [];
+            console.log('the length is ', products.length)
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].brandId && products[i].brandId.name === brand) {
+                    data.push(products[i]);
+                }
+            }
+
+
+        }
+        const categorie = req.query.category;
+        const product = await Product.find({ isDeleted: false }).populate('categorieId', { _id: 0, name: 1 })
+        if (categorie) {
+            data = [];
+            for (let i = 0; i < product.length; i++) {
+                if (product[i].categorieId && product[i].categorieId.name === categorie) {
+                    data.push(product[i]);
+                }
+            }
+        }
+
 
 
 

@@ -168,6 +168,7 @@ async function incrementQuantity(req, res) {
         
 
         if (userId) {
+            let product = await Product.findById(productid);
             await Cart.updateOne({ userId, 'products.productId': productid }, { $inc: { 'products.$.quantity': 1 } });
             let { totalAmount, totalProducts } = await calculateTotalAmount({ userId: userId });
             let { totalProductAmount } = await calculateProductAmount({ userId: userId });
@@ -183,7 +184,7 @@ async function incrementQuantity(req, res) {
             const Quantity = productcount[0].quantity;
             const stock=productcount[0].countInStock
             console.log(`Quantity: ${Quantity}  ${stock}`);
-            if(Quantity>stock){
+            if(Quantity>=product.countInStock+1){
                 return res.json({ success: false, message: 'out of stock' });
 
             }else{
@@ -207,14 +208,6 @@ async function decrementQuantity(req, res) {
         const userId = new ObjectId(req.session.currentUserId);
 
         if (userId) {
-            // let Products = await Product.findById(productid);
-            // console.log(productid);
-            // const quantity = await Cart.findOne({ userId: userId, 'products.productId': productid }, { _id: 0, 'products.quantity': 1 })
-            // if (quantity) {
-            //     let quantity = quantity.products[0].quantity
-            //     if (quantity ===1) 
-            //     return res.json({ success: false, message: 'quanity will be greater than 1' });
-            // }
             await Cart.updateOne({ userId, 'products.productId': productid }, { $inc: { 'products.$.quantity': -1 } });
             let { totalAmount, totalProducts } = await calculateTotalAmount({ userId: userId });
             let { totalProductAmount } = await calculateProductAmount({ userId: userId });
@@ -228,7 +221,7 @@ async function decrementQuantity(req, res) {
                 ]);
 
             const Quantity = productcount[0].quantity;
-            if(Quantity===0){
+            if(Quantity<=0){
                 return res.json({ success: false, message: 'quanity will be greater than 1' });
 
             }else{

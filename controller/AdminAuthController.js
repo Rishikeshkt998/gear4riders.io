@@ -40,7 +40,7 @@ async function ProductView(req, res) {
             select: 'name'
         });
         res.render('admin/admin-product-view', {
-            products,formatCurrency
+            products, formatCurrency
         });
     }
     catch (error) {
@@ -130,46 +130,59 @@ async function editProduct(req, res) {
 
 
 async function updateProduct(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        let id = req.params.id;
+        const categorylist = await Category.find({ isDeleted: false });
+        const brandlist = await Brand.find({ isDeleted: false });
+        const product = await Product.findById(id).populate({
+            path: 'categorieId',
+            select: 'name'
+        })
+            .populate({
+                path: 'brandId',
+                select: 'name'
+            });
 
-    const data = req.body;
-    console.log(data);
+        return res.render('admin/edit-product', { product, brandlist, categorylist, errors: errors.mapped() });
+    } else {
+        let id = req.params.id;
 
-    if (data) {
-        try {
-            const id = req.params.id;
-            const product = await Product.findById(id);
-            console.log(product);
-            const croppedImages = req.files.map(file => file.filename);
-            console.log(croppedImages);
-            const name = req.body.name;
-            console.log(name);
-
-            // Update product information
-            const updatedProduct = {
+        const data = req.body;
+        console.log(data)
+        if (data) {
+            const productimages = await Product.findById(id);
+            console.log(productimages);
+            let compinedimage = [...productimages.image]
+            let arrayimage = []
+            if (req.files.length) {
+                for (let i = 0; i < req.files.length; i++) {
+                    arrayimage[i] = req.files[i].filename
+                }
+                compinedimage = [...productimages.image, ...arrayimage]
+            }
+            const products = {
                 name: req.body.name,
+                image: compinedimage,
                 price: req.body.price,
                 brandId: req.body.brandId,
                 categorieId: req.body.categorieId,
                 description: req.body.description,
+                discount: req.body.discount,
                 countInStock: req.body.countInStock,
-                image: [...product.image, ...croppedImages],
             };
-
-
-            // Update the product in the database
-            productupdated = await Product.findByIdAndUpdate(id, updatedProduct);
+            productupdated = await Product.findByIdAndUpdate(id, products, { new: true });
             console.log(productupdated);
+            return res.redirect('/adminauth/products');
 
-            // res.redirect('/adminauth/products');
-            res.json({ success: true, message: 'updated successfully' });
-        } catch (err) {
-            console.error(err);
-            res.send(err);
+
+        } else {
+            return res.redirect('/adminauth/products');
         }
-    } else {
-        res.redirect('/products');
     }
 }
+
+
 function formatCurrency(amount, currencyCode = 'INR') {
     return new Intl.NumberFormat('en-IN', {
         style: 'currency',
@@ -329,7 +342,6 @@ async function adminDashboard(req, res) {
         res.render('admin/admin-dashboard', { monthwiseTotal, yearwiseTotal, weeklyTotal, totalPrice, trendingProducts, formatCurrency, dailyTotalAmount });
     } catch (error) {
         console.error(error);
-        res.status(500).send('Internal Server Error');
     }
 
 }
@@ -497,7 +509,7 @@ async function SalesReport(req, res) {
         console.log(trendingProducts);
         console.log(monthwiseTotal);
 
-        res.render('admin/salesreport', { monthwiseTotal, yearwiseTotal, weeklyTotal, totalPrice, totalorders, averageorder, trendingProducts, topCustomer, formatCurrency, CategorySalesReport });
+        res.render('admin/salesreport', { monthwiseTotal, yearwiseTotal, weeklyTotal, totalPrice, totalorders, averageorder, trendingProducts, topCustomer, formatCurrency });
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
@@ -752,7 +764,7 @@ async function orderView(req, res) {
         ordersData.sort((a, b) => new Date(b.date) - new Date(a.date));
 
         res.render('admin/admin-orders', {
-            ordersData,formatCurrency
+            ordersData, formatCurrency
         });
     } catch (err) {
         console.log(err);
@@ -767,7 +779,7 @@ async function AdminOrderDetails(req, res) {
 
 
         console.log(order);
-        return res.render('admin/admin-order-details', { data: order ,formatCurrency});
+        return res.render('admin/admin-order-details', { data: order, formatCurrency });
 
 
     } catch (error) {
@@ -889,7 +901,7 @@ async function couponPost(req, res) {
 async function couponView(req, res) {
     const couponlist = await Coupon.find();
     res.render('admin/coupon-view', {
-        data: couponlist,formatCurrency
+        data: couponlist, formatCurrency
     });
 
 }
@@ -945,6 +957,7 @@ async function updateCoupon(req, res) {
 async function deleteCoupon(req, res) {
     try {
         const id = req.params.id;
+        console.log(id)
         const coupon = await Coupon.findById({ '_id': id });
         coupon.isDeleted = true;
         await coupon.save()

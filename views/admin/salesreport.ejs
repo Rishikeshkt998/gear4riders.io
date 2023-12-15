@@ -35,7 +35,7 @@
       <div class="card-body">
         <h2 class="card-title">Total Revenue: <%= formatCurrency(totalPrice)%></h2>
         <h2 class="card-title">Average order value: <%= formatCurrency(averageorder)%></h2>
-        <h2 class="card-title">total orders: <%= formatCurrency(totalorders)%></h2>
+        <h2 class="card-title">total orders: <%= totalorders%></h2>
         
 
       </div>
@@ -176,7 +176,6 @@ const dataWeekly = weekNumbers.map(week => {
   const ctx = document.getElementById('monthlyTotalChart').getContext('2d');
   const ctxWeekly = document.getElementById('weeklyTotalChart').getContext('2d');
   const ctxYearly = document.getElementById('yearlyTotalChart').getContext('2d'); 
-  const ctxcategory = document.getElementById('categoryTotalChart').getContext('2d'); 
   new Chart(ctx, {
     type: 'bar',
     data: {

@@ -14,7 +14,7 @@ router.get('/products', adminAuthController.ProductView),
 router.post('/products', productdatavalidate, adminAuthController.ProductPost),
 router.get('/addproduct', adminAuthController.addProduct);
 router.get('/editproduct/:id', adminAuthController.editProduct);
-router.post('/updateproduct/:id', adminAuthController.updateProduct);
+router.post('/updateproduct/:id',productdatavalidate, adminAuthController.updateProduct);
 router.get('/deleteproduct/:id', adminAuthController.deleteProduct);
 router.get('/deleteImages/:id/:image', adminAuthController.deleteImage);
 
@@ -61,6 +61,8 @@ router.post('/couponpost',couponDatavalidate,adminAuthController.couponPost);
 router.get('/couponview',adminAuthController.couponView);
 router.get('/edit-coupon/:id',adminAuthController.editCoupon);
 router.post('/updatecoupon/:id',couponDatavalidate,adminAuthController.updateCoupon);
+router.get('/deletecoupon/:id',adminAuthController.deleteCoupon);
+
 
 
 

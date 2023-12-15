@@ -9,13 +9,13 @@ const productDatavalidate=[
         }
         return true
     }),
-    body('image').notEmpty().withMessage("file is required").custom((value, { req }) => {
-        // Custom validation: Check if the file format is jpg or png
-        if (!value || !value.every(file => /\.(jpg|jpeg|png)$/i.test(file.originalname))) {
-            throw new Error('Invalid file format. Only JPG or PNG images are allowed.');
-        }
-        return true;
-    }),
+    // body('image').notEmpty().withMessage("file is required").custom((value, { req }) => {
+    //     // Custom validation: Check if the file format is jpg or png
+    //     if (!value || !value.every(file => /\.(jpg|jpeg|png)$/i.test(file.originalname))) {
+    //         throw new Error('Invalid file format. Only JPG or PNG images are allowed.');
+    //     }
+    //     return true;
+    // }),
     body('categorieId').trim().notEmpty().withMessage("category is required"),
     body('brandId').trim().notEmpty().withMessage("brand is required"),
     body('countInStock').trim().notEmpty().withMessage("stock field is required").isInt().withMessage("stock be a number").isLength({max:5}).withMessage("stock should be maximum 5 numbers").custom((value,{req})=>{

@@ -3,40 +3,40 @@
         <div class="container">
 
 
-            <form id="myForm" method="post" product-id="<%=product._id%>" enctype="multipart/form-data">
+            <form action="/adminauth/updateproduct/<%=product._id%>" method="post"  enctype="multipart/form-data">
                 <div class="mb-3 w-75 pt-5 mt-5">
                     <label for="name" class="form-label">Productname</label>
                     <input type="text" class="form-control" name="name" id="name" aria-describedby="emailHelp"
                         value="<%=product.name%>">
-                   
+                        <%if (errors&&errors.name){%>
+                            <span class="text-danger" id="errors-name">
+                                <%=errors.name.msg%>
+                            </span>
+                            <%}%>
+                     
                 </div>
                 <div class="mb-3 w-75">
                     <label for="price" class="form-label">Price</label>
                     <input type="text" class="form-control" name="price" id="productprice" value="<%=product.price%>">
+                    <%if (errors&&errors.price){%>
+                        <span class="text-danger" id="errors-price">
+                            <%=errors.price.msg%>
+                        </span>
+                        <%}%>
+                   
                     
                 </div>
                 <div class="mb-3 w-75 ">
+                    <label for="productimage" class="form-label">Product image</label>
+                    <input class="form-control" type="file" multiple name="image" id="productimage">
 
 
-                   
-                    <div class="input-group mb-4">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" span-id="image">Upload</span>
-                        </div>
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input addProductImg" id="image"
-                                aria-describedby="UPLOADBASICIMG" name="image">
-                            <label class="custom-file-label" for="image"> Main Image </label>
-                        </div>
-                    </div>
-
-                   
                 </div>
 
-                <div style="margin-left: 17%;margin-top: 5%;margin-bottom: 5%;" class=" d-flex">
+                <div style="margin-left: 5%;margin-top: 5%;margin-bottom: 5%;" class=" d-flex">
 
                     <% for (let i=0; i < product.image.length; i++) { %>
-                        <img src="http://localhost:3000/<%= product.image[i] %>" style="height: 40px;width: 60px;"
+                        <img src="http://localhost:3000/<%= product.image[i] %>" style="height: 90px;width: 90px;"
                             alt="image">
 
                         <a href="/adminauth/deleteImages/<%=product._id %>/<%=product.image[i]  %>" class="text-danger"
@@ -44,6 +44,7 @@
                                 class="fas fa-trash fa-lg mx-1"></i></a>
                         <% } %>
                 </div>
+               
                 <div class="mb-3 w-75">
                     <label for="">Select Categorie</label>
                     <select name="categorieId" id="categorieId" class="form-control">
@@ -54,6 +55,12 @@
                             </option> 
                             <% } %>
                     </select>
+                    <%if (errors&&errors.categorieId){%>
+                        <span class="text-danger"id="errors-categorieId">
+                            <%=errors.categorieId.msg%>
+                        </span>
+                        <%}%>
+                  
                 </div>
                 <div class="mb-3 w-75">
                     <label for="">Select Brand</label>
@@ -65,17 +72,36 @@
                             </option>
                             <% } %>
                     </select>
+                    <%if (errors&&errors.brandId){%>
+                        <span class="text-danger"id="errors-brandId">
+                            <%=errors.brandId.msg%>
+                        </span>
+                        <%}%>
+                    
                 </div>
                 <div class="mb-3 w-75">
                     <label for="stock" class="form-label">Stock</label>
                     <input type="text" class="form-control" name="countInStock" id="stock"
                         value="<%=product.countInStock%>">
+                        <%if (errors&&errors.countInStock){%>
+                            <span class="text-danger"id="errors-countInStock">
+                                <%=errors.countInStock.msg%>
+                            </span>
+                            <%}%>
+                       
                    
                 </div>
                 <div class="mb-3 w-75">
                     <label for="Brand" class="form-label">Description</label>
                     <textarea style="width:822px;height: 150px;" id="brand" name="description" rows="5"
                         cols="108"><%=product.description%></textarea>
+                        <%if (errors&&errors.description){%>
+                            <span class="text-danger" id="errors-description">
+                                <%=errors.description.msg%>
+                            </span>
+                            <%}%>
+    
+                        
                     
                 </div>
 
@@ -83,155 +109,56 @@
             </form>
         </div>
     </section>
-    <div id="modal"
-        style="position: absolute;top:0 ; z-index: 11; height: 100%; width: 100vw; background-color: rgba(0, 0, 0, 0.479);"
-        class="d-flex d-none justify-content-center align-items-center ">
-
-        <div class=" d-flex flex-column justify-content-center"
-            style=" background-color: rgb(255, 255, 255); height: 450px ; width: 50%; ">
-
-            <div style="height: 80%;" class="  d-flex justify-content-center align-items-center ">
-
-                <img id="cropImg" style="height: 90% ;width:80%;" alt="">
-
-            </div>
-
-            <div class="d-flex  justify-content-center ">
-                <button id="cropBtn" class="nav-link mt-4 mb-4"
-                    style="background-color: black; color:whitesmoke ;padding :10px"> CROP THE
-                    IMG</button>
-
-            </div>
-
-
-
-
-
-        </div>
-    </div>
-
-
-
-
-
-
-
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const fileInputs = document.querySelectorAll('.addProductImg');
-            const cropImg = document.getElementById('cropImg');
-            const cropModal = document.getElementById('modal');
-            const cropBtn = document.getElementById('cropBtn');
-            let cropper;
-            let croppedDataUrls = {};
-
-            fileInputs.forEach((fileInput) => {
-                fileInput.addEventListener('change', (e) => {
-                    const reader = new FileReader();
-
-                    reader.onload = (e) => {
-                        if (e.target.result) {
-                            cropImg.src = e.target.result;
-                            cropModal.classList.remove('d-none');
-                            // const imgName = 'image'; // Change this to match your input field name
-                            const imgName = fileInput.getAttribute('name');
-                            let newCropper = new Cropper(cropImg, {
-                                viewMode: 1,
-                            });
-
-                            window.scrollTo(0, 0);
-                            cropper = { [imgName]: newCropper };
-                        }
-                    };
-
-                    reader.readAsDataURL(e.target.files[0]);
-                });
-            });
-
-            cropBtn.addEventListener('click', function () {
-                console.log(cropper);
-
-                if (cropper) {
-                    for (const key in cropper) {
-                        let span = document.querySelector(`[span-id="${key}"]`);
-                        console.log(span);
-                        span.style.backgroundColor = '#4d5154';
-                        span.style.color = 'white';
-                        croppedDataUrls[key] = cropper[key].getCroppedCanvas().toDataURL('image/jpeg');
-                        cropper[key].destroy();
-                        cropper = {};
-                        break;
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputElements = document.querySelectorAll('input');
+            console.log(inputElements)
+            inputElements.forEach(function (input) {
+                input.addEventListener('focus', function () {
+                    const fieldName = input.name;
+                    const errorElement = document.querySelector(`#errors-${fieldName}`);
+                    console.log(errorElement)
+                    if (errorElement) {
+                        errorElement.innerText = '';
                     }
-
-                    console.log(croppedDataUrls);
-                    cropModal.classList.toggle('d-none');
-                }
-            });
-
-            const form = document.getElementById('myForm');
-            const productID = form.getAttribute('product-id');
-            console.log(productID)
-
-            form.addEventListener('submit', function (event) {
-                event.preventDefault();
-                const formData = new FormData(form);
-              
-
-
-                for (const key in croppedDataUrls) {
-                    let keyVal = key;
-                    formData.delete(keyVal);
-                    const blob = dataURLtoBlob(croppedDataUrls[keyVal]);
-                    formData.append(keyVal, blob, 'productImg.jpg');
-                }
-                const formDataObject = {};
-                formData.forEach((value, key) => {
-                    formDataObject[key] = value;
                 });
-                console.log(formDataObject.image)
-
-                
-
-                // const currentURL = window.location.origin;
-                console.log(formData)
-
-                fetch('/adminauth/updateproduct/'+productID, {
-                    method: 'POST',
-                    body: formData,
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            // window.location.href = '/userauth/products'
-                            window.history.back();
-
-                        } else {
-                            console.error('Error:');
-                        }
-                    })
-                    .catch((error) => {
-                        alert('Failed to update product due to local/network issues');
-                        console.error('Error:', error);
-                    });
             });
-
-            function dataURLtoBlob(dataURL) {
-                const parts = dataURL.split(',');
-                const data = parts[1];
-                const mimeString = parts[0].split(':')[1].split(';')[0];
-                const byteString = atob(data);
-                const ab = new ArrayBuffer(byteString.length);
-                const ia = new Uint8Array(ab);
-
-                for (let i = 0; i < byteString.length; i++) {
-                    ia[i] = byteString.charCodeAt(i);
-                }
-
-                return new Blob([ab], { type: mimeString });
-            }
         });
+          document.addEventListener("DOMContentLoaded", function () {
+            const categorySelect = document.getElementById('categorieId');
+            const errorElement = document.getElementById('errors-categorieId');
 
+            categorySelect.addEventListener('change', function () {
+              if (errorElement) {
+                errorElement.innerText = '';
+              }
+            });
+          });
+          document.addEventListener("DOMContentLoaded", function () {
+            const categorySelect = document.getElementById('brandId');
+            const errorElement = document.getElementById('errors-brandId');
+
+            categorySelect.addEventListener('change', function () {
+              if (errorElement) {
+                errorElement.innerText = '';
+              }
+            });
+          });
+          
+
+
+          function validateStock() {
+            const stockInput = document.getElementById('stock');
+            const stockError = document.getElementById('stockError');
+            if (parseFloat(stockInput.value) < 0) {
+              stockError.innerText = 'Stock cannot be negative.';
+              stockInput.setCustomValidity('Stock cannot be negative.');
+
+            } else {
+              stockError.innerText = '';
+              stockInput.setCustomValidity('');
+            }
+          }
     </script>
+    
     <%-include('admin-footer')-%>

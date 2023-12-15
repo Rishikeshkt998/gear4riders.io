@@ -39,7 +39,7 @@
       <div class="navbar-nav">
         <% if (categoryNames && categoryNames !==null) { %>
           <% for (let i=0; i < categoryNames.length; i++) { %>
-            <a class="nav-item nav-link mx-2 text-dark" href="/categoryproduct/<%= categoryNames[i] %>">
+            <a class="nav-item nav-link mx-2 text-dark" href="/?category=<%= categoryNames[i] %>">
               <%= categoryNames[i] %>
             </a>
             <% } %>
@@ -53,7 +53,7 @@
       <div class="navbar-nav">
         <% if (brandNames && brandNames !==null) { %>
           <% for (let i=0; i < brandNames.length; i++) { %>
-            <a class="nav-item nav-link mx-2 text-dark" href="/brandproduct/<%= brandNames[i] %>">
+            <a class="nav-item nav-link mx-2 text-dark" href="/?brand=<%= brandNames[i] %>">
               <%= brandNames[i] %>
             </a>
             <% } %>
