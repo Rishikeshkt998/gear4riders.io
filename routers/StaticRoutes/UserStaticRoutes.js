@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const staticController=require('../../controller/UserStaticController');
+const staticController=require('../../controller/usersStaticController');
 const{body,validationResult}=require('express-validator');
 const userLoginDatavalidate = require('../../validations/uservalidation');
 const userSignupDatavalidate=require('../../validations/usersignupvalidation');

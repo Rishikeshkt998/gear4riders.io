@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 
-const CartController = require('../../controller/CartController');
+const CartController = require('../../controller/cartsController');
 
 
 router.get('/incrementCount/:id', CartController.incrementQuantity);

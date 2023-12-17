@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 
-const PaymentController = require('../../controller/PaymentController');
+const PaymentController = require('../../controller/paymentsController');
 const addressDataValidate=require("../../validations/addressvalidation")
 
 

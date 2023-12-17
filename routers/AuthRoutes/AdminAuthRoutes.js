@@ -5,7 +5,7 @@ const productdatavalidate = require('../../validations/productvalidation');
 const categoryDatavalidate = require('../../validations/categoryvalidation');
 const brandDatavalidate = require('../../validations/brandvalidation');
 const brandeditDatavalidate = require('../../validations/brandeditvalidation');
-const adminAuthController = require('../../controller/AdminAuthController');
+const adminAuthController = require('../../controller/adminAuthsController');
 const couponDatavalidate=require('../../validations/couponvalidation')
 
 
