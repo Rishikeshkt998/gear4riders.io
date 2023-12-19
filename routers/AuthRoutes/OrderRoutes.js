@@ -13,6 +13,9 @@ router.get('/orderlist', Ordercontroller.getOrderList);
 router.get('/ordercancel/:id', Ordercontroller.orderCancel);
 router.get('/returnProduct/:id', Ordercontroller.ReturnOrder);
 router.get('/vieworderdetails/:id', Ordercontroller.orderDetailsPage);
+router.get('/paypendingorders/:id',Ordercontroller.orderPendingPayment)
+router.post('/verifyPendingpayment',Ordercontroller.verifyPendingPayment);
+
 
 
 module.exports = router;

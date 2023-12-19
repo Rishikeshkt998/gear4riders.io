@@ -1,211 +1,344 @@
-
-    <%- include('userheader') -%>
+<%- include('userheader') -%>
 
     <style>
         .small-image {
-            max-width: 100px; /* Adjust as needed */
-            max-height: 100px; /* Adjust as needed */
+            max-width: 100px;
+            /* Adjust as needed */
+            max-height: 100px;
+            /* Adjust as needed */
         }
-    
+
         .wishlist-card {
             border-radius: 10px;
             box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
             padding: 20px;
         }
+
         .outer-container {
-            border: 2px solid #ccc; /* Adjust border styles and color as needed */
-            border-radius: 9px; /* Adjust border radius as needed */
+            border: 2px solid #ccc;
+            /* Adjust border styles and color as needed */
+            border-radius: 9px;
+            /* Adjust border radius as needed */
             margin-bottom: 20px;
         }
     </style>
-    
+
     <div class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <h2 class="text-center mb-4">Orders</h2>
                 <div class="outer-container">
-                        
+
                     <div class="wishlist-card m-4">
                         <!-- Single item -->
                         <div class="row align-items-center">
+                            <div class="col-lg-12 col-md-12 pe-3 d-flex justify-content-end">
+                                <% if (data.status==='DELIVERED' ) { %>
+                                    <a href="/order/invoice/<%=data._id%>" class="rate text-primary ps-3 ms-2">invoice
+                                        download</a>
+                                    <% } %>
+                            </div>
+
                             <div class="col-lg-4 col-md-4 col-sm-12 col-12 mb-2 mb-lg-0">
                                 <!-- Image -->
                                 <h2>Delivery Address</h2>
-                                <p><%=data.address.name%></p>
-                                <p><%=data.address.fulladdress%>,<%= data.address.pincode %></p>
-                                <p><%= data.address.district %>,<%=data.address.state %></p>
-                                <p>Phone no:<%=data.address.phone %></p>
+                                <p>
+                                    <%=data.address.name%>
+                                </p>
+                                <p>
+                                    <%=data.address.fulladdress%>,<%= data.address.pincode %>
+                                </p>
+                                <p>
+                                    <%= data.address.district %>,<%=data.address.state %>
+                                </p>
+                                <p>Phone no:<%=data.address.phone %>
+                                </p>
                                 <!-- Image -->
                             </div>
                             <div class="col-lg-5 col-md-5 col-sm-12 col-12 mb-2 mb-lg-0">
                                 <!-- Data -->
                                 <h2>Order Status</h2>
-                                <p id="orderStatus">Order:<%=data.status%></p>
-                                <p>Order Date:<%=data.date.toLocaleString()%></p>
-                                <p>Payment Method : <%= data.
-                                    paymentMethod%></p>
-                                <p>Payment status : <%= data.
-                                    paymentstatus%></p>
-                                
+                                <p id="orderStatus">Order : <%=data.status%>
+                                </p>
+                                <p>Order Date:<%=data.date.toLocaleString()%>
+                                </p>
+                                <p>Payment Method : <%= data. paymentMethod%>
+                                </p>
+                                <p id="paymentStatus">Payment status : <%= data. paymentstatus%>
+                                </p>
+
                             </div>
                             <% if (!data.isCancelled && data.status!=='RETURN' &&data.status!=='DELIVERED' ) { %>
-                            <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
-                                <button onclick="cancelOrder('<%= data._id %>')" class="btn btn-danger" style="width: 200px;">Cancel Order</button>
-                            </div>
-                            <% } %>
-                            <% if (data.status==='DELIVERED' &&data.return_date > currentdate ) { %>
-                            <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
-                                <button onclick="ReturnProduct('<%= data._id %>')" class="btn btn-info" style="width: 200px;">Return Product</button>
-                            </div>
-                            <% } %>
-                        
-                            
-                            
-                        
+                                <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
+                                    <button onclick="cancelOrder('<%= data._id %>')" class="btn btn-danger"
+                                        style="width: 200px;">Cancel Order</button>
+                                </div>
+                                <% } %>
+                                    <% if (data.status==='DELIVERED' &&data.return_date> currentdate ) { %>
+                                        <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
+                                            <button onclick="ReturnProduct('<%= data._id %>')" class="btn btn-info"
+                                                style="width: 200px;">Return Product</button>
+                                        </div>
+                                        <% } %>
+                                            <div class="col-lg-2 col-md-2 pe-3 d-flex justify-content-end">
+                                                <% if (data.status==='PENDING' ) { %>
+                                                    <input type="number" hidden class="form-control" id="amount"
+                                                        name="amount" placeholder="Enter amount"
+                                                        value=" <%=data.totalAmount %>">
+                                                    <button onclick="payNow('<%= data._id %>')" class="btn btn-danger"
+                                                        style="width: 100px;">Pay Now</button>
+                                                    <% } %>
+                                            </div>
+
+
+
+
                         </div>
                     </div>
-                
+
                     <% data.products.forEach(function(product) { %>
                         <div class="wishlist-card m-4">
-                            
+
                             <div class="row align-items-center">
                                 <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
-                                   
+
                                     <div class="bg-image hover-overlay hover-zoom ripple rounded"
                                         data-mdb-ripple-color="light">
                                         <img src="http://localhost:3000/<%=product.productimage%>"
                                             class="w-100 img-fluid small-image" alt="" />
                                         <a href="#!">
-                                            <div class="mask"
-                                                style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                                            <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
                                         </a>
                                     </div>
-                                    
+
                                 </div>
                                 <div class="col-lg-5 col-md-5 col-sm-12 col-12 mb-2 mb-lg-0">
                                     <!-- Data -->
-                                    <p class="mb-0"><%= product.productname %></p>
+                                    <p class="mb-0">
+                                        <%= product.productname %>
+                                    </p>
                                 </div>
                                 <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
                                     <p class="mb-0 pt-4 mt-1">
-                                        
-                                    <% if (product.brandId && product.brandId.name) { %>
-                                        Brand: <%= product.brandId.name %>
-                                    <% } else { %>
-                                        Brand: N/A <!-- or any default value or message you want -->
-                                    <% } %>
+
+                                        <% if (product.brandId && product.brandId.name) { %>
+                                            Brand: <%= product.brandId.name %>
+                                                <% } else { %>
+                                                    Brand: N/A <!-- or any default value or message you want -->
+                                                    <% } %>
                                     </p>
                                     <p class="mb-0">
-                                        
+
                                         <% if (product.categorieId && product.categorieId.name) { %>
                                             category: <%= product.categorieId.name %>
-                                        <% } else { %>
-                                            category: N/A <!-- or any default value or message you want -->
-                                        <% } %>
-                                        </p>
+                                                <% } else { %>
+                                                    category: N/A <!-- or any default value or message you want -->
+                                                    <% } %>
+                                    </p>
                                 </div>
                                 <div class="col-lg-1 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
                                     <p class="mb-0">
-                                        <i class="fa-solid "></i> <%= product.quantity %>
+                                        <i class="fa-solid "></i>
+                                        <%= product.quantity %>
                                     </p>
                                 </div>
-                                
+
                                 <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
-                                   
+
                                     <p class="mb-0">
-                                        <i class="fa-solid "></i> <%= formatCurrency(product.productprice)   %>
+                                        <i class="fa-solid "></i>
+                                        <%= formatCurrency(product.productprice) %>
                                     </p>
-                                    
+
                                 </div>
                             </div>
-                            
-                            
+
+
                         </div>
                         <% }); %>
-                        <div class="wishlist-card m-4">
-                            
-                            
-                            <div class="row align-items-center">
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-12 mb-2 mb-lg-0 d-flex justify-content-end">
-                                    <p class="mb-0">
-                                        <i class="fa-solid "></i> Discount applied : <%= data.discount %>
+                            <div class="wishlist-card m-4">
+
+
+                                <div class="row align-items-center">
+                                    <div
+                                        class="col-lg-12 col-md-12 col-sm-12 col-12 mb-2 mb-lg-0 d-flex justify-content-end">
+                                        <p class="mb-0">
+                                            <i class="fa-solid "></i> Discount applied : <%= data.discount %>
+                                    </div>
+
+                                    <div
+                                        class="col-lg-12 col-md-12 col-sm-12 col-12 mb-2 mb-lg-0 d-flex justify-content-end">
+                                        <p class="mb-0">
+                                            <i class="fa-solid "></i> Total Order Price(including delivery charges) :
+                                            <%=formatCurrency(data.totalAmount) %>
+
+                                        </p>
+                                    </div>
                                 </div>
-                               
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-12 mb-2 mb-lg-0 d-flex justify-content-end">
-                                    <p class="mb-0">
-                                        <i class="fa-solid "></i> Total Order Price(including delivery charges) : <%=formatCurrency(data.totalAmount) %>
-                                    </p>
-                                </div>
+
+
                             </div>
-                            
-                            
-                        </div>
-                    </div>
-                
                 </div>
+
+            </div>
         </div>
     </div>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
 
 
         function cancelOrder(orderId) {
-       
-        fetch(`/order/ordercancel/${orderId}`, {
-            method: 'GET', 
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log(data.message);
 
-            // Update the order status on the client side
-            const orderStatusElement = document.getElementById('orderStatus');
-            if (orderStatusElement) {
-                orderStatusElement.textContent = `Order: ${data.status}`;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error.message);
-        });
+            fetch(`/order/ordercancel/${orderId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data.message);
+
+                    // Update the order status on the client side
+                    const orderStatusElement = document.getElementById('orderStatus');
+                    if (orderStatusElement) {
+                        orderStatusElement.textContent = `Order : ${data.status}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error.message);
+                });
         }
 
 
-    function ReturnProduct(orderId) {
-       
-       fetch(`/order/returnProduct/${orderId}`, {
-           method: 'GET', 
-           headers: {
-               'Content-Type': 'application/json',
-           },
-       })
-       .then(response => {
-           if (!response.ok) {
-               throw new Error(`Error: ${response.status}`);
-           }
-           return response.json();
-       })
-       .then(data => {
-           console.log(data.message);
+        function ReturnProduct(orderId) {
 
-           // Update the order status on the client side
-           const orderStatusElement = document.getElementById('orderStatus');
-           if (orderStatusElement) {
-               orderStatusElement.textContent = `Order: ${data.status}`;
-           }
-       })
-       .catch(error => {
-           console.error('Error:', error.message);
-       });
-       }
+            fetch(`/order/returnProduct/${orderId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data.message);
+
+                    // Update the order status on the client side
+                    const orderStatusElement = document.getElementById('orderStatus');
+                    if (orderStatusElement) {
+                        orderStatusElement.textContent = `Order : ${data.status}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error.message);
+                });
+        }
+
+
+
+        async function payNow(orderId) {
+
+            try {
+                const response = await fetch(`/order/paypendingorders/${orderId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                const resBody = await response.json();
+
+                if (resBody.success) {
+
+                    const orders = resBody.order
+
+                    razorPayPayment(orders)
+
+
+
+
+                } else {
+                    alert(resBody.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+
+
+        function razorPayPayment(order) {
+
+            var options = {
+                "key": "rzp_test_ru8DhyGiqGowUh", // Enter the Key ID generated from the Dashboard
+                "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "currency": "INR",
+                "name": "Acme Corp",
+                "description": "Test Transaction",
+                "image": "https://example.com/your_logo",
+                "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                "handler": function (response) {
+                    // alert(response.razorpay_payment_id);
+                    // alert(response.razorpay_order_id);
+                    // alert(response.razorpay_signature)
+                    verifyPayment(response, order)
+                },
+
+                "prefill": {
+                    "name": "Gaurav Kumar",
+                    "email": "gaurav.kumar@example.com",
+                    "contact": "9000090000"
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            console.log(options)
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+
+
+
+
+
+        async function verifyPayment(payment, order) {
+            try {
+                const response = await fetch('/order/verifyPendingpayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ payment, order }),
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    window.location.reload();
+                } else {
+                    // Handle the case where the request was not successful (e.g., server error)
+                    console.error('Request failed:', response.status);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+
+
+
     </script>
-    
+
     <%- include('userfooter') -%>
-    

@@ -53,14 +53,16 @@
                                 </div>
                                 <div class="col-lg-2 col-md-2  col-sm-12 col-12 mb-2 mb-lg-0">
                                     <p class="mb-0">
-                                        <i class="fa-solid "></i> <%=formatCurrency(row.productId.price)  %>
+                                        <i class="fa-solid "></i> <%=formatCurrency( Math.round(row.productId.price - (row.productId.price*row.productId.discount/100)))  %>
                                     </p>
                                 </div>
                                 <div class="col-lg-3 col-md-5  col-sm-12 col-12 mb-2 mb-lg-0 text-lg-end">
+                                       
                                     <div class="d-flex justify-content-lg-end">
-                                        <a href="/productdetails/<%=generateSlug(row.productId.name)%>/<%=row.productId._id%>"
-                                            style="text-decoration: none; color: black;"><button class="btn btn-primary me-2"
-                                            >product details</button></a>
+                                        <form  id="addToCartForm"  action="/cart/add/<%=row.productId._id%>/<%= row.productId.image[0] %>/<%=row.productId.name%>/<%= row.productId.price %>/<%= row.productId.discount %>/<%= row.productId.brandId._id.toString()%>/<%= row.productId.categorieId._id.toString()%>/<%= generateSlug(row.productId.name) %>" method="post">
+                                            
+                                            <input class="btn btn-primary me-2" type="submit" value="Add to Cart">
+                                        </form>
                                             <a href="/wishlist/removewhishlist/<%=row.productId._id%>"
                                                 style="text-decoration: none; color: black;" class="btn btn-danger me-2 text-white"
                                                 

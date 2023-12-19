@@ -5,6 +5,16 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 
 
+
+function generateSlug(str) {
+    return str
+        .toLowerCase()             // Convert to lowercase
+        .replace(/\s+/g, '-')      // Replace spaces with dashes
+        .replace(/[^\w-]+/g, '');  // Remove non-word characters (except dashes)
+}
+
+
+
 async function addToWhishList(req, res) {
     try {
         const id = req.params.id;

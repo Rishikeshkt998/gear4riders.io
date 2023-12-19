@@ -4,6 +4,8 @@ const Order = require('../models/order');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 
+const Razorpay = require('razorpay');
+
 
 
 const calculateTotalAmount = async (matchCriteria) => {
@@ -267,6 +269,98 @@ async function orderDetailsPage(req, res) {
 }
 
 
+
+
+
+
+
+var instance = new Razorpay({
+    key_id: 'rzp_test_ru8DhyGiqGowUh',
+    key_secret: 'iZ43hClhkulSjqAMxvq3IvyR',
+});
+
+
+
+
+
+
+async function orderPendingPayment(req, res) {
+    try {
+        const orderId=req.params.id
+        const order = await Order.findOne({ _id: orderId });
+        const amount=order.totalAmount
+        console.log(amount)
+        var options = {
+            amount: amount * 100,
+            currency: 'INR',
+            receipt: '' + orderId
+        };
+        instance.orders.create(options, function (err, order) {
+
+            if (err) {
+                console.error('Razorpay payment processing error:', err);
+                return res.status(500).json({ success: false, message: 'Order placement failed. Please try again later.' });
+            }
+            const razorpayResponse = {
+                success: true,
+                message: 'Razorpay order created successfully.',
+                orderId,
+                amount,
+                order: order,
+            };
+
+
+            return res.json(razorpayResponse);
+
+        });
+    } catch (error) {
+        console.log(error)
+    }
+}
+async function verifyPendingPayment(req, res) {
+    // const userId = new ObjectId(req.session.currentUserId);
+
+    const data = req.body;
+    console.log(data);
+    const paymentData = data.payment;
+    const orderId = data.order.receipt;
+    const crypto = require('crypto');
+    const hmac = crypto.createHmac('sha256', 'iZ43hClhkulSjqAMxvq3IvyR');
+
+    // Reconstruct the string to calculate the HMAC
+    const concatenatedString = paymentData.razorpay_order_id + '|' + paymentData.razorpay_payment_id;
+
+    hmac.update(concatenatedString);
+    const calculatedHmac = hmac.digest('hex');
+
+    if (calculatedHmac === paymentData.razorpay_signature) {
+        const changestatus = await Order.updateOne(
+            { _id: orderId },
+            { $set: { 'status': 'PLACED' } },
+
+
+        )
+        await Order.updateOne(
+            { _id: orderId },
+            { $set: { 'paymentstatus': 'COMPLETED' } },
+
+
+        ).catch(error => {
+            console.error('Error updating the order:', error);
+        });
+        console.log(changestatus);
+        console.log('payment successfull');
+        return res.json({ status: true});
+
+
+
+    } else {
+        return res.json({ status: false });
+    }
+}
+
+
+
 module.exports = {
     orderDisplay,
     invoiceDownload,
@@ -274,7 +368,9 @@ module.exports = {
     orderCancel,
     orderDetailsPage,
     paymentFailed,
-    ReturnOrder
+    ReturnOrder,
+    orderPendingPayment,
+    verifyPendingPayment
 
 
 };

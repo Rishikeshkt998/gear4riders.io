@@ -211,10 +211,20 @@
                 },
                 "theme": {
                     "color": "#3399cc"
+                },
+                "modal": {
+                    "ondismiss": function () {
+                        // Handle the close event here
+                        window.location.href = `/order/paymentfail`;
+                    }
                 }
             };
             console.log(options)
             var rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function (response) {
+                window.location.href = `/order/paymentfail`;
+
+            });
             rzp1.open();
         }
 
@@ -233,7 +243,7 @@
                     const orderId = result.orderId
                     console.log(result)
                     window.location.href = `/order/orderdisplay/${orderId}`;
-                    
+
                 } else {
                     console.error('Request failed:', response.status);
                 }

@@ -56,12 +56,12 @@
                                                     <div class="form-outline">
                                                         <input id="form<%= productItem.productId._id %>" min="0"
                                                             name="quantity" style="background-color: white;"
-                                                            value="<%= productItem.quantity %>"  type="number"
-                                                            class="form-control" readonly min="1"
-                                                            max="<%= productItem.productId.countInStock %>" />
+                                                            value="<%= productItem.quantity %>" type="number"
+                                                            class="form-control" min="0"
+                                                            max="<%= productItem.productId.countInStock %>" readonly />
                                                         <label class="form-label"
                                                             for="form<%= productItem.productId._id %>">Quantity</label>
-                                                            <div id="quantityError" style="color: red;"></div>
+                                                        <div id="quantityError" style="color: red;"></div>
                                                     </div>
                                                     <button style="height: 38px;"
                                                         class="increment-button btn  btn-primary px-3 "
@@ -114,7 +114,9 @@
                                             <p class="mb-0">(including VAT)</p>
                                         </strong>
                                     </div>
-                                    <span><strong id="totalAmount"><%= formatCurrency(totalAmount)%></strong></span>
+                                    <span><strong id="totalAmount">
+                                            <%= formatCurrency(totalAmount)%>
+                                        </strong></span>
                                 </li>
                             </ul>
                             <a href="/checkout" type="button" class="btn btn-primary btn-lg btn-block">Go
@@ -158,40 +160,42 @@
                 return response.json();
             })
                 .then((data) => {
-                    if(data.success){
-                    let total = data.Quantity * productPrice
-                    let quantity = data.Quantity
-                    let totalAmount = data.totalAmount
-                    let totalProducts = data.totalProducts
-                    let totalProductAmount = data.totalProductAmount
+                    if (data.success) {
+                        
+                        let total = data.Quantity * productPrice
+                        let quantity = data.Quantity
+                        let totalAmount = data.totalAmount
+                        let totalProducts = data.totalProducts
+                        let totalProductAmount = data.totalProductAmount
 
-                    const quantityInput = document.getElementById(`form${productId}`);
-                    if (quantityInput) {
-                        quantityInput.value = quantity;
+                        const quantityInput = document.getElementById(`form${productId}`);
+                        if (quantityInput) {
+                            quantityInput.value = quantity;
+                        }
+                        
+                        const totalPriceElement = document.getElementById(`totalproductPrice${productId}`);
+                        if (totalPriceElement) {
+                            totalPriceElement.innerHTML = total;
+                        }
+                        const totalAmountElement = document.getElementById('totalAmount')
+                        if (totalAmountElement) {
+                            totalAmountElement.innerHTML = formatCurrency(totalAmount)
+                        }
+                        const totalProductsElement = document.getElementById('totalProducts')
+                        if (totalProductsElement) {
+                            totalProductsElement.innerHTML = `(${totalProducts})items`
+                        }
+                        const taem = document.getElementById('actualamount')
+                        if (taem) {
+                            taem.innerHTML = formatCurrency(totalProductAmount)
+                        }
+                    } else {
+                        Swal.fire({
+                            title: "Sorry!",
+                            text: data.message
+                        });
+                        console.log(data.message)
                     }
-                    const totalPriceElement = document.getElementById(`totalproductPrice${productId}`);
-                    if (totalPriceElement) {
-                        totalPriceElement.innerHTML = total;
-                    }
-                    const totalAmountElement = document.getElementById('totalAmount')
-                    if (totalAmountElement) {
-                        totalAmountElement.innerHTML = formatCurrency(totalAmount)
-                    }
-                    const totalProductsElement = document.getElementById('totalProducts')
-                    if (totalProductsElement) {
-                        totalProductsElement.innerHTML = `(${totalProducts})items`
-                    }
-                    const taem = document.getElementById('actualamount')
-                    if (taem) {
-                        taem.innerHTML = formatCurrency(totalProductAmount)  
-                    }
-                } else {
-                Swal.fire({
-                    title: "Sorry!",
-                    text: data.message
-                  });
-                }
-                console.log(data.message)
                 })
                 .catch(error => {
                     console.error('Error increasing product quantity:', error);
@@ -210,40 +214,37 @@
                 return response.json();
             })
                 .then((data) => {
-                    if(data.success){
-                    let total = data.Quantity * productPrice
-                    let quantity = data.Quantity
-                    let totalAmount = data.totalAmount
-                    let totalProducts = data.totalProducts
-                    let totalProductAmount = data.totalProductAmount
+                    if (data.success) {
+                       
+                        let total = data.Quantity * productPrice
+                        let quantity = data.Quantity
+                        let totalAmount = data.totalAmount
+                        let totalProducts = data.totalProducts
+                        let totalProductAmount = data.totalProductAmount
 
-                    const quantityInput = document.getElementById(`form${productId}`);
-                    if (quantityInput) {
-                        quantityInput.value = quantity;
+                        const quantityInput = document.getElementById(`form${productId}`);
+                        if (quantityInput) {
+                            quantityInput.value = quantity;
+                        }
+                        const totalPriceElement = document.getElementById(`totalproductPrice${productId}`);
+                        if (totalPriceElement) {
+                            totalPriceElement.innerHTML = total;
+                        }
+                        const totalAmountElement = document.getElementById('totalAmount')
+                        if (totalAmountElement) {
+                            totalAmountElement.innerHTML = formatCurrency(totalAmount)
+                        }
+                        const totalProductsElement = document.getElementById('totalProducts')
+                        if (totalProductsElement) {
+                            totalProductsElement.innerHTML = `(${totalProducts})items`
+                        }
+                        const taem = document.getElementById('actualamount')
+                        if (taem) {
+                            taem.innerHTML = formatCurrency(totalProductAmount)
+                        }
+                    } else {
+                        console.log(data.message)
                     }
-                    const totalPriceElement = document.getElementById(`totalproductPrice${productId}`);
-                    if (totalPriceElement) {
-                        totalPriceElement.innerHTML = total;
-                    }
-                    const totalAmountElement = document.getElementById('totalAmount')
-                    if (totalAmountElement) {
-                        totalAmountElement.innerHTML = formatCurrency(totalAmount)
-                    }
-                    const totalProductsElement = document.getElementById('totalProducts')
-                    if (totalProductsElement) {
-                        totalProductsElement.innerHTML = `(${totalProducts})items`
-                    }
-                    const taem = document.getElementById('actualamount')
-                    if (taem) {
-                        taem.innerHTML = formatCurrency(totalProductAmount)
-                    }
-                } else {
-                Swal.fire({
-                    title: "Sorry!",
-                    text: data.message
-                  });
-                console.log(data.message)
-            }
                 })
                 .catch(error => {
                     console.error('Error increasing product quantity:', error);

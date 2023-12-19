@@ -6,6 +6,7 @@ const Cart = require('../models/cart');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const userOtpVerification = require('../models/otp');
+const banner= require('../models/banner');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 require('dotenv/config');
@@ -381,6 +382,7 @@ async function dashBoard(req, res) {
         const userId = req.session.currentUserId;
         let count = null;
         const cart = await Cart.findOne({ userId: userId });
+        let banners = await banner.find({ $and: [{ isDeleted: false }, { isActive: true }] }).populate('product');
 
         if (req.session.userId) {
             count = cart.products.length;
@@ -463,7 +465,8 @@ async function dashBoard(req, res) {
             categoryNames,
             brandNames,
             formatCurrency,
-            generateSlug
+            generateSlug,
+            banners
         });
     } catch (error) {
         console.error(error);

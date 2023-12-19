@@ -11,7 +11,9 @@ const { dbconnect } = require('./config');
 const nocache = require('nocache');
 const upload = require('./utils/multer');
 const cookieParser = require('cookie-parser');
+var cron = require('node-cron');
 app.use(nocache());
+const orderCancelFunction=require('./utils/orderExpiry')
 const userstaticroutes = require('./routers/StaticRoutes/UserStaticRoutes');
 const adminAuthroutes = require('./routers/AuthRoutes/AdminAuthRoutes');
 const adminStaticRoutes = require('./routers/StaticRoutes/AdminStaticRoutes');
@@ -23,6 +25,8 @@ const walletRoutes = require('./routers/AuthRoutes/WalletRoutes');
 const userProfileRoutes = require('./routers/AuthRoutes/userProfileRoutes');
 const orderRoutes = require('./routers/AuthRoutes/OrderRoutes');
 const reviewRoutes = require('./routers/AuthRoutes/reviewRoutes');
+const bannerRoutes = require('./routers/AuthRoutes/bannerRoutes');
+
 
 
 
@@ -83,6 +87,8 @@ app.use('/profile', userAuth, userProfileRoutes);
 app.use('/order', userAuth, orderRoutes);
 app.use('/review', userAuth, reviewRoutes);
 app.use('/payment', userAuth, PaymentRoutes);
+app.use('/banner', adminAuth,bannerRoutes);
+
 
 
 
@@ -112,6 +118,9 @@ app.get('*', function (req, res, next) {
     res.locals.cart = req.session.cart;
     next();
 });
+
+
+cron.schedule('* * 30 * *',orderCancelFunction);
 
 
 

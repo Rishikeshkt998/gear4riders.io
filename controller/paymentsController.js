@@ -135,18 +135,27 @@ function formatCurrency(amount, currencyCode = 'INR') {
 
 async function couponName() {
     try {
+        const currentDate = new Date();
+
         const couponNames = await Coupon.aggregate([
+            {
+                $match: {
+                    created_at: { $lt: currentDate },
+                    expired_at: { $gt: currentDate }
+                }
+            },
             {
                 $sort: { created_at: -1 }
             },
             {
                 $group: {
-                    _id: '$name'
+                    _id: '$name',
+                    maxExpiredAt: { $max: '$expired_at' }
                 }
             },
             {
                 $match: {
-                    _id: { $ne: null }
+                    maxExpiredAt: { $gt: currentDate }
                 }
             },
             {
@@ -156,6 +165,7 @@ async function couponName() {
                 }
             }
         ]);
+
 
         return couponNames.map(coupon => coupon.name);
     } catch (error) {

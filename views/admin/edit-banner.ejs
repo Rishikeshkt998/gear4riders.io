@@ -1,0 +1,205 @@
+<%-include('admin-header')-%>
+    <section>
+        <div class="container">
+
+            <h4 class="pt-5">Edit Banner</h4>
+
+            <form  method="post" banner-id="<%=bannerData._id%>"id="myForm"enctype="multipart/form-data">
+                <div class="mb-3 w-75 pt-5 mt-5">
+                    <label for="title" class="form-label">title</label>
+                    <input type="text" class="form-control" name="title" id="title" aria-describedby="emailHelp" value="<%=bannerData.title %>">
+                    
+                        
+
+                </div>
+                <div>
+                    <label for="">Select Product</label>
+                    <select name="product" id="product" class="form-control">
+                        <option value="<%= bannerData.product._id %>"><%= bannerData.product.name %></option>
+                            <% for(let product of products) { %>
+                            <option value="<%= product._id %>">
+                                <%= product.name %>
+                            </option>
+                            <% } %>
+                    </select>
+                    <span id="product-error" class="text-danger"></span>
+                </div>
+                <div class="mb-3 w-75 ">
+                    <label for="image" class="form-label">Product image</label>
+                    <input class="form-control addProductImg" type="file" multiple name="image" id="image" accept="image/*" value="<%=bannerData.image %>">
+                    <span class="input-group-text" span-id="image" hidden>Upload</span>
+                        
+
+
+                </div>
+                <div style="margin-left: 5%;margin-top: 5%;margin-bottom: 5%;" class=" d-flex">
+
+                    <% for (let i=0; i < bannerData.image.length; i++) { %>
+                        <img src="http://localhost:3000/<%= bannerData.image[i] %>" style="height: 90px;width: 90px;"
+                            alt="image">
+
+                        <a href="/adminauth/deleteImages/<%=bannerData._id %>/<%=bannerData.image[i]  %>" class="text-danger"
+                            onclick="return confirm('Are you sure want to delete this product?')"><i
+                                class="fas fa-trash fa-lg mx-1"></i></a>
+                        <% } %>
+                </div>
+
+                <div class="mb-3 w-75">
+                    <label for="Brand" class="form-label">Description</label>
+                    <textarea style="width:822px;height: 150px;" id="brand" name="description" rows="5"
+                        cols="108"> <%=bannerData.description %></textarea>
+                        
+
+
+
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </section>
+    <div id="modal"
+        style="position: absolute;top:0 ; z-index: 11; height: 100%; width: 100vw; background-color: rgba(0, 0, 0, 0.479);"
+        class="d-flex d-none justify-content-center align-items-center ">
+
+        <div class=" d-flex flex-column justify-content-center"
+            style=" background-color: rgb(255, 255, 255); height: 450px ; width: 50%; ">
+
+            <div style="height: 80%;" class="  d-flex justify-content-center align-items-center ">
+
+                <img id="cropImg" style="height: 90% ;width:80%;" alt="">
+
+            </div>
+
+            <div class="d-flex  justify-content-center ">
+                <button id="cropBtn" class="nav-link mt-4 mb-4"
+                    style="background-color: black; color:whitesmoke ;padding :10px"> CROP THE
+                    IMG</button>
+
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fileInputs = document.querySelectorAll('.addProductImg');
+            const cropImg = document.getElementById('cropImg');
+            const cropModal = document.getElementById('modal');
+            const cropBtn = document.getElementById('cropBtn');
+            let cropper;
+            let croppedDataUrls = {};
+
+            fileInputs.forEach((fileInput) => {
+                fileInput.addEventListener('change', (e) => {
+                    const reader = new FileReader();
+
+                    reader.onload = (e) => {
+                        if (e.target.result) {
+                            cropImg.src = e.target.result;
+                            cropModal.classList.remove('d-none');
+                            // const imgName = 'image'; // Change this to match your input field name
+                            const imgName = fileInput.getAttribute('name');
+                            let newCropper = new Cropper(cropImg, {
+                              aspectRatio: 25 / 9,
+                            });
+
+                            window.scrollTo(0, 0);
+                            cropper = { [imgName]: newCropper };
+                        }
+                    };
+
+                    reader.readAsDataURL(e.target.files[0]);
+                });
+            });
+
+            cropBtn.addEventListener('click', function () {
+                console.log(cropper);
+
+                if (cropper) {
+                    for (const key in cropper) {
+                        let span = document.querySelector(`[span-id="${key}"]`);
+                        console.log(span);
+                        span.style.backgroundColor = '#4d5154';
+                        span.style.color = 'white';
+                        croppedDataUrls[key] = cropper[key].getCroppedCanvas().toDataURL('image/jpeg');
+                        cropper[key].destroy();
+                        cropper = {};
+                        break;
+                    }
+
+                    console.log(croppedDataUrls);
+                    cropModal.classList.toggle('d-none');
+                }
+            });
+
+            const form = document.getElementById('myForm');
+            const bannerID = form.getAttribute('banner-id');
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+              
+
+
+                for (const key in croppedDataUrls) {
+                    let keyVal = key;
+                    formData.delete(keyVal);
+                    const blob = dataURLtoBlob(croppedDataUrls[keyVal]);
+                    formData.append(keyVal, blob, 'productImg.jpg');
+                }
+                const formDataObject = {};
+                formData.forEach((value, key) => {
+                    formDataObject[key] = value;
+                });
+                console.log(formDataObject.image)
+
+                
+
+                // const currentURL = window.location.origin;
+                console.log(formData)
+
+                fetch('/banner/updatebanner/'+bannerID, {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            // window.location.href = '/userauth/products'
+                            window.history.back();
+
+                        } else {
+                            console.error('Error:');
+                        }
+                    })
+                    .catch((error) => {
+                        alert('Failed to update product due to local/network issues');
+                        console.error('Error:', error);
+                    });
+            });
+
+            function dataURLtoBlob(dataURL) {
+                const parts = dataURL.split(',');
+                const data = parts[1];
+                const mimeString = parts[0].split(':')[1].split(';')[0];
+                const byteString = atob(data);
+                const ab = new ArrayBuffer(byteString.length);
+                const ia = new Uint8Array(ab);
+
+                for (let i = 0; i < byteString.length; i++) {
+                    ia[i] = byteString.charCodeAt(i);
+                }
+
+                return new Blob([ab], { type: mimeString });
+            }
+        });
+
+    </script>
+
+
+    <%-include('admin-footer')-%>

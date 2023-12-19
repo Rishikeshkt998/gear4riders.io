@@ -1,0 +1,79 @@
+<%-include('admin-header')-%>
+    <section>
+        <div class="row mb-3">
+            <div class="col-lg-7 col-md-7 mt-5 ms-5 ps-4">
+                <h4>View banner</h4>
+            </div>
+            <div class="col-lg-4 col-md-4 mt-5 me-5 pe-4 d-flex justify-content-end">
+                <a href="/banner/add-banner" class="btn btn-success"
+                    style="background-color: rgb(57, 135, 244);color: white;">Add Banner</a>
+            </div>
+        </div>
+
+        <div class="col py-3">
+            <div class="container">
+
+                <% if (bannerData!='' ){ %>
+                    <table class="table mt-5" id="myTable">
+                        <thead mt-5>
+                            <tr class="table-striped">
+                                <th scope="col">No</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Product</th>
+                                <th scope="col">Discription</th>
+                                <th scope="col">Action</th>
+
+
+
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            <% bannerData.forEach((value,index)=>{ %>
+                                <tr>
+                                    <td>
+                                        <%= index+1 %>
+                                    </td>
+                                    <td>
+                                        <%=value.title %>
+                                    </td>
+                                    <td><img width="100px" height="100px"
+                                            src="http://localhost:3000/<%= value.image[0]%>"></td>
+                                   
+                                    <td>
+                                        <%= value.product.name%>
+                                    </td>
+                                    <td>
+                                        <%= value.description%>
+                                    </td>
+                                    <td><a href="/banner/edit-banner/<%= value._id %>"><i
+                                                class="fa-solid fa-pen-to-square text-success"></i></a><a
+                                            href="/banner/delete-banner/<%= value._id %>"><i
+                                                class="fa-solid fa-trash text-danger ms-3"></i></a></td>
+
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                    <% } else { %>
+                        <h1 class="text-center text-secondary mt-5">No users found in the database</h1>
+
+
+                        <% } %>
+            </div>
+
+
+
+        </div>
+    </section>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script>
+        // let table = new DataTable('#myTable');
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        });
+    </script>
+
+    <%-include('admin-footer')-%>

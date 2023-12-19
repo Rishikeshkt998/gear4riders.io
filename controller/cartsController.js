@@ -161,43 +161,59 @@ async function removeFromCart(req, res) {
 }
 
 async function incrementQuantity(req, res) {
-
     try {
         const productid = new ObjectId(req.params.id);
         const userId = new ObjectId(req.session.currentUserId);
-        
 
-        if (userId) {
-            let product = await Product.findById(productid);
-            await Cart.updateOne({ userId, 'products.productId': productid }, { $inc: { 'products.$.quantity': 1 } });
-            let { totalAmount, totalProducts } = await calculateTotalAmount({ userId: userId });
-            let { totalProductAmount } = await calculateProductAmount({ userId: userId });
-
-            const productcount = await Cart.aggregate(
-                [
-                    { $match: { 'products.productId': productid } },
-                    { $unwind: '$products' },
-                    { $match: { 'products.productId': productid } },
-                    { $project: { _id: 0, quantity: '$products.quantity', countInStock: '$products.countInStock' } }
-                ]);
-
-            const Quantity = productcount[0].quantity;
-            const stock=productcount[0].countInStock
-            console.log(`Quantity: ${Quantity}  ${stock}`);
-            if(Quantity>=product.countInStock+1){
-                return res.json({ success: false, message: 'out of stock' });
-
-            }else{
-                res.json({ success: true, Quantity, totalAmount, totalProducts, totalProductAmount });
-
-            }
-
-            
+        if (!userId) {
+            return res.json({ success: false, message: 'User not logged in' });
         }
+
+        const productdetails = await Product.findById(productid);
+
+        if (!productdetails) {
+            return res.json({ success: false, message: 'Product not found' });
+        }
+
+        const stock = productdetails.countInStock;
+
+        const currQuantity = await Cart.findOne({ userId, 'products.productId': productid }, { _id: 0, 'products.quantity': 1 });
+
+        if (currQuantity) {
+            const currentQuantity = currQuantity.products[0].quantity;
+            if (currentQuantity >= stock) {
+                return res.json({ success: false, message: 'Out of stock' });
+            }
+        }
+
+        const result = await Cart.updateOne(
+            { userId, 'products': { $elemMatch: { 'productId': productid } } },
+            { $inc: { 'products.$.quantity': 1 } }
+        );
+
+        if (result.nModified === 0) {
+            // Product not found in the cart, you might want to handle this case.
+            return res.json({ success: false, message: 'Product not found in the cart' });
+        }
+
+        const { totalAmount, totalProducts } = await calculateTotalAmount({ userId });
+        const { totalProductAmount } = await calculateProductAmount({ userId });
+
+        const productcount = await Cart.aggregate([
+            { $match: { 'products.productId': productid } },
+            { $unwind: '$products' },
+            { $match: { 'products.productId': productid } },
+            { $project: { _id: 0, quantity: '$products.quantity', countInStock: '$products.countInStock' } }
+        ]);
+
+        const Quantity = productcount[0].quantity;
+        console.log(`Quantity: ${Quantity}  Stock: ${stock}`);
+
+        res.json({ success: true, Quantity, totalAmount, totalProducts, totalProductAmount, stock });
     } catch (error) {
         console.log(`An error occurred while increasing the Quantity: ${error}`);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
-
 }
 
 
@@ -207,31 +223,51 @@ async function decrementQuantity(req, res) {
         const productid = new ObjectId(req.params.id);
         const userId = new ObjectId(req.session.currentUserId);
 
-        if (userId) {
-            await Cart.updateOne({ userId, 'products.productId': productid }, { $inc: { 'products.$.quantity': -1 } });
-            let { totalAmount, totalProducts } = await calculateTotalAmount({ userId: userId });
-            let { totalProductAmount } = await calculateProductAmount({ userId: userId });
-            console.log(totalProductAmount)
-            const productcount = await Cart.aggregate(
-                [
-                    { $match: { 'products.productId': productid } },
-                    { $unwind: '$products' },
-                    { $match: { 'products.productId': productid } },
-                    { $project: { _id: 0, quantity: '$products.quantity' } }
-                ]);
-
-            const Quantity = productcount[0].quantity;
-            if(Quantity<=0){
-                return res.json({ success: false, message: 'quanity will be greater than 1' });
-
-            }else{
-                console.log(`Quantity: ${Quantity}`);
-
-                res.json({ success: true, Quantity, totalAmount, totalProducts, totalProductAmount, formatCurrency });
-
-            }
-           
+        if (!userId) {
+            return res.json({ success: false, message: 'User not logged in' });
         }
+
+        const productdetails = await Product.findById(productid);
+
+        if (!productdetails) {
+            return res.json({ success: false, message: 'Product not found' });
+        }
+
+        const stock = productdetails.countInStock;
+
+        const currQuantity = await Cart.findOne({ userId, 'products.productId': productid }, { _id: 0, 'products.quantity': 1 });
+
+        if (currQuantity) {
+            const currentQuantity = currQuantity.products[0].quantity;
+            if (currentQuantity === 1) {
+                return res.json({ success: false, message: 'quantity canoote be less than 1' });
+            }
+        }
+
+        const result = await Cart.updateOne(
+            { userId, 'products': { $elemMatch: { 'productId': productid } } },
+            { $inc: { 'products.$.quantity': -1 } }
+        );
+
+        if (result.nModified === 0) {
+            // Product not found in the cart, you might want to handle this case.
+            return res.json({ success: false, message: 'Product not found in the cart' });
+        }
+
+        const { totalAmount, totalProducts } = await calculateTotalAmount({ userId });
+        const { totalProductAmount } = await calculateProductAmount({ userId });
+
+        const productcount = await Cart.aggregate([
+            { $match: { 'products.productId': productid } },
+            { $unwind: '$products' },
+            { $match: { 'products.productId': productid } },
+            { $project: { _id: 0, quantity: '$products.quantity', countInStock: '$products.countInStock' } }
+        ]);
+
+        const Quantity = productcount[0].quantity;
+        console.log(`Quantity: ${Quantity}  Stock: ${stock}`);
+
+        res.json({ success: true, Quantity, totalAmount, totalProducts, totalProductAmount, stock });
 
     } catch (error) {
         console.log(`An error occured while increasing the Quantity...${error}`);
