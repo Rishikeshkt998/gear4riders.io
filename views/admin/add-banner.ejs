@@ -78,7 +78,60 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+        // Function to validate title
+        function validateTitle() {
+            var title = document.getElementById('title').value.trim();
+            var titleError = document.getElementById('title-error');
+            titleError.innerText = title === '' ? 'Title is required' : '';
+        }
+
+        // Function to validate product selection
+        function validateProduct() {
+            var product = document.getElementById('product').value;
+            var productError = document.getElementById('product-error');
+            productError.innerText = !product ? 'Please select a product' : '';
+        }
+
+        // Function to validate image upload
+        function validateImage() {
+            var imageInput = document.getElementById('image');
+            var imageError = document.getElementById('inputImage-error');
+            
+            // Check if an image is selected
+            if (!imageInput.files.length) {
+                imageError.innerText = 'Image is required';
+                return;
+            }
+
+            // Check if the selected file is a JPEG or PNG
+            var allowedFormats = ['image/jpeg', 'image/png'];
+            var validFormat = Array.from(imageInput.files).every(file => allowedFormats.includes(file.type));
+
+            if (!validFormat) {
+                imageError.innerText = 'Please upload a JPEG or PNG image';
+            } else {
+                imageError.innerText = ''; // Clear error message
+            }
+        }
+
+        // Function to validate description
+        function validateDescription() {
+            var description = document.getElementById('description').value.trim();
+            var descriptionError = document.getElementById('description-error');
+            descriptionError.innerText = description === '' ? 'Description is required' : '';
+        }
+
+        document.getElementById('title').addEventListener('input', validateTitle);
+        document.getElementById('product').addEventListener('change', validateProduct);
+        document.getElementById('image').addEventListener('change', validateImage);
+        document.getElementById('description').addEventListener('input', validateDescription);
+      
+
+
       const fileInputs = document.querySelectorAll('.addProductImg');
       const cropImg = document.getElementById('cropImg');
       const cropModal = document.getElementById('modal');
@@ -132,11 +185,22 @@
       const form = document.getElementById('myForm');
       form.addEventListener('submit', async function (event) {
         event.preventDefault();
-        const validate = validateBanner()
-        if (!validate) return 0;
-        const imageInput = document.getElementById('image')
-    const validImage = await validateImageFile(imageInput.files[0]);
-    if (!validImage) return Swal.fire("Invalid image file detected", "", "info");
+            validateTitle();
+            validateProduct();
+            validateImage();
+            validateDescription();
+
+            // Prevent form submission if there are validation errors
+            if (
+                document.getElementById('title-error').innerText ||
+                document.getElementById('product-error').innerText ||
+                document.getElementById('inputImage-error').innerText ||
+                document.getElementById('description-error').innerText
+            ) 
+            {
+        
+        return 0;
+    }
         const formData = new FormData(form);
 
 
@@ -195,45 +259,23 @@
     });
 
 
-    function validateImageFile(file) {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = function () {
-          // Image is valid if it loads properly
-          resolve(true);
-        };
-        img.onerror = function () {
-          // Image failed to load, hence invalid
-          resolve(false);
-        };
-      });
-    }
+    // function validateImageFile(file) {
+    //   return new Promise((resolve) => {
+    //     const img = new Image();
+    //     img.onload = function () {
+    //       // Image is valid if it loads properly
+    //       resolve(true);
+    //     };
+    //     img.onerror = function () {
+    //       // Image failed to load, hence invalid
+    //       resolve(false);
+    //     };
+    //   });
+    // }
 
-    function validateBanner() {
-      try {
-        const title = document.getElementById('title').value.split(' ').join('')
-        const product = document.getElementById('product').value
-        const description = document.getElementById('description').value.split(' ').join('')
-        const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-        document.getElementById('title-error').innerText = ''; document.getElementById('product-error').innerText = '';
-        document.getElementById('description-error').innerText = '';
-        let flag = 0;
-        if (specialChars.test(title)) {
-          document.getElementById('title-error').innerText = 'Special characters are not accepted!'
-          flag = 1;
-        }
-        if (!title || !product || !description) {
-          flag = 1;
-          if (!title) document.getElementById('title-error').innerText = '* This field is required.';
-          if (!product) document.getElementById('product-error').innerText = '* This field is required!';
-          if (!description) document.getElementById('description-error').innerText = '*This field is required!';
-        }
-        if (flag === 0) return true;
-        return false;
-      } catch (error) {
-        console.log(error)
-      }
-    }
+  
+    // }
+    
 
   </script>
 

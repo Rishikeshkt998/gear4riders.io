@@ -250,6 +250,7 @@ async function postOrder(req, res) {
         const { addressId, name, fulladdress, pincode, landmark, district, state, phone, alternatephone } = req.session.address;
         const userId = new ObjectId(user);
         const status = value === 'COD' ? 'PLACED' : 'PENDING';
+        const paymentstatus='PENDING';
         const cart = await Cart.findOne({ userId });
         let UserData;
         let orderId;
@@ -289,6 +290,7 @@ async function postOrder(req, res) {
                     couponname: couponname || null,
                     discount: discount || 0,
                     status: status,
+                    paymentstatus:paymentstatus,
                     invoicenumber: invoiceNumber,
 
                     address: {
@@ -385,6 +387,7 @@ async function postOrder(req, res) {
                         couponname: couponname || null,
                         discount: discount || 0,
                         status: status,
+                        paymentstatus:paymentstatus,
                         invoicenumber: invoiceNumber,
 
                         address: {
@@ -459,6 +462,7 @@ async function postOrder(req, res) {
                         couponname: couponname || null,
                         discount: discount || 0,
                         status: status,
+                        paymentstatus:paymentstatus,
                         invoicenumber: invoiceNumber,
 
                         address: {
@@ -546,6 +550,7 @@ async function postOrder(req, res) {
                     couponname: couponname || null,
                     discount: discount || 0,
                     status: status,
+                    paymentstatus:paymentstatus,
                     invoicenumber: invoiceNumber,
 
                     address: {
@@ -631,6 +636,7 @@ async function postOrder(req, res) {
                     couponname: couponname || null,
                     discount: discount || 0,
                     status: status,
+                    paymentstatus:paymentstatus,
                     invoicenumber: invoiceNumber,
 
                     address: {
@@ -723,6 +729,7 @@ async function postOrder(req, res) {
                         couponname: couponname || null,
                         discount: discount || 0,
                         status: status,
+                        paymentstatus:paymentstatus,
                         invoicenumber: invoiceNumber,
 
                         address: {
@@ -796,6 +803,7 @@ async function postOrder(req, res) {
                         couponname: couponname || null,
                         discount: discount || 0,
                         status: status,
+                        paymentstatus:paymentstatus,
                         invoicenumber: invoiceNumber,
 
                         address: {
@@ -882,6 +890,7 @@ async function postOrder(req, res) {
                     couponname: couponname || null,
                     discount: discount || 0,
                     status: status,
+                    paymentstatus:paymentstatus,
                     invoicenumber: invoiceNumber,
 
                     address: {
@@ -904,7 +913,6 @@ async function postOrder(req, res) {
 
                 await Cart.deleteOne({ userId });
                 delete req.session.address;
-
                 orderId = newOrder._id;
                 console.log(orderId);
                 var options = {
