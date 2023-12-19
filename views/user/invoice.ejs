@@ -65,10 +65,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <td class="text-left"><strong> <%=order.products[0].productname%></strong></td>
-                                <td class="text-center"><strong> <%=order.products[0].quantity%></strong></td>
-                                <td class="text-center"><strong> <%= formatCurrency(order.products[0].productprice)%></strong></td>
-                                <td class="text-right"><strong><%=order.totalAmount%></strong></td>
+                                <% order.products.forEach(function(product) { %>
+                                    <tr>
+                                        <td class="text-left"><strong><%= product.productname %></strong></td>
+                                        <td class="text-center"><strong><%= product.quantity %></strong></td>
+                                        <td class="text-center"><strong><%= formatCurrency(product.productprice) %></strong></td>
+                                        <td class="text-right"><strong><%= formatCurrency(product.quantity * product.productprice) %></strong></td>
+                                    </tr>
+                                <% }); %>
+                                
                             </tbody>
                             <tfoot>
                                 <tr>
