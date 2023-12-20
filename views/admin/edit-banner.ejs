@@ -42,7 +42,7 @@
                         <img src="http://localhost:3000/<%= bannerData.image[i] %>" style="height: 90px;width: 90px;"
                             alt="image">
 
-                        <a href="/adminauth/deleteImages/<%=bannerData._id %>/<%=bannerData.image[i]  %>"
+                        <a href="/banner/deletebannerImages/<%=bannerData._id %>/<%=bannerData.image[i]  %>"
                             class="text-danger" onclick="return confirm('Are you sure want to delete this product?')"><i
                                 class="fas fa-trash fa-lg mx-1"></i></a>
                         <% } %>
@@ -94,52 +94,7 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             // Function to validate title
-            function validateTitle() {
-                var title = document.getElementById('title').value.trim();
-                var titleError = document.getElementById('title-error');
-                titleError.innerText = title === '' ? 'Title is required' : '';
-            }
-
-            // Function to validate product selection
-            function validateProduct() {
-                var product = document.getElementById('product').value;
-                var productError = document.getElementById('product-error');
-                productError.innerText = !product ? 'Please select a product' : '';
-            }
-
-            // Function to validate image upload
-            function validateImage() {
-                var imageInput = document.getElementById('image');
-                var imageError = document.getElementById('inputImage-error');
-
-                // Check if an image is selected
-                if (!imageInput.files.length) {
-                    imageError.innerText = 'Image is required';
-                    return;
-                }
-
-                // Check if the selected file is a JPEG or PNG
-                var allowedFormats = ['image/jpeg', 'image/png'];
-                var validFormat = Array.from(imageInput.files).every(file => allowedFormats.includes(file.type));
-
-                if (!validFormat) {
-                    imageError.innerText = 'Please upload a JPEG or PNG image';
-                } else {
-                    imageError.innerText = ''; // Clear error message
-                }
-            }
-
-            // Function to validate description
-            function validateDescription() {
-                var description = document.getElementById('description').value.trim();
-                var descriptionError = document.getElementById('description-error');
-                descriptionError.innerText = description === '' ? 'Description is required' : '';
-            }
-
-            document.getElementById('title').addEventListener('input', validateTitle);
-            document.getElementById('product').addEventListener('change', validateProduct);
-            document.getElementById('image').addEventListener('change', validateImage);
-            document.getElementById('description').addEventListener('input', validateDescription);
+           
 
 
             // document.addEventListener('DOMContentLoaded', function () {
@@ -197,21 +152,7 @@
             const bannerID = form.getAttribute('banner-id');
             form.addEventListener('submit', function (event) {
                 event.preventDefault();
-                validateTitle();
-                validateProduct();
-                validateImage();
-                validateDescription();
-
-                // Prevent form submission if there are validation errors
-                if (
-                    document.getElementById('title-error').innerText ||
-                    document.getElementById('product-error').innerText ||
-                    document.getElementById('inputImage-error').innerText ||
-                    document.getElementById('description-error').innerText
-                ) {
-
-                    return 0;
-                }
+                
                 const formData = new FormData(form);
 
 

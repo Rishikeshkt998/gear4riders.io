@@ -899,7 +899,7 @@ async function couponPost(req, res) {
 }
 
 async function couponView(req, res) {
-    const couponlist = await Coupon.find();
+    const couponlist = await Coupon.find({isDeleted:false});
     res.render('admin/coupon-view', {
         data: couponlist, formatCurrency
     });

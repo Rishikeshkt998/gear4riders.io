@@ -95,7 +95,7 @@ async function editBannerPost (req,res) {
                 for (let i = 0; i < req.files.length; i++) {
                     arrayimage[i] = req.files[i].filename
                 }
-                compinedimage = [...productimages.image, ...arrayimage]
+                compinedimage = [...bannerimages.image, ...arrayimage]
             }
 
             // Update product information
@@ -121,6 +121,19 @@ async function editBannerPost (req,res) {
 }
 
 
+async function deleteBannerImage(req, res) {
+    const id = req.params.id;
+    const image = req.params.image;
+    console.log(id, image);
+    await banner.findByIdAndUpdate({ _id: id }, { $pull: { image: image } });
+    req.session.message = {
+        message: 'Image deleted successfully',
+        type: 'success'
+    };
+    return res.redirect(`/banner/edit-banner/${id}`);
+}
+
+
 
 
 module.exports = {
@@ -129,5 +142,6 @@ module.exports = {
     bannerView,
     bannerDelete,
     editBanner,
-    editBannerPost
+    editBannerPost,
+    deleteBannerImage
 }

@@ -1,42 +1,42 @@
 <%-include('userheader')-%>
-  <section>
-    <div class="container-fluid">
-      <div class="row ps-3">
-        <div class="col-md-2 col-6 pt-3">
-          <img src="https://www.store4riders.com/media/wysiwyg/Helmets.jpg" class="img-fluid" alt="Helmet">
-        </div>
-        <div class="col-md-2 col-6 pt-3">
-          <img src="https://www.store4riders.com/media/wysiwyg/jackets_1.jpg" class="img-fluid" alt="Jackets">
-        </div>
-        <div class="col-md-2 col-6 pt-3">
-          <img src="https://www.store4riders.com/media/wysiwyg/gloves_1.jpg" class="img-fluid" alt="Gloves">
-        </div>
-        <div class="col-md-2 col-6 pt-3">
-          <img src="https://www.store4riders.com/media/wysiwyg/boots_2.jpg" class="img-fluid" alt="Boots">
-        </div>
-        <div class="col-md-2 col-6 pt-3">
-          <img src="https://www.store4riders.com/media/home/riding-pants.jpg" class="img-fluid" alt="Riding Pants">
-        </div>
-        <div class="col-md-2 col-6 pt-3">
-          <img src="https://www.store4riders.com/media/home/racing-suits.jpg" class="img-fluid" alt="Racing Suits">
-        </div>
+<section>
+  <div class="container-fluid">
+    <div class="row ps-3">
+      <div class="col-md-2 col-lg-2 col-6 pt-3">
+        <img src="https://www.store4riders.com/media/wysiwyg/Helmets.jpg" class="img-fluid" alt="Helmet">
       </div>
-      <div class="row ps-3 mt-4">
-        <div class="col-md-6 col-12 pt-3">
-          <img src="https://www.store4riders.com/media/wysiwyg/Rain%20riding%20gear%20for%20bikers.jpg"
-            class="img-fluid" alt="Rain Riding Gear">
-        </div>
-        <div class="col-md-6 col-12 pt-3">
-          <img src="https://www.store4riders.com/media/wysiwyg/Motorcycle_touring_gear_1.jpg" class="img-fluid"
-            alt="Motorcycle Touring Gear">
-        </div>
+      <div class="col-md-2 col-6 pt-3">
+        <img src="https://www.store4riders.com/media/wysiwyg/jackets_1.jpg" class="img-fluid" alt="Jackets">
+      </div>
+      <div class="col-md-2 col-6 pt-3">
+        <img src="https://www.store4riders.com/media/wysiwyg/gloves_1.jpg" class="img-fluid" alt="Gloves">
+      </div>
+      <div class="col-md-2 col-6 pt-3">
+        <img src="https://www.store4riders.com/media/wysiwyg/boots_2.jpg" class="img-fluid" alt="Boots">
+      </div>
+      <div class="col-md-2 col-6 pt-3">
+        <img src="https://www.store4riders.com/media/home/riding-pants.jpg" class="img-fluid" alt="Riding Pants">
+      </div>
+      <div class="col-md-2 col-6 pt-3">
+        <img src="https://www.store4riders.com/media/home/racing-suits.jpg" class="img-fluid" alt="Racing Suits">
       </div>
     </div>
-    </section>
+    <div class="row ps-3 mt-4">
+      <div class="col-md-6 col-12 pt-3">
+        <img src="https://www.store4riders.com/media/wysiwyg/Rain%20riding%20gear%20for%20bikers.jpg"
+          class="img-fluid" alt="Rain Riding Gear">
+      </div>
+      <div class="col-md-6 col-12 pt-3">
+        <img src="https://www.store4riders.com/media/wysiwyg/Motorcycle_touring_gear_1.jpg" class="img-fluid"
+          alt="Motorcycle Touring Gear">
+      </div>
+    </div>
+  </div>
+</section>
   <h2 class="text-center pt-5">CATEGORIES</h2>
   <nav class="navbar navbar-expand-lg navbar-light bg-light ">
     <div class="container d-flex justify-content-center">
-      <div class="navbar-nav">
+      <div class="navbar-nav flex-row">
         <% if (categoryNames && categoryNames !==null) { %>
           <% for (let i=0; i < categoryNames.length; i++) { %>
             <a class="nav-item nav-link mx-2 text-dark" href="/?category=<%= categoryNames[i] %>">
@@ -50,7 +50,7 @@
   <h2 class="text-center pt-5">BRANDS</h2>
   <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
     <div class="container d-flex justify-content-center">
-      <div class="navbar-nav">
+      <div class="navbar-nav flex-row">
         <% if (brandNames && brandNames !==null) { %>
           <% for (let i=0; i < brandNames.length; i++) { %>
             <a class="nav-item nav-link mx-2 text-dark" href="/?brand=<%= brandNames[i] %>">
@@ -61,94 +61,92 @@
       </div>
     </div>
   </nav>
-  <div class="row ">
-    <div class="col-lg-7 col-md-7 mt-5 ms-5 ps-4">
-      <div class="sort-options">
-        <label for="sortPrice">Sort by Price:</label>
-        <select id="sortPrice" name="sortPrice">
-          <option value="none">none</option>
-          <option value="asc">Low to High</option>
-          <option value="desc">High to Low</option>
-        </select>
-        </div>
-    </div>
-    <div class="col-lg-4 col-md-4 mt-5 me-5 pe-4 d-flex justify-content-end">
-      <div>
-      <div class="container" style="width:300px;">
-        <div class="input-group justify-content-end">
-          <input type="text" class="form-control"  id="searchInput" placeholder="Search..." aria-label="Search" aria-describedby="basic-addon2">
-          <div class="input-group-append">
-            <button class="btn btn-success" id="searchbutton"type="button">Search</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    </div>
-  </div>
-  
-   
-      
-   
+ 
   <section>
+    
+    
     <div class="container pb-5">
-      <a href="/ProductList" style="color: black;text-decoration: none;"><h1 class="text-center pt-5">POPULAR PRODUCTS</h1></a>
-      <div class="row d-flex justify-content-center align-items-stretch">
-        <% data.forEach(function(product, i) { %>
-          <div class="col-md-3 col-sm-6  mt-5">
-            
-            <div class="card h-100">
-              <a href="/productdetails/<%=generateSlug(product.name)%>/<%=product._id%>"
-                style="text-decoration: none; color: black;">
-                <div class="card-image">
-                  <center><img src="http://localhost:3000/<%= product.image[0]%>" class="card-img-top pt-3"
-                      style="height: 180px; width:180px;" alt="Product Image"></center>
-                </div>
-              </a>
-
-              <div class="card-body d-flex flex-column justify-content-between">
-                <div class="title-section mb-3">
-                  <h5 class="card-title text-center" style="height: 30px;">
-                    <%= product.name%>
-                  </h5>
-                </div>
-                <div class="price-section text-center mb-1" style="height: 60px;">
-                  <% if (product.discount!==0) { %>
-                    <span class="badge bg-success ">
-                      <%= product.discount + " % off" %>
-                    </span>
-                    <p class="card-text  text-center mb-1">
-                      <%= formatCurrency(Math.round(product.price - (product.price*product.discount/100)))%>
-                    </p>
-                    <p class="card-text  text-center mb-2">
-                      M.R.P:<del class="">
-                        <%= formatCurrency(product.price)%>
-                      </del>
-                    </p>
-                    <% } else { %>
-                      <p class="card-text text-center mb-2">
-                        <%= formatCurrency(product.price)%>
-                      </p>
-                      <% } %>
-                </div>
-                <hr>
-                <div class="action-section d-flex justify-content-between align-items-center mb-2">
-                  <i class='fas fa-shopping-cart pt-1'></i>
-                  <p class="ps-2 mb-0">Add to cart</p>
-                  <a href="#" onclick="postWishlist('<%= product._id %>'); return false;"
-                    style="text-decoration: none; color: black;">
-                    <i class="fa-regular fa-heart pt-1" id="heart<%= product._id %>"></i>
-                  </a>
-                </div>
+      <div class="row ">
+        <div class="col-lg-7 col-md-7 mt-5  ps-4">
+          <div class="sort-options">
+            <label for="sortPrice">Sort by Price:</label>
+            <select id="sortPrice" name="sortPrice">
+              <option value="none">none</option>
+              <option value="asc">Low to High</option>
+              <option value="desc">High to Low</option>
+            </select>
+            </div>
+        </div>
+        <div class="col-lg-5 col-md-4 mt-5   d-flex justify-content-end">
+          <div>
+          <div class="container" style="width:300px;">
+            <div class="input-group justify-content-end">
+              <input type="text" class="form-control"  id="searchInput" placeholder="Search..." aria-label="Search" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-success" id="searchbutton"type="button">Search</button>
               </div>
             </div>
-            
           </div>
-          <% }) %>
-          
-        
+        </div>
+        </div>
       </div>
+        <a href="/ProductList" style="color: black;text-decoration: none;"><h1 class="text-center pt-5 pb-5">POPULAR PRODUCTS</h1></a>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 d-flex justify-content-center align-items-stretch">
+            <% data.forEach(function(product, i) { %>
+                <div class="col mb-4">
+                    <div class="card h-100">
+                        <a href="/productdetails/<%=generateSlug(product.name)%>/<%=product._id%>"
+                            style="text-decoration: none; color: black;">
+                            <div class="card-image">
+                                <center><img src="http://localhost:3000/<%= product.image[0]%>"
+                                        class="card-img-top pt-3" style="height: 180px; width:180px;"
+                                        alt="Product Image"></center>
+                            </div>
+                        </a>
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div class="title-section mb-3">
+                                <h5 class="card-title text-center" style="height: 30px;">
+                                    <%= product.name%>
+                                </h5>
+                            </div>
+                            <div class="price-section text-center mb-1" style="height: 60px;">
+                                <% if (product.discount!==0) { %>
+                                    <span class="badge bg-success ">
+                                        <%= product.discount + " % off" %>
+                                    </span>
+                                    <p class="card-text  text-center mb-1">
+                                        <%= formatCurrency(Math.round(product.price - (product.price*product.discount/100)))%>
+                                    </p>
+                                    <p class="card-text  text-center mb-2">
+                                        M.R.P:<del class="">
+                                            <%= formatCurrency(product.price)%>
+                                        </del>
+                                    </p>
+                                <% } else { %>
+                                    <p class="card-text text-center mb-2">
+                                        <%= formatCurrency(product.price)%>
+                                    </p>
+                                <% } %>
+                            </div>
+                            <hr>
+                            <div class="action-section d-flex justify-content-between align-items-center mb-2">
+                                <i class='fas fa-shopping-cart pt-1'></i>
+                                <p class="ps-2 mb-0">Add to cart</p>
+                                <a href="#" onclick="postWishlist('<%= product._id %>'); return false;"
+                                    style="text-decoration: none; color: black;">
+                                    <i class="fa-regular fa-heart pt-1" id="heart<%= product._id %>"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
     </div>
-  </section>
+</section>
+      
+   
+  
   <section>
     
     <div class="container">
@@ -178,7 +176,7 @@
     </div>
   </section>
   <section>
-    <div class="container-fluid">
+    <div class="container-fluid pt-5 pb-5">
     <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
@@ -193,7 +191,7 @@
             <% if (banners) { %>
                 <div class="carousel-item active">
                     <a href="/productdetails/<%=generateSlug(banners[0].product.name)%>/<%=banners[0].product._id%>">
-                        <img style="width: 100%;" src="<%= banners[0].image %>" class="d-block w-100"
+                        <img src="<%= banners[0].image %>" class="d-block w-100"
                             alt="Photo will be uploaded..."></a>
                     <div class="carousel-caption">
                         <h5>Exclussive</h5>
@@ -204,7 +202,7 @@
                     <div class="carousel-item ">
 
                         <a href="/productdetails/<%=generateSlug(banners[0].product.name)%>/<%=banners[0].product._id%>">
-                            <img src="<%= banners[i].image %>" class="d-block w-100"
+                            <img style="width: 100%;" src="<%= banners[i].image %>" class="d-block w-100"
                                 alt="Photo will be uploaded..."></a>
                         <div class="carousel-caption mb-5">
                             <h5>

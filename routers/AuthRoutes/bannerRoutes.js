@@ -10,6 +10,7 @@ router.get('/',bannerController.bannerView);
 router.get('/delete-banner/:id',bannerController.bannerDelete);
 router.get('/edit-banner/:id',bannerController.editBanner);
 router.post('/updatebanner/:id',bannerController.editBannerPost);
+router.get('/deletebannerImages/:id/:image', bannerController.deleteBannerImage);
 
 
 
