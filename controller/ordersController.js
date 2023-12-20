@@ -3,6 +3,7 @@ const User = require('../models/user');
 const Order = require('../models/order');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
+const Product = require('../models/product');
 
 const Razorpay = require('razorpay');
 
@@ -214,12 +215,40 @@ async function orderCancel(req, res) {
         if (ordercancelled) {
             const ordercancel = await Order.findOneAndUpdate({ _id: orderId }, { $set: { 'isCancelled': true } });
             const order = await Order.findOne({ _id: orderId });
+            
+            const productIds = order.products.map(product => product.product_id);
             console.log(ordercancel);
             console.log('Order cancelled');
+            if ( order.paymentMethod === 'onlinepayment+wallet') {
+                const userId = req.session.currentUserId
+                const amount=order.totalAmount
+                console.log(amount)
 
-            if (order.status === 'PLACED' && order.paymentMethod !== 'COD') {
+                const walletAmount = await User.findByIdAndUpdate(
+                    userId,
+                    {
+                        $inc: { 'wallet.balance': amount },
+                        $push: {
+                            'wallet.transactions': {
+                                type: 'debited',
+                                amount: amount,
+                                description: 'Amount is added to wallet by cancellation',
+                                time: Date.now()
+                            }
+                        }
+                    },
+                    { new: true, upsert: true }
+                )
+                console.log(walletAmount)
+            }
+
+            else  if (order.status === 'PLACED' && order.paymentMethod !== 'COD') {
                 await Order.findOneAndUpdate({ '_id': orderId }, { $set: { 'refund': true } })
             }
+            
+            
+            
+            await Product.updateMany({ _id: { $in: productIds } }, { $inc: { countInStock: 1 } });
             res.status(200).json({ success: true, message: 'Order successfully cancelled', status: order.status });
 
         }

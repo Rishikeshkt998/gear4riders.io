@@ -70,10 +70,12 @@
 
                         </div>
                         <% if (!data.isCancelled && data.status!=='RETURN' &&data.status!=='DELIVERED' ) { %>
+                            
                             <div class="col-lg-2 col-md-2 col-sm-2 col-2 mb-2 mb-lg-0">
                                 <button onclick="cancelOrder('<%= data._id %>')" class="btn btn-danger"
                                     style="width: 200px;">Cancel Order</button>
                             </div>
+                           
                             <% } %>
                                 <% if (data.status==='DELIVERED' &&data.return_date> currentdate ) { %>
                                     <div class="col-lg-2 col-md-2 col-sm-12 col-12 mb-2 mb-lg-0">
@@ -210,6 +212,7 @@
                     if (orderStatusElement) {
                         orderStatusElement.textContent = `Order : ${data.status}`;
                     }
+                    window.location.reload();
                 })
                 .catch(error => {
                     console.error('Error:', error.message);
@@ -239,6 +242,7 @@
                     if (orderStatusElement) {
                         orderStatusElement.textContent = `Order : ${data.status}`;
                     }
+                    
                 })
                 .catch(error => {
                     console.error('Error:', error.message);

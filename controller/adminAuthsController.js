@@ -530,15 +530,37 @@ async function deleteProduct(req, res) {
     });
 }
 
+
+
 async function deleteImage(req, res) {
     const id = req.params.id;
     const image = req.params.image;
     console.log(id, image);
+
+
+    const product = await Product.findById(id);
+    const imagePath = product.image.find(img => img === image);
+
+    if (imagePath) {
+        const rootDir = path.resolve(__dirname, '..'); // Assuming your script is in a subdirectory
+        const fullPath = path.resolve(rootDir, 'uploads', imagePath);
+        // const fullPath = path.resolve(__dirname, 'uploads', imagePath);
+
+        try {
+            await fs.promises.unlink(fullPath);
+            console.log(`Image file ${fullPath} deleted successfully.`);
+        } catch (unlinkErr) {
+            console.error(`Error deleting image file: ${unlinkErr}`);
+        }
+    }
+
     await Product.findByIdAndUpdate({ _id: id }, { $pull: { image: image } });
+
     req.session.message = {
         message: 'Image deleted successfully',
         type: 'success'
     };
+
     return res.redirect(`/adminauth/editproduct/${id}`);
 }
 
@@ -562,20 +584,19 @@ async function categoriePost(req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         // return res.status(400).json({success:false,errors:errors.array()})
-        return res.render('admin/add-category', { errors: errors.mapped(), invalid: '' });
+        return res.render('admin/add-Category', { errors: errors.mapped(), invalid: '' });
     }
     // let categorys=req.body.name
     const iscategories = await Category.findOne({ name: req.body.name });
     if (!req.body.name) {
-        return res.render('admin/add-category', { errors: '', invalid: 'the input field must not be blank' });
+        return res.render('admin/add-Category', { errors: '', invalid: 'the input field must not be blank' });
 
     } else if (iscategories != null) {
-        return res.render('admin/add-category', { errors: '', invalid: 'the the entered category is already exists' });
+        return res.render('admin/add-Category', { errors: '', invalid: 'the the entered category is already exists' });
 
     }
     const category = new Category({
         name: req.body.name,
-        discount: req.body.discount
     });
     category.save().then((createdcategory => {
         // res.status(201).json(createdcategory)
@@ -592,7 +613,7 @@ async function categoriePost(req, res) {
 
 
 function addCategory(req, res, next) {
-    res.render('admin/add-category', { errors: '', invalid: '' });
+    res.render('admin/add-Category', { errors: '', invalid: '' });
 }
 function editCategory(req, res) {
 
@@ -899,7 +920,7 @@ async function couponPost(req, res) {
 }
 
 async function couponView(req, res) {
-    const couponlist = await Coupon.find({isDeleted:false});
+    const couponlist = await Coupon.find({ isDeleted: false });
     res.render('admin/coupon-view', {
         data: couponlist, formatCurrency
     });

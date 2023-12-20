@@ -34,14 +34,19 @@ async function getCart(req, res) {
     try {
         const userid = req.session.currentUserId;
         const userId = new ObjectId(userid);
+        
 
         const carts = await Cart.find({ userId: userId })
             .populate({
                 path: 'products.productId',
                 select: 'name price image description countInStock quantity discount',
             });
+            carts.forEach(cart => {
+                cart.products = cart.products.filter(product => !product.isDeleted);
+            });
         let { totalAmount, totalProducts } = await calculateTotalAmount({ userId: userId });
         let { totalProductAmount } = await calculateProductAmount({ userId: userId });
+       
         if (localStorage.getItem("products")) {
             localStorage.removeItem("products");
         }
@@ -49,7 +54,7 @@ async function getCart(req, res) {
 
         return res.render('user/cart.ejs', { carts, totalAmount, totalProducts, totalProductAmount, formatCurrency }); // Include totalAmount here
 
-
+    
 
     } catch (error) {
         console.log(`the error is: ${error}`);
@@ -64,6 +69,8 @@ async function postCart(req, res) {
     const quantity = 1;
 
     try {
+        
+       
         const userCart = await Cart.findOne({ userId: userId });
 
         if (userCart) {
@@ -125,6 +132,7 @@ async function postCart(req, res) {
 
 
         res.redirect('/cart/carts');
+   
     } catch (error) {
         console.error(`An error occurred: ${error}`);
     }
@@ -160,6 +168,8 @@ async function removeFromCart(req, res) {
     }
 }
 
+
+
 async function incrementQuantity(req, res) {
     try {
         const productid = new ObjectId(req.params.id);
@@ -177,13 +187,18 @@ async function incrementQuantity(req, res) {
 
         const stock = productdetails.countInStock;
 
-        const currQuantity = await Cart.findOne({ userId, 'products.productId': productid }, { _id: 0, 'products.quantity': 1 });
+        const productCount = await Cart.aggregate([
+            { $match: { userId, 'products.productId': productid } },
+            { $unwind: '$products' },
+            { $match: { 'products.productId': productid } },
+            { $group: { _id: null, totalQuantity: { $sum: '$products.quantity' } } },
+        ]);
 
-        if (currQuantity) {
-            const currentQuantity = currQuantity.products[0].quantity;
-            if (currentQuantity >= stock) {
-                return res.json({ success: false, message: 'Out of stock' });
-            }
+        const currQuantity = productCount.length > 0 ? productCount[0].totalQuantity : 0;
+        console.log('currentQuantity:', currQuantity);
+
+        if (currQuantity >= stock) {
+            return res.json({ success: false, message: 'Out of stock' });
         }
 
         const result = await Cart.updateOne(
@@ -192,33 +207,20 @@ async function incrementQuantity(req, res) {
         );
 
         if (result.nModified === 0) {
-            // Product not found in the cart, you might want to handle this case.
             return res.json({ success: false, message: 'Product not found in the cart' });
         }
 
         const { totalAmount, totalProducts } = await calculateTotalAmount({ userId });
         const { totalProductAmount } = await calculateProductAmount({ userId });
 
-        const productcount = await Cart.aggregate([
-            { $match: { 'products.productId': productid } },
-            { $unwind: '$products' },
-            { $match: { 'products.productId': productid } },
-            { $project: { _id: 0, quantity: '$products.quantity', countInStock: '$products.countInStock' } }
-        ]);
-
-        const Quantity = productcount[0].quantity;
-        console.log(`Quantity: ${Quantity}  Stock: ${stock}`);
-
-        res.json({ success: true, Quantity, totalAmount, totalProducts, totalProductAmount, stock });
+        res.json({ success: true, Quantity: currQuantity + 1, totalAmount, totalProducts, totalProductAmount, stock });
     } catch (error) {
         console.log(`An error occurred while increasing the Quantity: ${error}`);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 }
 
-
 async function decrementQuantity(req, res) {
-
     try {
         const productid = new ObjectId(req.params.id);
         const userId = new ObjectId(req.session.currentUserId);
@@ -235,22 +237,25 @@ async function decrementQuantity(req, res) {
 
         const stock = productdetails.countInStock;
 
-        const currQuantity = await Cart.findOne({ userId, 'products.productId': productid }, { _id: 0, 'products.quantity': 1 });
+        const productCount = await Cart.aggregate([
+            { $match: { userId, 'products.productId': productid } },
+            { $unwind: '$products' },
+            { $match: { 'products.productId': productid } },
+            { $project: { _id: 0, totalQuantity: { $sum: '$products.quantity' } } },
+        ]);
 
-        if (currQuantity) {
-            const currentQuantity = currQuantity.products[0].quantity;
-            if (currentQuantity === 1) {
-                return res.json({ success: false, message: 'quantity canoote be less than 1' });
-            }
+        const currQuantity = productCount.length > 0 ? productCount[0].totalQuantity : 0;
+
+        if (currQuantity <= 1) {
+            return res.json({ success: false, message: 'Quantity cannot be less than 1' });
         }
 
-        const result = await Cart.updateOne(
-            { userId, 'products': { $elemMatch: { 'productId': productid } } },
+        const result = await Cart.updateMany(
+            { userId, 'products.productId': productid },
             { $inc: { 'products.$.quantity': -1 } }
         );
 
         if (result.nModified === 0) {
-            // Product not found in the cart, you might want to handle this case.
             return res.json({ success: false, message: 'Product not found in the cart' });
         }
 
@@ -264,15 +269,17 @@ async function decrementQuantity(req, res) {
             { $project: { _id: 0, quantity: '$products.quantity', countInStock: '$products.countInStock' } }
         ]);
 
-        const Quantity = productcount[0].quantity;
+        const Quantity = productcount.length > 0 ? productcount[0].quantity : 0;
         console.log(`Quantity: ${Quantity}  Stock: ${stock}`);
 
         res.json({ success: true, Quantity, totalAmount, totalProducts, totalProductAmount, stock });
-
     } catch (error) {
-        console.log(`An error occured while increasing the Quantity...${error}`);
+        console.log(`An error occurred while decreasing the Quantity: ${error}`);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 }
+
+
 const calculateTotalAmount = async (matchCriteria) => {
     console.log('Matching criteria:', matchCriteria);
     const result = await Cart.aggregate([
