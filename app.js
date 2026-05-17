@@ -75,6 +75,16 @@ app.use((req, res, next) => {
     next();
 });
 
+// Middleware to safely handle Cloudinary URLs passed in route parameters (e.g., in /cart/add, /checkout/buynow, and /adminauth/deleteImages)
+app.use((req, res, next) => {
+    if (req.url.includes('http:/') || req.url.includes('https:/')) {
+        req.url = req.url.replace(/(https?:\/\/?([^\s?#\/]+\/)+[^\s?#\/]+\.(?:png|jpg|jpeg|gif|webp|svg))/gi, (match) => {
+            return encodeURIComponent(match);
+        });
+    }
+    next();
+});
+
 app.use('/admin', adminStaticRoutes);
 
 app.use('/', userstaticroutes);
