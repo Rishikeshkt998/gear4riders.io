@@ -98,7 +98,7 @@
                         <a href="/productdetails/<%=generateSlug(product.name)%>/<%=product._id%>"
                             style="text-decoration: none; color: black;">
                             <div class="card-image">
-                                <center><img src="http://localhost:3000/<%= product.image[0]%>"
+                                <center><img src="<%= typeof product.image[0] === 'string' && product.image[0].startsWith('http') ? product.image[0] : '/' + product.image[0] %>"
                                         class="card-img-top pt-3" style="height: 180px; width:180px;"
                                         alt="Product Image"></center>
                             </div>

@@ -36,7 +36,7 @@
                 <div style="margin-left: 5%;margin-top: 5%;margin-bottom: 5%;" class=" d-flex">
 
                     <% for (let i=0; i < product.image.length; i++) { %>
-                        <img src="http://localhost:3000/<%= product.image[i] %>" style="height: 90px;width: 90px;"
+                        <img src="<%= typeof product.image[i] === 'string' && product.image[i].startsWith('http') ? product.image[i] : '/' + product.image[i] %>" style="height: 90px;width: 90px;"
                             alt="image">
 
                         <a href="/adminauth/deleteImages/<%=product._id %>/<%=product.image[i]  %>" class="text-danger"

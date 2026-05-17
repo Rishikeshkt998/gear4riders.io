@@ -29,12 +29,12 @@
             <div id="productCarousel" class="carousel slide mt-5 pt-2" data-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <center><img id="productimage" src="http://localhost:3000/<%= products.image[0] %>"
+                        <center><img id="productimage" src="<%= typeof products.image[0] === 'string' && products.image[0].startsWith('http') ? products.image[0] : '/' + products.image[0] %>"
                             class="d-block w-75 zoom_img" alt="Product Image 1"></center>
                     </div>
                     <% for( let i = 1; i < products.image.length; i++ ) { %>
                         <div class="carousel-item">
-                            <center><img  src="http://localhost:3000/<%= products.image[i] %>"
+                            <center><img  src="<%= typeof products.image[i] === 'string' && products.image[i].startsWith('http') ? products.image[i] : '/' + products.image[i] %>"
                                 class="d-block w-75 zoom_img" alt="Product Image 1"></center>
                         </div>
                     <% } %>
@@ -53,11 +53,11 @@
             <div class="row mt-3 center mb-3">
                 <div class="col">
                     <img style="height: 80px; width: 80px;"
-                        src="http://localhost:3000/<%= products.image[0] %>" class="thumbnail-item active"
+                        src="<%= typeof products.image[0] === 'string' && products.image[0].startsWith('http') ? products.image[0] : '/' + products.image[0] %>" class="thumbnail-item active"
                         alt="Thumbnail 1">
                     <% for( let i = 1; i < products.image.length; i++ ) { %>
                         <img style="height: 80px; width: 80px;"
-                        src="http://localhost:3000/<%= products.image[i] %>" class="thumbnail-item"
+                        src="<%= typeof products.image[i] === 'string' && products.image[i].startsWith('http') ? products.image[i] : '/' + products.image[i] %>" class="thumbnail-item"
                         alt="Thumbnail 1">
                     <% } %>
                    

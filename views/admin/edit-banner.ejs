@@ -39,7 +39,7 @@
                 <div style="margin-left: 5%;margin-top: 5%;margin-bottom: 5%;" class=" d-flex">
 
                     <% for (let i=0; i < bannerData.image.length; i++) { %>
-                        <img src="http://localhost:3000/<%= bannerData.image[i] %>" style="height: 90px;width: 90px;"
+                        <img src="<%= typeof bannerData.image[i] === 'string' && bannerData.image[i].startsWith('http') ? bannerData.image[i] : '/' + bannerData.image[i] %>" style="height: 90px;width: 90px;"
                             alt="image">
 
                         <a href="/banner/deletebannerImages/<%=bannerData._id %>/<%=bannerData.image[i]  %>"

@@ -116,7 +116,7 @@
                                     <!-- Image -->
                                     <div class="bg-image hover-overlay hover-zoom ripple rounded"
                                         data-mdb-ripple-color="light">
-                                        <img src="http://localhost:3000/<%=product.productimage%>"
+                                        <img src="<%= typeof product.productimage === 'string' && product.productimage.startsWith('http') ? product.productimage : '/' + product.productimage %>"
                                             class="w-100 img-fluid small-image" alt="" />
                                         <a href="#!">
                                             <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>

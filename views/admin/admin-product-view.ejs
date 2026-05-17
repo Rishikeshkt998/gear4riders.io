@@ -42,7 +42,7 @@
                   <td>
                     <%=value.name %>
                   </td>
-                  <td><img width="100px" height="100px" src="http://localhost:3000/<%= value.image[0]%>"></td>
+                  <td><img width="100px" height="100px" src="<%= typeof value.image[0] === 'string' && value.image[0].startsWith('http') ? value.image[0] : '/' + value.image[0] %>"></td>
                   <td>
                     <%= formatCurrency(value.price)%>
                   </td>

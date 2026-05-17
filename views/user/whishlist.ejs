@@ -28,7 +28,7 @@
                                     <!-- Image -->
                                     <div class="bg-image hover-overlay hover-zoom ripple rounded"
                                         data-mdb-ripple-color="light">
-                                        <img src="http://localhost:3000/<%= row.productId.image[0] %>"
+                                        <img src="<%= typeof row.productId.image[0] === 'string' && row.productId.image[0].startsWith('http') ? row.productId.image[0] : '/' + row.productId.image[0] %>"
                                             class="w-100 img-fluid small-image" alt="<%= row.productId.name %>" />
                                         <a href="#!">
                                             <div class="mask"
