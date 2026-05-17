@@ -17,7 +17,7 @@
                                                 <!-- Image -->
                                                 <div class="bg-image hover-overlay hover-zoom ripple rounded"
                                                     data-mdb-ripple-color="light">
-                                                    <img src="<%= typeof productItem.image === 'string' && productItem.image.startsWith('http') ? productItem.image : '/' + productItem.image %>"
+                                                    <img src="<%= typeof productItem.productId.image[0] === 'string' && productItem.productId.image[0].startsWith('http') ? productItem.productId.image[0] : '/' + productItem.productId.image[0] %>"
                                                         class="w-100" alt="Blue Jeans Jacket" />
                                                     <a href="#!">
                                                         <div class="mask"
