@@ -59,7 +59,7 @@
                                 <div class="col-lg-3 col-md-5  col-sm-12 col-12 mb-2 mb-lg-0 text-lg-end">
                                        
                                     <div class="d-flex justify-content-lg-end">
-                                        <form  id="addToCartForm"  action="/cart/add/<%=row.productId._id%>/<%= row.productId.image[0] %>/<%=row.productId.name%>/<%= row.productId.price %>/<%= row.productId.discount %>/<%= row.productId.brandId._id.toString()%>/<%= row.productId.categorieId._id.toString()%>/<%= generateSlug(row.productId.name) %>" method="post">
+                                        <form  id="addToCartForm"  action="/cart/add/<%=row.productId._id%>/<%= encodeURIComponent(row.productId.image[0]) %>/<%=row.productId.name%>/<%= row.productId.price %>/<%= row.productId.discount %>/<%= row.productId.brandId._id.toString()%>/<%= row.productId.categorieId._id.toString()%>/<%= generateSlug(row.productId.name) %>" method="post">
                                             
                                             <input class="btn btn-primary me-2" type="submit" value="Add to Cart">
                                         </form>

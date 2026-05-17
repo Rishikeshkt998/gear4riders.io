@@ -94,7 +94,7 @@
             </div>
             
             <div class="d-flex mt-4">
-                <form  id="addToCartForm"  action="/cart/add/<%=products._id%>/<%= products.image[0] %>/<%=products.name%>/<%= products.price %>/<%= products.discount %>/<%= products.brandId%>/<%= products.categorieId%>/<%= productSlug %>" method="post">
+                <form  id="addToCartForm"  action="/cart/add/<%=products._id%>/<%= encodeURIComponent(products.image[0]) %>/<%=products.name%>/<%= products.price %>/<%= products.discount %>/<%= products.brandId%>/<%= products.categorieId%>/<%= productSlug %>" method="post">
                     
                     <input class="btn btn-warning p-3 fw-bold" type="submit" value="Add to Cart">
                 </form>
@@ -188,7 +188,7 @@
 
     async function buyProduct(value) {
     const product = JSON.parse(value);
-    const response = await fetch(`/checkout/buynow/${product.id}/${product.image}/${product.name}/${product.price}/${product.discount}/${product.brandId}/${product.categorieId}`, { method: 'get' })
+    const response = await fetch(`/checkout/buynow/${product.id}/${encodeURIComponent(product.image)}/${product.name}/${product.price}/${product.discount}/${product.brandId}/${product.categorieId}`, { method: 'get' })
     const resBody = await response.json()
     if (resBody.success) {
         location.href = '/checkout'

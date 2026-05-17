@@ -39,7 +39,7 @@
                         <img src="<%= typeof product.image[i] === 'string' && product.image[i].startsWith('http') ? product.image[i] : '/' + product.image[i] %>" style="height: 90px;width: 90px;"
                             alt="image">
 
-                        <a href="/adminauth/deleteImages/<%=product._id %>/<%=product.image[i]  %>" class="text-danger"
+                        <a href="/adminauth/deleteImages/<%=product._id %>/<%= encodeURIComponent(product.image[i]) %>" class="text-danger"
                             onclick="return confirm('Are you sure want to delete this product?')"><i
                                 class="fas fa-trash fa-lg mx-1"></i></a>
                         <% } %>

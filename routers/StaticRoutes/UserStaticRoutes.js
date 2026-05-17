@@ -11,6 +11,7 @@ router.get('/login', staticController.LoginView);
 router.post('/login',userLoginDatavalidate,staticController.LoginPost);
 router.post('/verifyOtp', staticController.verifyOtp);
 router.post('/resendotpVerficationCode', staticController.resendVerification);
+router.get('/logout', staticController.userLogout);
 router.get('/sharelink/:email',staticController.shareLink);
 router.get('/categoryproduct/:categoryname',staticController.categoryFilter);
 

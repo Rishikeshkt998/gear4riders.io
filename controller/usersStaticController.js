@@ -885,6 +885,16 @@ async function newPassword(req, res) {
     }
 }
 
+function userLogout(req, res) {
+    try {
+        delete req.session.userlogin;
+        res.redirect('/login');
+    } catch (err) {
+        res.send(err);
+        console.log('An Error occured logging out...' + err);
+    }
+}
+
 module.exports = {
     userSignupView,
     userSignupPost,
@@ -901,7 +911,6 @@ module.exports = {
     newPassword,
     shareLink,
     categoryFilter,
-    ProductList
-
-
+    ProductList,
+    userLogout
 };
